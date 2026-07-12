@@ -5,6 +5,10 @@ import sqlite3
 from flask import Flask, render_template, request, redirect, session, jsonify, url_for
 from werkzeug.utils import secure_filename
 
+import veritabanini_kur as db
+if os.path.exists("veriler.db") == False:
+    db.kur()
+
 app = Flask(__name__)
 app.secret_key = "A13Fe"
 
