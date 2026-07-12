@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block baslik %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .pazar-ust-sabit-menu {
+            width: 100%;
+            max-width: 1140px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        .pazar-logo-alanı { font-size: 20px; font-weight: 800; color: #ff9f43; text-decoration: none; }
+        .pazar-ust-linkler { display: flex; gap: 12px; align-items: center; }
+        .menu-link {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 14px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .menu-link:hover { background-color: rgb(62, 165, 235); }
+        .menu-link.cikis-btn { background-color: #ee5253; }
+        .uye-bilgi-etiketi { color: #2ecc71; font-size: 14px; font-weight: bold; margin-right: 5px; background: rgba(46, 204, 113, 0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(46,204,113,0.2); }
+    </style>
+</head>
+<body>
+    <div class="pazar-ust-sabit-menu">
+        <a href="/" class="pazar-logo-alanı">🌐 Kozan İlanları </a>
+        <div class="pazar-nav-linkler pazar-ust-linkler">
+            <a href="/" class="menu-link">🏠 Ana Sayfa</a>
+            <a href="/kurumsal" class="menu-link">ℹ️ Kurumsal</a>
+            
+            {% if session.get('ad') %}
+                <a href="/urun_ekle_sayfa" class="menu-link">➕ İlan Ver</a>
+                <a href="/urunler" class="menu-link">📋 Yönetim</a>
+                <span class="uye-bilgi-etiketi">👤 Üye: {{ session['ad'] }}</span>
+                <a href="/cikis" class="menu-link cikis-btn">🚪 Çıkış</a>
+            {% else %}
+                <a href="/login" class="menu-link" style="background-color: rgb(62, 165, 235);">🔑 Giriş Yap</a>
+                <a href="/kaydol" class="menu-link" style="background-color: #10ac84;">📝 Kaydol</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% block icerik %}
+    {% endblock %}
+
+</body>
+</html>

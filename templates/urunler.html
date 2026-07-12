@@ -1,0 +1,130 @@
+{% extends "taslak.html" %}
+
+{% block baslik %} İlan Yönetimi {% endblock %} 
+
+{% block icerik %}
+<div class="main genis-panel pazar-yonetim-konteyner">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+        <!-- Rol Bildirim Başlığı -->
+        <h3 style="margin:0; color:white;">
+            📋 {% if session['ad']|lower in yoneticiler %} Site Genel İlan Denetim Masası (Yönetici) {% else %} İlan Havuzu Listeniz {% endif %}
+        </h3>
+        
+        <!-- Kategori Filtreleme Menüsü -->
+        <div style="display:flex; gap:10px; align-items:center;">
+            <form method="GET" action="/urunler" id="yonetimFiltreForm" style="margin:0;">
+                <select name="kategori" onchange="document.getElementById('yonetimFiltreForm').submit();" style="padding:6px 12px; background:#3f4656; color:white; border:1px solid #57606f; border-radius:4px; font-size:13px;">
+                    <option value="">Tüm Kategoriler</option>
+                    <option value="Otomobil" {% if secilen_kategori == 'Otomobil' %}selected{% endif %}>Otomobil</option>
+                    <option value="Daire" {% if secilen_kategori == 'Daire' %}selected{% endif %}>Daire</option>
+                    <option value="Ev" {% if secilen_kategori == 'Ev' %}selected{% endif %}>Müstakil Ev</option>
+                    <option value="Arsa" {% if secilen_kategori == 'Arsa' %}selected{% endif %}>Arsa</option>
+                    <option value="Tarla" {% if secilen_kategori == 'Tarla' %}selected{% endif %}>Tarla</option>
+                </select>
+            </form>
+            <a href="/" style="background:rgba(255,255,255,0.1); border:1px solid #ccc; height:auto; padding:6px 12px; text-decoration:none; color:white; border-radius:4px; font-size:13px;">🏠 Ana Sayfa</a>
+        </div>
+    </div>
+    
+    <table class="urunler" style="width:100%; border-collapse:collapse; margin-top:10px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Kategori</th>
+                <th>İlan Sahibi</th>
+                <th>Kod</th>
+                <th>İlan Detayı</th>
+                <th>Fiyat</th>
+                <th>Kapak</th>
+                <th>İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Yeni İlan Ekleme Satırı (Kırık olan link /urun_ekle_sayfa olarak düzeltildi) -->
+            <tr>
+                <td colspan="8" class="ekle-satiri" style="text-align:center; padding:10px;"> 
+                    <a href="/urun_ekle_sayfa" class="ekle" style="background:#ff9f43; color:white; padding:8px 16px; text-decoration:none; font-weight:bold; border-radius:4px; display:inline-block;">➕ Yeni İlan Ekle</a>
+                </td>
+            </tr>
+            {% for urun in urunler %}
+            <tr>
+                <td> #{{ urun.id }} </td>
+                <!-- İlan Kategorisi Gösterimi -->
+
+<td>
+    {% set renk = "#ff9f43" %}
+
+    {% if not urun.kategori or urun.kategori == "Otomobil" %}
+        {% set renk = "#3498db" %}
+    {% elif urun.kategori == "Daire" %}
+        {% set renk = "#2ecc71" %}
+    {% elif urun.kategori == "Ev" %}
+        {% set renk = "#16a085" %}
+    {% elif urun.kategori == "Arsa" %}
+        {% set renk = "#9b59b6" %}
+    {% elif urun.kategori == "Tarla" %}
+        {% set renk = "#27ae60" %}
+    {% endif %}
+
+    <span style="
+        background:{{ renk }};
+        color:#fff;
+        padding:4px 10px;
+        border-radius:6px;
+        font-size:11px;
+        font-weight:bold;
+        text-transform:uppercase;
+        display:inline-block;
+        min-width:80px;
+        text-align:center;">
+        {{ urun.kategori if urun.kategori else 'Otomobil' }}
+    </span>
+</td>
+
+
+                
+                <!-- İlanın kime ait olduğunu gösteren hücre -->
+                <td> 
+                    <span style="font-weight:bold; color:{% if urun.ilani_veren|lower in yoneticiler %}#ff9f43{% else %}#10ac84{% endif %};">
+                        {{ urun.ilani_veren }} {% if urun.ilani_veren|lower in yoneticiler %} (Yönetici) {% endif %}
+                    </span> 
+                </td>
+                <td> <span style="background:rgba(0,0,0,0.1); padding:3px 6px; border-radius:4px; font-weight:bold;">{{ urun.kod }}</span> </td>
+                <!-- Kategorilere göre dinamik detay gösterim alanı -->
+                <td> 
+                    <strong>{{ urun.ad }}</strong><br>
+                    <small style="color:#b2bec3;">
+                        {% if not urun.kategori or urun.kategori == 'Otomobil' %}
+                            🚗 {{ urun.marka }} {{ urun.model }} | 📅 {{ urun.yil }} | 🛣️ {{ urun.km }} KM
+                        {% elif urun.kategori == 'Daire' or urun.kategori == 'Ev' %}
+                            🏢 {{ urun.marka }} ({{ urun.model }}) | 📐 {{ urun.km }} m² | 🚪 Oda: {{ urun.yakit }}
+                        {% else %}
+                            🌍 {{ urun.marka }} ({{ urun.model }}) | 📐 {{ urun.km }} m² | 📍 Ada/Parsel: {{ urun.degisen }}/{{ urun.boya }}
+                        {% endif %}
+                    </small> 
+                </td>
+                <td> <strong style="color:#ff9f43;">{{ urun.fiyat }} TL</strong> </td>
+                <td> 
+                    {% if urun.resim %}
+                        <img src="/static/uploads/{{ urun.resim }}" class="tablo-resim-onizleme" style="width:60px; height:45px; object-fit:cover; border-radius:4px;" /> 
+                    {% else %}
+                        <img src="/static/uploads/varsayilan_araba.jpg" class="tablo-resim-onizleme" style="width:60px; height:45px; object-fit:cover; border-radius:4px;" /> 
+                    {% endif %}
+                </td>
+                <td> 
+                    <a href="/urunler/guncelle/{{ urun.id }}" class="guncelle" style="background:#1e90ff; color:white; padding:4px 8px; text-decoration:none; border-radius:4px; font-size:12px; margin-right:5px; font-weight:bold;">Güncelle</a>
+                    <a href="/urunler/sil/{{ urun.id }}" class="sil" style="background:#ff4757; color:white; padding:4px 8px; text-decoration:none; border-radius:4px; font-size:12px; font-weight:bold;" onclick="return confirm('Bu ilanı kalıcı olarak pazar havuzundan kaldırmak istediğinize emin misiniz?')">Sil</a>
+                </td>
+            </tr>
+            {% else %}
+            <!-- Eğer listelenecek ilan yoksa gösterilecek boş tablo tasarımı -->
+            <tr>
+                <td colspan="8" style="text-align: center; color: rgba(255,255,255,0.6); padding: 25px; background: rgba(0,0,0,0.1);">
+                    Şu anda yönetim panelinizde görüntülenecek aktif bir ilanınız bulunmamaktadır.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
