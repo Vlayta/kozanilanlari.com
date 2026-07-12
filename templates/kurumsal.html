@@ -1,0 +1,348 @@
+{% extends "taslak.html" %}
+
+{% block baslik %} Kozan İlanları - Kurumsal {% endblock %} 
+
+{% block icerik %}
+<div class="main genis-panel kurumsal-konteyner">
+    
+    <!-- İnce Sade Çizgilerle Ayrılmış Üst Seçim Menüsü -->
+    <div class="kurumsal-sekmeler">
+        <button class="sekme-btn aktif" onclick="sekmeAc(event, 'hakkimizda')">📋 Hakkımızda</button>
+        <button class="sekme-btn" onclick="sekmeAc(event, 'amacimiz')">🎯 Bölgesel Hizmet & İlkelerimiz</button>
+        <button class="sekme-btn" onclick="sekmeAc(event, 'iletisim')">📞 İletişim & Harita</button>
+    </div>
+
+    <!-- 1. BÖLÜM: HAKKIMIZDA -->
+
+<div id="hakkimizda" class="sekme-icerik aktif-icerik">
+
+    <h3 class="kurumsal-alt-baslik">📋 Hakkımızda</h3>
+
+    <p>
+        <strong>kozanilanlari.com</strong>, başta Kozan olmak üzere Adana ve çevre
+        ilçelerde yaşayan vatandaşların araç, emlak, arsa, iş makinesi ve ikinci el
+        ürün ilanlarını güvenilir, hızlı ve kolay bir şekilde yayımlayabilecekleri
+        yerel bir dijital ilan platformudur.
+    </p>
+
+    <p>
+        Günümüzde alıcı ve satıcıların güvenilir bir platformda buluşma ihtiyacı her
+        geçen gün artmaktadır. kozanilanlari.com, bu ihtiyacı karşılamak amacıyla
+        geliştirilmiş olup, bölgedeki ilanların tek bir çatı altında toplanmasını
+        hedeflemektedir.
+    </p>
+
+    <p>
+        Platformumuz; ilan vermek isteyen kullanıcıların ilanlarını kolayca
+        oluşturabilmelerini, alıcıların ise aradıkları ürünlere ayrıntılı filtreleme
+        seçenekleriyle kısa sürede ulaşabilmelerini sağlayan modern ve kullanıcı
+        dostu bir altyapıya sahiptir.
+    </p>
+
+    <p>
+        Önceliğimiz; dürüstlük, şeffaflık, güven ve kullanıcı memnuniyetidir.
+        Kullanıcılarımızın güvenli bir ortamda ilan yayınlayabilmeleri ve
+        ihtiyaç duydukları ilanlara hızlı bir şekilde ulaşabilmeleri için
+        platformumuzu sürekli geliştirmekteyiz.
+    </p>
+
+    <p>
+        Başta Kozan olmak üzere İmamoğlu, Feke, Saimbeyli, Tufanbeyli,
+        Kadirli, Ceyhan ve çevre bölgelerdeki ilanların daha geniş kitlelere
+        ulaşmasına katkı sağlamayı amaçlıyor; yerel ticaretin dijital ortamda
+        gelişmesini destekliyoruz.
+    </p>
+
+    <p>
+        Teknolojiyi yerel ticaretle buluşturan <strong>kozanilanlari.com</strong>,
+        güvenilir hizmet anlayışı, sade tasarımı ve sürekli gelişen altyapısıyla
+        kullanıcılarına kaliteli bir ilan deneyimi sunmayı hedeflemektedir.
+    </p>
+
+</div>
+
+    <!-- 2. BÖLÜM: BÖLGESEL HİZMET VE İLKELERİMİZ -->
+    <!-- 2. BÖLÜM: HİZMET İLKELERİMİZ -->
+<div id="amacimiz" class="sekme-icerik">
+
+    <h3 class="kurumsal-alt-baslik">🎯 Hizmet İlkelerimiz</h3>
+
+    <p>
+        <strong>kozanilanlari.com</strong>, başta Kozan olmak üzere Adana ve çevre ilçelerde
+        faaliyet gösteren yerel bir ilan platformudur. Amacımız; kullanıcılarımızın
+        ilanlarını güvenilir, hızlı ve kolay bir şekilde yayımlayabilecekleri,
+        alıcı ile satıcıyı aynı platformda buluşturan kaliteli bir hizmet sunmaktır.
+    </p>
+
+    <p>
+        Platformumuzun daha güvenilir ve düzenli hizmet verebilmesi için aşağıdaki
+        temel ilkeler doğrultusunda faaliyet göstermekteyiz.
+    </p>
+
+    <div class="ilke-listesi">
+
+        <div class="ilke-madde">
+            <strong>1. Ücretsiz İlan Yayınlama</strong>
+            İlan kurallarına uygun olan araç, emlak, arsa, iş makinesi ve diğer
+            ilanlar kullanıcılarımız tarafından ücretsiz olarak sisteme eklenebilir.
+            Herkes eşit şartlarda ilan oluşturabilir.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>2. Doğru ve Güncel Bilgi</strong>
+            İlanlarda yer alan açıklama, fiyat, fotoğraf ve diğer bilgilerin doğru,
+            güncel ve gerçeği yansıtması beklenmektedir. Yanıltıcı veya eksik bilgi
+            içeren ilanlar kaldırılabilir.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>3. Güvenli Kullanım</strong>
+            Platformumuz, kullanıcıların güvenli bir ortamda ilan yayınlayabilmesi
+            ve ilanları inceleyebilmesi amacıyla sürekli geliştirilmektedir.
+            Şüpheli veya kurallara aykırı işlemler sistem tarafından incelenebilir.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>4. Yerel Hizmet Anlayışı</strong>
+            Önceliğimiz Kozan ve çevresindeki ilanların tek bir platformda
+            toplanmasını sağlayarak bölge halkının alım ve satım işlemlerini
+            kolaylaştırmaktır.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>5. Kullanıcı Memnuniyeti</strong>
+            Görüş, öneri ve geri bildirimler kullanıcı deneyimini geliştirmek adına
+            değerlendirilmektedir. Amacımız sürekli gelişen, hızlı ve kullanımı kolay
+            bir ilan platformu sunmaktır.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>6. Gizlilik ve Kişisel Verilerin Korunması</strong>
+            Kullanıcı bilgilerinin gizliliğine önem verilir. Kişisel veriler,
+            yürürlükteki mevzuata uygun şekilde korunur ve üçüncü kişilerle
+            izinsiz paylaşılmaz.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>7. Saygılı ve Dürüst İletişim</strong>
+            Platform üzerinden gerçekleştirilen tüm iletişimlerde karşılıklı saygı,
+            dürüstlük ve iyi niyet esastır. Hakaret, tehdit, yanıltıcı beyan ve
+            hukuka aykırı içeriklere izin verilmez.
+        </div>
+
+        <div class="ilke-madde">
+            <strong>8. Sürekli Gelişim</strong>
+            kozanilanlari.com, kullanıcı ihtiyaçlarını dikkate alarak altyapısını,
+            güvenlik önlemlerini ve hizmet kalitesini sürekli geliştirmeyi
+            hedeflemektedir.
+        </div>
+
+    </div>
+
+</div>
+
+
+    <!-- 3. BÖLÜM: İLETİŞİM VE HARİTA -->
+     
+
+    <!-- 3. BÖLÜM: İLETİŞİM VE HARİTA -->
+<div id="iletisim" class="sekme-icerik">
+
+    <h3 class="kurumsal-alt-baslik">📞 İletişim Bilgileri</h3>
+
+    <p>
+        <strong>kozanilanlari.com</strong> ile ilgili her türlü soru, görüş, öneri,
+        teknik destek talebi veya ilan bildirimi için aşağıdaki iletişim kanallarından
+        bizimle iletişime geçebilirsiniz.
+    </p>
+
+    <p>
+        Kullanıcı memnuniyetini ön planda tutan ekibimiz, mümkün olan en kısa sürede
+        sizlere dönüş yaparak sorunlarınızın çözümüne yardımcı olmaktadır.
+    </p>
+
+    <div class="iletisim-bilgi-izgara">
+
+        <div class="iletisim-ince-kart">
+            <span class="kart-ust-yazi">📍 Hizmet Bölgemiz</span>
+            <span class="kart-ana-yazi">
+                Kozan Merkez başta olmak üzere Adana ve çevre ilçeler
+            </span>
+        </div>
+
+        <div class="iletisim-ince-kart">
+            <span class="kart-ust-yazi">📧 E-Posta Adresimiz</span>
+            <span class="kart-ana-yazi">
+                destek@kozanilanlari.com
+            </span>
+        </div>
+
+        <div class="iletisim-ince-kart">
+            <span class="kart-ust-yazi">🕒 Destek Saatleri</span>
+            <span class="kart-ana-yazi">
+                Haftanın 7 Günü<br>
+                09:00 - 22:00
+            </span>
+        </div>
+
+    </div>
+
+    <div class="harita-hazne">
+
+        <span class="harita-baslik">
+            🗺️ Kozan Merkez Konum Bilgisi
+        </span>
+
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d628.6908469503243!2d35.78726228603915!3d37.42757983933625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1str!2str!4v1782049416365!5m2!1str!2str"
+            width="100%"
+            height="300"
+            style="border:0; border-radius:10px;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+
+    </div>
+
+    <p style="margin-top:20px;">
+        Platformumuzun geliştirilmesine katkı sağlayacak her türlü görüş ve önerinizi
+        bizimle paylaşabilirsiniz. Sizlerden gelen geri bildirimler doğrultusunda
+        <strong>kozanilanlari.com</strong> sürekli geliştirilmekte ve yeni özelliklerle
+        zenginleştirilmektedir.
+    </p>
+
+    <a href="https://wa.me/905534016336"
+       target="_blank"
+       class="btn-kurumsal-wp-yeni">
+
+        💬 WhatsApp Üzerinden Bizimle İletişime Geçin
+
+    </a>
+
+</div>
+
+<!-- SADE ÇİZGİLİ VE MİNİMALİST EK CSS TASARIMLARI -->
+<style>
+    .kurumsal-konteyner { max-width: 850px !important; margin-top: 20px; }
+    
+    /* Üst Sekmeler: Sade İnce Çizgili Tasarım */
+    .kurumsal-sekmeler { 
+        display: flex; 
+        gap: 10px; 
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15); 
+        padding-bottom: 15px; 
+        margin-bottom: 25px; 
+    }
+    .sekme-btn { 
+        margin: 0 !important; 
+        width: auto !important; 
+        flex: 1; 
+        height: 44px; 
+        background: transparent; 
+        border: 1px solid rgba(255, 255, 255, 0.15); 
+        border-radius: 8px; 
+        color: rgba(255, 255, 255, 0.6); 
+        cursor: pointer; 
+        font-weight: 600; 
+        font-size: 14px; 
+        transition: 0.2s; 
+    }
+    .sekme-btn:hover { 
+        background: rgba(255, 255, 255, 0.05); 
+        color: white; 
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+    .sekme-btn.aktif { 
+        background: rgb(62, 165, 235); 
+        color: white; 
+        border-color: purple; 
+        box-shadow: 0 4px 12px rgba(62, 165, 235, 0.25); 
+    }
+    
+    /* İçerik Kutuları */
+    .sekme-icerik { 
+        display: none; 
+        background: rgba(0, 0, 0, 0.12); 
+        padding: 25px; 
+        border-radius: 12px; 
+        border: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+    .sekme-icerik.aktif-icerik { display: block; }
+    .sekme-icerik p { margin-left: 0 !important; font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, 0.85); }
+    .kurumsal-alt-baslik { justify-content: flex-start; font-size: 22px; margin-bottom: 18px; color: #ff9f43; font-weight: 700; }
+    
+    /* İlke Maddeleri ve Çizgisel Ayrım */
+    .ilke-listesi { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    .ilke-madde { 
+        padding: 12px 15px; 
+        background: rgba(0, 0, 0, 0.15); 
+        border-radius: 8px; 
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+        font-size: 14px; 
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.5;
+    }
+    .ilke-madde strong { color: #ff9f43; display: block; margin-bottom: 4px; }
+    
+    /* İletişim Alt Kartları */
+    .iletisim-bilgi-izgara { display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+    .iletisim-ince-kart { 
+        flex: 1; 
+        min-width: 220px; 
+        background: rgba(0, 0, 0, 0.15); 
+        padding: 15px; 
+        border-radius: 8px; 
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+    }
+    .iletisim-ince-kart .kart-ust-yazi { font-size: 11px; color: #aaa; display: block; margin-bottom: 4px; font-weight: 600; }
+    .iletisim-ince-kart .kart-ana-yazi { font-size: 15px; color: white; font-weight: bold; }
+    
+    /* Harita Alanı Çerçevesi */
+    .harita-hazne { 
+        margin-top: 25px; 
+        background: rgba(0, 0, 0, 0.2); 
+        padding: 15px; 
+        border-radius: 12px; 
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+    }
+    .harita-baslik { font-size: 13px; font-weight: bold; color: #ff9f43; display: block; margin-bottom: 10px; }
+    
+    /* WhatsApp Butonu */
+    .btn-kurumsal-wp-yeni { 
+        display: flex; 
+        width: 100%; 
+        height: 48px; 
+        background: #25d366; 
+        color: white; 
+        font-weight: bold; 
+        text-decoration: none; 
+        border-radius: 8px; 
+        align-items: center; 
+        justify-content: center; 
+        box-shadow: 0 4px 15px rgba(37,211,102,0.2); 
+        margin-top: 25px; 
+        border: none; 
+        box-sizing: border-box; 
+        transition: 0.2s;
+    }
+    .btn-kurumsal-wp-yeni:hover { background: #20ba5a; transform: translateY(-1px); }
+</style>
+
+<!-- TIKLANAN SEKMEYİ AÇAN JAVASCRIPT KODU -->
+<script>
+    function sekmeAc(evt, sekmeAdi) {
+        let i, icerikler, butonlar;
+        icerikler = document.getElementsByClassName("sekme-icerik");
+        for (i = 0; i < icerikler.length; i++) {
+            icerikler[i].classList.remove("aktif-icerik");
+        }
+        butonlar = document.getElementsByClassName("sekme-btn");
+        for (i = 0; i < butonlar.length; i++) {
+            butonlar[i].classList.remove("aktif");
+        }
+        document.getElementById(sekmeAdi).classList.add("aktif-icerik");
+        evt.currentTarget.classList.add("aktif");
+    }
+</script>
+{% endblock %}

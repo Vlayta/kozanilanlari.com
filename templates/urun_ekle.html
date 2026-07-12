@@ -1,0 +1,230 @@
+{% extends "taslak.html" %}
+{% block baslik %} Yeni İlan Ekle {% endblock %}
+{% block icerik %}
+<div class="main genis-panel" style="max-width: 720px;">
+    <!-- novalidate eklenerek tarayıcının görünmeyen gizli alanlar yüzünden formu kilitlemesi engellendi -->
+    <form action="{{ url_for('urun_ekle') }}" method="post" enctype="multipart/form-data" novalidate>
+        <label class="form-baslik"> ➕ Yeni Genel İlan Havuzu Kaydı </label>
+
+        <!-- Kategori Seçim Menüsü -->
+        <div class="form-satir">
+            <div class="form-sutun">
+                <select name="kategori" id="kategori_secim" onchange="formAlanlariniGuncelle()" style="background:#2b313d; color:#ff9f43; font-weight:bold;">
+                    <option value="Otomobil" selected>🚗 Otomobil İlanı Ekle</option>
+                    <option value="Daire">🏢 Daire İlanı Ekle</option>
+                    <option value="Ev">🏡 Müstakil Ev İlanı Ekle</option>
+                    <option value="Arsa">🌍 Arsa İlanı Ekle</option>
+                    <option value="Tarla">🌾 Tarla İlanı Ekle</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Ortak Temel Bilgiler -->
+        <div class="form-satir">
+            <div class="form-sutun"><input type="text" name="kod" placeholder="İlan Kodu (Örn: TR245)" required></div>
+            <div class="form-sutun"><input type="text" name="ad" placeholder="İlan Başlığı" required></div>
+        </div>
+
+        <div class="form-satir">
+            <div class="form-sutun">
+                <input type="number" name="fiyat" placeholder="Fiyat (TL)" required>
+            </div>
+        </div>
+
+        <!-- 1. OTOMOBİL ALANLARI -->
+        <div id="alan-otomobil-ozel" class="form-satir dinamik-alan">
+            <div class="form-sutun">
+                
+                
+                <select name="marka" id="marka" onchange="modelleriYukle()">
+                    <option value="">Marka Seçiniz</option>
+                    <option value="Alfa Romeo">Alfa Romeo</option>
+                    <option value="Audi">Audi</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Chery">Chery</option>
+                    <option value="Chevrolet">Chevrolet</option>
+                    <option value="Citroen">Citroen</option>
+                    <option value="Cupra">Cupra</option>
+                    <option value="Dacia">Dacia</option>
+                    <option value="DS">DS</option>
+                    <option value="Fiat">Fiat</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Hyundai">Hyundai</option>
+                    <option value="Isuzu">Isuzu</option>
+                    <option value="Jaguar">Jaguar</option>
+                    <option value="Jeep">Jeep</option>
+                    <option value="Kia">Kia</option>
+                    <option value="Land Rover">Land Rover</option>
+                    <option value="Lexus">Lexus</option>
+                    <option value="Mazda">Mazda</option>
+                    <option value="Mercedes-Benz">Mercedes-Benz</option>
+                    <option value="MG">MG</option>
+                    <option value="Mini">Mini</option>
+                    <option value="Mitsubishi">Mitsubishi</option>
+                    <option value="Nissan">Nissan</option>
+                    <option value="Opel">Opel</option>
+                    <option value="Peugeot">Peugeot</option>
+                    <option value="Porsche">Porsche</option>
+                    <option value="Renault">Renault</option>
+                    <option value="Seat">Seat</option>
+                    <option value="Skoda">Skoda</option>
+                    <option value="Suzuki">Suzuki</option>
+                    <option value="Tesla">Tesla</option>
+                    <option value="Tofaş">Tofaş</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                    <option value="Volvo">Volvo</option>
+                </select>
+                
+                                
+                
+            </div>
+            <div class="form-sutun">
+                <select name="model" id="model">
+                    <option value="">Model Seçiniz</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-otomobil-teknik" class="dinamik-alan">
+            <div class="form-satir-uc">
+                <input type="number" name="yil" id="yil_oto" placeholder="Model Yılı" min="1950" max="2027">
+                <input type="number" name="km" id="km_oto" placeholder="Kilometre">
+            </div>
+            <div class="form-satir">
+                <select name="yakit">
+                    <option value="Dizel">Dizel</option>
+                    <option value="Benzin">Benzin</option>
+                    <option value="Benzin & LPG">Benzin & LPG</option>
+                </select>
+                <select name="vites">
+                    <option value="Manuel">Manuel</option>
+                    <option value="Otomatik">Otomatik</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-otomobil-check" class="dinamik-alan" style="display:flex; gap:15px; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="degisen" value="true" style="width:auto; height:auto; margin:0;"> Değişen Var</label>
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="boya" value="true" style="width:auto; height:auto; margin:0;"> Boyalı Var</label>
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="tramer" value="true" style="width:auto; height:auto; margin:0;"> Tramer Var</label>
+        </div>
+
+        <!-- 2. EMLAK (DAİRE & EV) ALANLARI -->
+        <div id="alan-emlak-ozel" class="form-satir dinamik-alan" style="display:none;">
+            <div class="form-sutun">
+                <select name="bina_tipi" id="bina_tipi">
+                    <option value="">Bina Tipi Seçiniz</option>
+                    <option value="Apartman Dairesi">Apartman Dairesi</option>
+                    <option value="Rezidans">Rezidans</option>
+                    <option value="Müstakil Ev">Müstakil Ev</option>
+                    <option value="Villa">Villa</option>
+                </select>
+            </div>
+            <div class="form-sutun">
+                <select name="ilan_durumu" id="ilan_durumu">
+                    <option value="Satılık" selected>Satılık</option>
+                    <option value="Kiralık">Kiralık</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-emlak-teknik" class="dinamik-alan" style="display:none;">
+            <div class="form-satir-uc">
+                <input type="number" name="bina_yasi" id="bina_yasi" placeholder="Bina Yaşı" min="0" max="100">
+                <input type="number" name="metrekare" id="metrekare" placeholder="Metrekare (m²)">
+                <select name="oda_sayisi" id="oda_sayisi">
+                    <option value="">Oda Sayısı</option>
+                    <option value="1+0">1+0</option>
+                    <option value="1+1">1+1</option>
+                    <option value="2+1">2+1</option>
+                    <option value="3+1">3+1</option>
+                    <option value="4+1">4+1</option>
+                </select>
+            </div>
+            <div class="form-satir" id="blok-daire-kat">
+                <select name="bulundugu_kat" id="bulundugu_kat">
+                    <option value="">Bulunduğu Kat</option>
+                    <option value="Giriş Kat">Giriş Kat</option>
+                    <option value="1. Kat">1. Kat</option>
+                    <option value="2. Kat">2. Kat</option>
+                    <option value="3. Kat">3. Kat</option>
+                    <option value="4. Kat ve Üzeri">4. Kat ve Üzeri</option>
+                    <option value="En Üst Kat">En Üst Kat</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-emlak-check" class="dinamik-alan" style="display:none; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="kredi_uygun" value="true" style="width:auto; height:auto; margin:0;"> Konut Kredisine Uygun</label>
+        </div>
+
+        <!-- 3. ARSA & TARLA ALANLARI -->
+        <div id="alan-arsa-ozel" class="form-satir dinamik-alan" style="display:none;">
+            <div class="form-sutun">
+                <select name="imar_durumu" id="imar_durumu">
+                    <option value="">İmar Durumu Seçiniz</option>
+                    <option value="Konut İmarı">Konut İmarı</option>
+                    <option value="Ticari İmar">Ticari İmar</option>
+                    <option value="Bağ / Bahçe">Bağ / Bahçe</option>
+                    <option value="Zeytinlik">Zeytinlik</option>
+                    <option value="Tarla Statüsü">Tarla Statüsü</option>
+                </select>
+            </div>
+            <div class="form-sutun">
+                <select name="ilan_durumu_arsa" id="ilan_durumu_arsa">
+                    <option value="Satılık" selected>Satılık</option>
+                    <option value="Kiralık">Kiralık</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-arsa-teknik" class="dinamik-alan" style="display:none;">
+            <div class="form-satir-uc">
+                <input type="number" name="metrekare_arsa" id="metrekare_arsa" placeholder="Toplam Alan (m²)">
+                <input type="text" name="ada_no" id="ada_no" placeholder="Ada No">
+                <input type="text" name="parsel_no" id="parsel_no" placeholder="Parsel No">
+            </div>
+        </div>
+
+        <div id="alan-arsa-check" class="dinamik-alan" style="display:none; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="kredi_uygun_arsa" value="true" style="width:auto; height:auto; margin:0;"> Yatırıma / Krediye Uygun</label>
+        </div>
+
+        <!-- İSTEDİĞİNİZ DÜZELTME: Geniş İlan Açıklaması ve Ekstra Bilgiler Alanı -->
+        <div class="form-satir">
+            <div class="form-sutun">
+                <label style="font-size:13px; font-weight:bold; color:#ff9f43; display:block; margin-bottom:5px; text-align:left;">📝 İlan Açıklaması ve Ekstra Bilgiler</label>
+                <textarea name="acıklama" rows="5" placeholder="Araç ekspertiz durumu, boya/değişen detayları, ev özellikleri veya arsa konumu gibi ekstra bilgileri buraya yazabilirsiniz..." style="width:100%; padding:10px; background:#2f3542; color:white; border:1px solid #57606f; border-radius:6px; box-sizing:border-box; font-family:inherit; resize:vertical; font-size:14px;"></textarea>
+            </div>
+        </div>
+
+        <!-- Fotoğraf Yükleme Izgarası -->
+        <div class="form-grup-resimler">
+            <span style="font-size:13px; font-weight:bold; display:block; margin-bottom:8px; color:#ff9f43; text-align:center;">📸 İlan Fotoğrafları Ekle (En az 1 adet)</span>
+            <div class="resim-yukleme-izgarasi">
+                <div class="resim-girdi-kutu"><span>1. Resim (Kapak)</span><input type="file" name="resim1" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>2. Resim</span><input type="file" name="resim2" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>3. Resim</span><input type="file" name="resim3" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>4. Resim</span><input type="file" name="resim4" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>5. Resim</span><input type="file" name="resim5" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>6. Resim</span><input type="file" name="resim6" accept="image/*"></div>
+            </div>
+        </div>
+
+        <!-- Butonlar -->
+        <button type="submit"> 🚀 İlanı Pazar Havuzuna Gönder </button>
+        <a href="/urunler" style="background:transparent; border:none; color:#ff6b6b; text-align:center; display:block; margin-top:15px; font-weight:bold;">❌ Vazgeç / İlanlarıma Dön</a>
+    </form>
+</div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if(typeof formAlanlariniGuncelle === "function") {
+            formAlanlariniGuncelle();
+        }
+    });
+</script>
+{% endblock %}

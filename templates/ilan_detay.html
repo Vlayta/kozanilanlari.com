@@ -1,0 +1,102 @@
+{% extends "taslak.html" %}
+{% block baslik %} İlan Detayı - {{ ilan.ad }} {% endblock %}
+{% block icerik %}
+<div class="main genis-panel" style="max-width: 1000px; padding: 5px;">
+    
+    <!-- Üst Başlık ve İlan Kodu Alanı -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,159,67,0.2); padding-bottom: 10px; margin-bottom: 10px;">
+        <h2 style="margin:0; color: #ff9f43; font-size: 20px;">🌐 {{ ilan.ad }}</h2>
+        <span style="background: rgba(255,159,67,0.15); color: #ff9f43; padding: 6px 12px; border-radius: 6px; font-weight: bold; border: 1px solid rgba(255,159,67,0.3);">
+            KOD: {{ ilan.kod }}
+        </span>
+    </div>
+
+    <div style="display: flex; gap: 25px; flex-wrap: wrap;">
+        
+        <!-- SOL PANEL: FOTOĞRAF GALERİ SİSTEMİ -->
+        <div style="flex: 1.6; min-width: 320px;">
+            <!-- Büyük Ana Ekran -->
+            <div style="width: 100%; height: 280px; background: #1e2430; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px;">
+                <img id="anaDetayGorsel" src="/static/uploads/{{ ilan.resim }}" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" onclick="lightboxAc(this.src)">
+            </div>
+            
+            <!-- Küçük Resim Seçim Izgarası -->
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                {% for resim in ilan.resimler_liste %}
+                    <img src="/static/uploads/{{ resim }}" style="width: 65px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid {% if loop.first %}#ff9f43{% else %}transparent{% endif %}; opacity: {% if loop.first %}1{% else %}0.6{% endif %};" onclick="document.getElementById('anaDetayGorsel').src=this.src; document.querySelectorAll('.galeri-kucuk').forEach(el=>el.style.borderColor='transparent'); this.style.borderColor='#ff9f43'; this.style.opacity='1';" class="galeri-kucuk">
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- SAĞ PANEL: DETAYLI TEKNİK ÖZET PANOSU -->
+        <div style="flex: 1; min-width: 280px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; justify-content: space-between;">
+            
+            <div>
+                <h3 style="margin: 0 0 6px 0; color: #fff; font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">📋 İlan Özeti</h3>
+                <div style="display: flex; flex-direction: column; gap: 5px; font-size: 14px; color: #ddd;">
+                    <div><strong>Kategori:</strong> <span style="color: #ff9f43; font-weight: bold;">{{ ilan.kategori if ilan.kategori else 'Otomobil' }}</span></div>
+                    <div><strong>Fiyat:</strong> <span style="color: #2ecc71; font-weight: bold; font-size: 16px;">{{ ilan.fiyat }} TL</span></div>
+                    <div><strong>İlan Sahibi:</strong> <span>{{ ilan.ilani_veren }}</span></div>
+                    
+                    <!-- Kategorisel Hücre Filtre Eşleşmeleri -->
+                    {% if not ilan.kategori or ilan.kategori == 'Otomobil' %}
+                        <div><strong>Marka / Model:</strong> <span>{{ ilan.marka }} / {{ ilan.model }}</span></div>
+                        <div><strong>Model Yılı:</strong> <span>{{ ilan.yil }}</span></div>
+                        <div><strong>Kilometre:</strong> <span>{{ ilan.km }} KM</span></div>
+                        <div><strong>Yakıt / Vites:</strong> <span>{{ ilan.yakit }} / {{ ilan.vites }}</span></div>
+                        <div><strong>Ekspertiz:</strong> <span>Değişen: {{ 'Var ⚠️' if ilan.degisen == 'true' else 'Yok ✨' }} | Boya: {{ 'Var ⚠️' if ilan.boya == 'true' else 'Yok ✨' }}</span></div>
+                        <div><strong>Tramer Hasar:</strong> <span>{{ 'Mevcut ⚠️' if ilan.tramer == 'true' else 'Kayıt Yok ✨' }}</span></div>
+                    {% elif ilan.kategori == 'Daire' or ilan.kategori == 'Ev' %}
+                        <div><strong>Konut Tipi:</strong> <span>{{ ilan.marka }}</span></div>
+                        <div><strong>İlan Durumu:</strong> <span>{{ ilan.model }}</span></div>
+                        <div><strong>Bina Yaşı:</strong> <span>{{ ilan.yil }} Yaşında</span></div>
+                        <div><strong>Metrekare:</strong> <span>{{ ilan.km }} m²</span></div>
+                        <div><strong>Oda Sayısı:</strong> <span>{{ ilan.yakit }}</span></div>
+                        <div><strong>Bulunduğu Kat:</strong> <span>{{ ilan.vites }}</span></div>
+                        <div><strong>Kredi Durumu:</strong> <span>{{ '🏦 Konut Kredisine Uygun' if ilan.tramer == 'true' else '❌ Krediye Uygun Değil' }}</span></div>
+                    {% else %}
+                        <div><strong>İmar Durumu:</strong> <span>{{ ilan.marka }}</span></div>
+                        <div><strong>İlan Durumu:</strong> <span>{{ ilan.model }}</span></div>
+                        <div><strong>Toplam Alan:</strong> <span>{{ ilan.km }} m²</span></div>
+                        <div><strong>Ada / Parsel No:</strong> <span>{{ ilan.degisen }} / {{ ilan.boya }}</span></div>
+                        <div><strong>Yatırım Uygunluk:</strong> <span>{{ '💎 Krediye/Yatırıma Uygun' if ilan.tramer == 'true' else '⚠️ Detaylı İnceleme Gerekli' }}</span></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- İşlem Butonu -->
+            <div style="margin-top: 20px;">
+                <a href="#" class="btn-wp-aracilik" style="display: block; text-align: center; background: #10ac84; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px;">
+                    🤝 Alıcı Ol / Randevu Al
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALT PANEL: VERİTABANINDAN GELEN GENİŞ AÇIKLAMA METNİ -->
+    
+   
+    <div style="margin-top: 10px; background: rgba(255,255,255,0.02); padding: 5px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); text-align: left;">
+        <h3 style="margin: 0 0 10px 0; color: #ff9f43; font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px;">📝 İlan Açıklaması ve Ekstra Detaylar</h3>
+        <p style="
+    color: #ccc;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    word-break: break-word;
+    padding: 0;
+">
+    {% if ilan.acıklama %}
+        {{ ilan.acıklama | replace('\n', '<br>') | safe }}
+    {% else %}
+        Bu ilan için henüz detaylı bir açıklama metni girilmemiştir. Bilgi almak için randevu talebi oluşturabilirsiniz.
+    {% endif %}
+</p>
+    </div>
+
+    <!-- Alt Navigasyon -->
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="/" style="color: #ff9f43; font-weight: bold; text-decoration: none; font-size: 14px;">⬅ Vitrine Geri Dön</a>
+    </div>
+</div>
+{% endblock %}

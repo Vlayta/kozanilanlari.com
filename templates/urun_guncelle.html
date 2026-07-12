@@ -1,0 +1,247 @@
+{% extends "taslak.html" %}
+{% block baslik %} İlan Güncelle {% endblock %} 
+{% block icerik %}
+<div class="main genis-panel" style="max-width: 720px;">
+    <!-- Tarayıcı kilitlerini kaldıran novalidate niteliği eklendi -->
+    <form action="{{ url_for('urun_kaydet') }}" method="post" enctype="multipart/form-data" novalidate>
+        <label class="form-baslik"> 🔄 İlanı ve Fotoğrafları Düzenle </label>
+        
+        <!-- Mevcut Kapak Resmi Gösterimi -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span style="font-size: 13px; display: block; margin-bottom: 5px; color: #ccc;">Mevcut Kapak Resmi:</span>
+            {% if urun.resim %}
+                <img src="/static/uploads/{{ urun.resim }}" style="width: 150px; height: 110px; object-fit: cover; border-radius: 8px; border: 2px solid #ff9f43;">
+            {% else %}
+                <img src="/static/uploads/varsayilan_araba.jpg" style="width: 150px; height: 110px; object-fit: cover; border-radius: 8px;">
+            {% endif %}
+        </div>
+
+        <!-- Gizli Kimlik Bilgileri ve Kategori Bilgisi -->
+        <input type="hidden" name="id" value="{{ urun.id }}">
+        <input type="hidden" name="kod" value="{{ urun.kod }}">
+        <input type="hidden" name="kategori" value="{{ urun.kategori if urun.kategori else 'Otomobil' }}">
+
+        <!-- Kategori Sabit Gösterimi -->
+        <div class="form-satir">
+            <div class="form-sutun">
+                <select id="kategori_secim" disabled style="background:#2b313d; color:#ff9f43; font-weight:bold;">
+                    <option value="Otomobil" {% if not urun.kategori or urun.kategori == 'Otomobil' %}selected{% endif %}>🚗 Otomobil İlanı Güncelleniyor</option>
+                    <option value="Daire" {% if urun.kategori == 'Daire' %}selected{% endif %}>🏢 Daire İlanı Güncelleniyor</option>
+                    <option value="Ev" {% if urun.kategori == 'Ev' %}selected{% endif %}>🏡 Müstakil Ev İlanı Güncelleniyor</option>
+                    <option value="Arsa" {% if urun.kategori == 'Arsa' %}selected{% endif %}>🌍 Arsa İlanı Güncelleniyor</option>
+                    <option value="Tarla" {% if urun.kategori == 'Tarla' %}selected{% endif %}>🌾 Tarla İlanı Güncelleniyor</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Ortak Temel Bilgiler -->
+        <div class="form-satir">
+            <div class="form-sutun"><input type="text" name="kod_gosterim" value="{{ urun.kod }}" placeholder="İlan Kodu" disabled></div>
+            <div class="form-sutun"><input type="text" name="ad" value="{{ urun.ad }}" placeholder="İlan Başlığı" required></div>
+        </div>
+
+        <div class="form-satir">
+            <div class="form-sutun">
+                <input type="number" name="fiyat" value="{{ urun.fiyat }}" placeholder="Fiyat (TL)" required>
+            </div>
+        </div>
+
+        <!-- 1. OTOMOBİL ALANLARI -->
+        <div id="alan-otomobil-ozel" class="form-satir dinamik-alan">
+            <div class="form-sutun">
+               
+                <select name="marka" id="marka" onchange="modelleriYukle()">
+                    <option value="">Marka Seçiniz</option>
+
+                    <option value="Alfa Romeo" {% if urun.marka=='Alfa Romeo' %}selected{% endif %}>Alfa Romeo</option>
+                    <option value="Audi" {% if urun.marka=='Audi' %}selected{% endif %}>Audi</option>
+                    <option value="BMW" {% if urun.marka=='BMW' %}selected{% endif %}>BMW</option>
+                    <option value="Chery" {% if urun.marka=='Chery' %}selected{% endif %}>Chery</option>
+                    <option value="Citroen" {% if urun.marka=='Citroen' %}selected{% endif %}>Citroen</option>
+                    <option value="Cupra" {% if urun.marka=='Cupra' %}selected{% endif %}>Cupra</option>
+                    <option value="Dacia" {% if urun.marka=='Dacia' %}selected{% endif %}>Dacia</option>
+                    <option value="Fiat" {% if urun.marka=='Fiat' %}selected{% endif %}>Fiat</option>
+                    <option value="Ford" {% if urun.marka=='Ford' %}selected{% endif %}>Ford</option>
+                    <option value="Honda" {% if urun.marka=='Honda' %}selected{% endif %}>Honda</option>
+                    <option value="Hyundai" {% if urun.marka=='Hyundai' %}selected{% endif %}>Hyundai</option>
+                    <option value="Kia" {% if urun.marka=='Kia' %}selected{% endif %}>Kia</option>
+                    <option value="Mercedes-Benz" {% if urun.marka=='Mercedes-Benz' %}selected{% endif %}>Mercedes-Benz</option>
+                    <option value="Nissan" {% if urun.marka=='Nissan' %}selected{% endif %}>Nissan</option>
+                    <option value="Opel" {% if urun.marka=='Opel' %}selected{% endif %}>Opel</option>
+                    <option value="Peugeot" {% if urun.marka=='Peugeot' %}selected{% endif %}>Peugeot</option>
+                    <option value="Renault" {% if urun.marka=='Renault' %}selected{% endif %}>Renault</option>
+                    <option value="Seat" {% if urun.marka=='Seat' %}selected{% endif %}>Seat</option>
+                    <option value="Skoda" {% if urun.marka=='Skoda' %}selected{% endif %}>Skoda</option>
+                    <option value="Tesla" {% if urun.marka=='Tesla' %}selected{% endif %}>Tesla</option>
+                    <option value="Toyota" {% if urun.marka=='Toyota' %}selected{% endif %}>Toyota</option>
+                    <option value="Volkswagen" {% if urun.marka=='Volkswagen' %}selected{% endif %}>Volkswagen</option>
+                    <option value="Volvo" {% if urun.marka=='Volvo' %}selected{% endif %}>Volvo</option>
+                </select>
+
+            </div>
+            <div class="form-sutun">
+                <select name="model" id="model">
+                    <option value="{{ urun.model }}">{{ urun.model }}</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-otomobil-teknik" class="dinamik-alan">
+            <div class="form-satir-uc">
+                <input type="number" name="yil" id="yil_oto" value="{{ urun.yil }}" placeholder="Model Yılı" min="1950" max="2027">
+                <input type="number" name="km" id="km_oto" value="{{ urun.km }}" placeholder="Kilometre">
+            </div>
+            <div class="form-satir">
+                <select name="yakit">
+                    <option value="Dizel" {% if urun.yakit == 'Dizel' %}selected{% endif %}>Dizel</option>
+                    <option value="Benzin" {% if urun.yakit == 'Benzin' %}selected{% endif %}>Benzin</option>
+                    <option value="Benzin & LPG" {% if urun.yakit == 'Benzin & LPG' %}selected{% endif %}>Benzin & LPG</option>
+                </select>
+                <select name="vites">
+                    <option value="Manuel" {% if urun.vites == 'Manuel' %}selected{% endif %}>Manuel</option>
+                    <option value="Otomatik" {% if urun.vites == 'Otomatik' %}selected{% endif %}>Otomatik</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-otomobil-check" class="dinamik-alan" style="display:flex; gap:15px; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="degisen" value="true" {% if urun.degisen == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Değişen Var</label>
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="boya" value="true" {% if urun.boya == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Boyalı Var</label>
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="tramer" value="true" {% if urun.tramer == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Tramer Var</label>
+        </div>
+
+        <!-- 2. EMLAK (DAİRE & EV) ALANLARI -->
+        <div id="alan-emlak-ozel" class="form-satir dinamik-alan" style="display:none;">
+            <div class="form-sutun">
+                <select name="bina_tipi" id="bina_tipi">
+                    <option value="">Bina Tipi Seçiniz</option>
+                    <option value="Apartman Dairesi" {% if urun.marka == 'Apartman Dairesi' %}selected{% endif %}>Apartman Dairesi</option>
+                    <option value="Rezidans" {% if urun.marka == 'Rezidans' %}selected{% endif %}>Rezidans</option>
+                    <option value="Müstakil Ev" {% if urun.marka == 'Müstakil Ev' %}selected{% endif %}>Müstakil Ev</option>
+                    <option value="Villa" {% if urun.marka == 'Villa' %}selected{% endif %}>Villa</option>
+                </select>
+            </div>
+            <div class="form-sutun">
+                <select name="ilan_durumu" id="ilan_durumu">
+                    <option value="Satılık" {% if urun.model == 'Satılık' %}selected{% endif %}>Satılık</option>
+                    <option value="Kiralık" {% if urun.model == 'Kiralık' %}selected{% endif %}>Kiralık</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-emlak-teknik" class="dinamik-alan" style="display:none;">
+            <div class="form-satir-uc">
+                <input type="number" name="bina_yasi" id="bina_yasi" value="{{ urun.yil }}" placeholder="Bina Yaşı" min="0" max="100">
+                <input type="number" name="metrekare" id="metrekare" value="{{ urun.km }}" placeholder="Metrekare (m²)">
+                <select name="oda_sayisi" id="oda_sayisi">
+                    <option value="">Oda Sayısı</option>
+                    <option value="1+0" {% if urun.yakit == '1+0' %}selected{% endif %}>1+0</option>
+                    <option value="1+1" {% if urun.yakit == '1+1' %}selected{% endif %}>1+1</option>
+                    <option value="2+1" {% if urun.yakit == '2+1' %}selected{% endif %}>2+1</option>
+                    <option value="3+1" {% if urun.yakit == '3+1' %}selected{% endif %}>3+1</option>
+                    <option value="4+1" {% if urun.yakit == '4+1' %}selected{% endif %}>4+1</option>
+                </select>
+            </div>
+            <div class="form-satir" id="blok-daire-kat">
+                <select name="bulundugu_kat" id="bulundugu_kat">
+                    <option value="">Bulunduğu Kat</option>
+                    <option value="Giriş Kat" {% if urun.vites == 'Giriş Kat' %}selected{% endif %}>Giriş Kat</option>
+                    <option value="1. Kat" {% if urun.vites == '1. Kat' %}selected{% endif %}>1. Kat</option>
+                    <option value="2. Kat" {% if urun.vites == '2. Kat' %}selected{% endif %}>2. Kat</option>
+                    <option value="3. Kat" {% if urun.vites == '3. Kat' %}selected{% endif %}>3. Kat</option>
+                    <option value="4. Kat ve Üzeri" {% if urun.vites == '4. Kat ve Üzeri' %}selected{% endif %}>4. Kat ve Üzeri</option>
+                    <option value="En Üst Kat" {% if urun.vites == 'En Üst Kat' %}selected{% endif %}>En Üst Kat</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-emlak-check" class="dinamik-alan" style="display:none; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="kredi_uygun" value="true" {% if urun.tramer == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Konut Kredisine Uygun</label>
+        </div>
+
+        <!-- 3. ARSA & TARLA ALANLARI -->
+        <div id="alan-arsa-ozel" class="form-satir dinamik-alan" style="display:none;">
+            <div class="form-sutun">
+                <select name="imar_durumu" id="imar_durumu">
+                    <option value="">İmar Durumu Seçiniz</option>
+                    <option value="Konut İmarı" {% if urun.marka == 'Konut İmarı' %}selected{% endif %}>Konut İmarı</option>
+                    <option value="Ticari İmar" {% if urun.marka == 'Ticari İmar' %}selected{% endif %}>Ticari İmar</option>
+                    <option value="Bağ / Bahçe" {% if urun.marka == 'Bağ / Bahçe' %}selected{% endif %}>Bağ / Bahçe</option>
+                    <option value="Zeytinlik" {% if urun.marka == 'Zeytinlik' %}selected{% endif %}>Zeytinlik</option>
+                    <option value="Tarla Statüsü" {% if urun.marka == 'Tarla Statüsü' %}selected{% endif %}>Tarla Statüsü</option>
+                </select>
+            </div>
+            <div class="form-sutun">
+                <select name="ilan_durumu_arsa" id="ilan_durumu_arsa">
+                    <option value="Satılık" {% if urun.model == 'Satılık' %}selected{% endif %}>Satılık</option>
+                    <option value="Kiralık" {% if urun.model == 'Kiralık' %}selected{% endif %}>Kiralık</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="alan-arsa-teknik" class="dinamik-alan" style="display:none;">
+            <div class="form-satir-uc">
+                <input type="number" name="metrekare_arsa" id="metrekare_arsa" value="{{ urun.km }}" placeholder="Toplam Alan (m²)">
+                <input type="text" name="ada_no" id="ada_no" value="{{ urun.degisen }}" placeholder="Ada No">
+                <input type="text" name="parsel_no" id="parsel_no" value="{{ urun.boya }}" placeholder="Parsel No">
+            </div>
+        </div>
+
+        <div id="alan-arsa-check" class="dinamik-alan" style="display:none; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
+            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="kredi_uygun_arsa" value="true" {% if urun.tramer == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Yatırıma / Krediye Uygun</label>
+        </div>
+
+        <!-- TAM DÜZELTİLMİŞ ALAN: Veritabanındaki 'acıklama' verisini buraya mühürledik -->
+        <div class="form-satir">
+            <div class="form-sutun">
+                <label style="font-size:13px; font-weight:bold; color:#ff9f43; display:block; margin-bottom:5px; text-align:left;">📝 İlan Açıklaması ve Ekstra Bilgiler</label>
+                <textarea name="acıklama" rows="5" placeholder="Araç ekspertiz durumu, boya/değişen detayları, ev özellikleri veya arsa konumu gibi ekstra bilgileri buraya yazabilirsiniz..." style="width:100%; padding:10px; background:#2f3542; color:white; border:1px solid #57606f; border-radius:6px; box-sizing:border-box; font-family:inherit; resize:vertical; font-size:14px;">{{ urun.acıklama if urun.acıklama else '' }}</textarea>
+            </div>
+        </div>
+
+        <!-- Fotoğraf Yenileme Izgarası -->
+        <div class="form-grup-resimler">
+            <span style="font-size:13px; font-weight:bold; display:block; margin-bottom:8px; color:#ff9f43; text-align:center;">📸 Fotoğrafları Yenile (Değiştirmek istemediklerinizi boş bırakın)</span>
+            <div class="resim-yukleme-izgarasi">
+                <div class="resim-girdi-kutu"><span>1. Resim (Yeni Kapak)</span><input type="file" name="resim1" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>2. Resim</span><input type="file" name="resim2" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>3. Resim</span><input type="file" name="resim3" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>4. Resim</span><input type="file" name="resim4" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>5. Resim</span><input type="file" name="resim5" accept="image/*"></div>
+                <div class="resim-girdi-kutu"><span>6. Resim</span><input type="file" name="resim6" accept="image/*"></div>
+            </div>
+        </div>
+
+        <!-- Butonlar -->
+        <button type="submit"> 🚀 Güncelleştirmeleri Kaydet </button>
+        <a href="/urunler" style="background:transparent; border:none; color:#ff6b6b; text-align:center; display:block; margin-top:15px; font-weight:bold;">❌ Vazgeç / İlanlarıma Dön</a>
+    </form>
+</div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const markaSecimi = document.getElementById("marka");
+        const kategori = "{{ urun.kategori if urun.kategori else 'Otomobil' }}";
+        
+        const fakeSelect = document.getElementById("kategori_secim");
+        if(fakeSelect) {
+            fakeSelect.disabled = false;
+            fakeSelect.value = kategori;
+            if(typeof formAlanlariniGuncelle === "function") {
+                formAlanlariniGuncelle();
+            }
+            fakeSelect.disabled = true;
+        }
+
+        if(kategori === "Otomobil" && markaSecimi && markaSecimi.value) {
+            const mevcutModel = "{{ urun.model }}";
+            if(typeof modelleriYukle === "function") {
+                modelleriYukle();
+            }
+            const modelBox = document.getElementById("model");
+            if(modelBox) modelBox.value = mevcutModel;
+        }
+    });
+</script>
+{% endblock %}
