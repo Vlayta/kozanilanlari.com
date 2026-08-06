@@ -384,7 +384,5 @@ def api_ilanlar():
 
 
 if __name__ == "__main__":
-    import webbrowser
-    # Tarayıcıyı direkt ana sayfaya yönlendirecek şekilde güncellendi
-    webbrowser.open("http://192.168.1.114:5000/")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
