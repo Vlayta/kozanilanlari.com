@@ -2,8 +2,8 @@ let urunler = [];
 let urun_index = 0;
 let galeriListesi = [];
 let galeriMevcutIdx = 0;
-// BURAYA EKLEDİK:
-const SABIT_TELEFON = "905534016336"; 
+// SABİT TELEFON (Uluslararası format, başında ülke kodu)
+const SABIT_TELEFON = "905534016336";
 
 const modelEslesmeleri = {
   
@@ -246,8 +246,8 @@ function filtreleVeSirala() {
         
         let kazaUyum = true;
         if (i.kategori === "Otomobil" || !i.kategori) {
-            let hasarli = i.degisen === "true" || i.boya === "true" || i.tramer === "true";
-            kazaUyum = kaza === "hepsi" || (kaza === "hatasiz" && !hasarli) || (kaza === "kazali" && hasarli);
+            let hasar = i.degisen === "true" || i.boya === "true" || i.tramer === "true";
+            kazaUyum = kaza === "hepsi" || (kaza === "hatasiz" && !hasar) || (kaza === "kazali" && hasar);
         } else {
             kazaUyum = kaza === "hepsi";
         }
@@ -282,17 +282,21 @@ function vitrinGuncelle(idx) {
     if (solIsimEl) solIsimEl.textContent = solArac.ad + solEk;
     if (solKodEl) solKodEl.textContent = solArac.kod;
     if (solFiyatEl) solFiyatEl.textContent = Number(solArac.fiyat).toLocaleString('tr-TR') + " TL";
-    if (solResimEl) solResimEl.src = solArac.resim ? "/static/uploads/" + solArac.resim : "/static/uploads/varsayilan_araba.jpg";
+    if (solResimEl) {
+        solResimEl.src = solArac.resim ? "/static/uploads/" + solArac.resim : "/static/uploads/varsayilan_araba.jpg";
+        solResimEl.alt = solArac.ad || '';
+        solResimEl.loading = 'lazy';
+    }
     
-    // KESİN ÇÖZÜM: Sol vitrin kartı resmine veya başlığına basıldığında detay sayfasına gider
+    // Sol vitrin kartı resmine veya başlığına basıldığında detay sayfasına gider
 
     if (urunLinkResim) urunLinkResim.href = `/ilan/${solArac.id}`;
     if (urunLinkIsim) urunLinkIsim.href = `/ilan/${solArac.id}`;
 
-    // BURAYA EKLEDİK:
     const solWpBtn = document.getElementById("urun_wp_link");
     if (solWpBtn) {
-        if (typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI) {
+        const uyeGiris = (typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI);
+        if (uyeGiris) {
             let mesaj = encodeURIComponent(`Merhaba, ${solArac.kod || ''} kodlu "${solArac.ad}" ilanınız için alıcı olmak ve randevu oluşturmak istiyorum.`);
             solWpBtn.href = `https://wa.me/${SABIT_TELEFON}?text=${mesaj}`;
             solWpBtn.target = "_blank";
@@ -324,18 +328,21 @@ function vitrinGuncelle(idx) {
         if (sagIsimEl) sagIsimEl.textContent = sagArac.ad + sagEk;
         if (sagKodEl) sagKodEl.textContent = sagArac.kod;
         if (sagFiyatEl) sagFiyatEl.textContent = Number(sagArac.fiyat).toLocaleString('tr-TR') + " TL";
-        if (sagResimEl) sagResimEl.src = sagArac.resim ? "/static/uploads/" + sagArac.resim : "/static/uploads/varsayilan_araba.jpg";
+        if (sagResimEl) {
+            sagResimEl.src = sagArac.resim ? "/static/uploads/" + sagArac.resim : "/static/uploads/varsayilan_araba.jpg";
+            sagResimEl.alt = sagArac.ad || '';
+            sagResimEl.loading = 'lazy';
+        }
         
-        // KESİN ÇÖZÜM: Sağ vitrin kartı resmine veya başlığına basıldığında detay sayfasına gider
         if (urunLinkResimSag) urunLinkResimSag.href = `/ilan/${sagArac.id}`;
         if (urunLinkIsimSag) urunLinkIsimSag.href = `/ilan/${sagArac.id}`;
 
-        // BURAYA EKLEDİK:
         const sagWpBtn = document.getElementById("urun_wp_link_sag");
         if (sagWpBtn) {
-            if (typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI) {
+            const uyeGiris = (typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI);
+            if (uyeGiris) {
                 let mesaj = encodeURIComponent(`Merhaba, ${sagArac.kod || ''} kodlu "${sagArac.ad}" ilanınız için alıcı olmak ve randevu oluşturmak istiyorum.`);
-                sagWpBtn.href = `https://wa.me{SABIT_TELEFON}?text=${mesaj}`;
+                sagWpBtn.href = `https://wa.me/${SABIT_TELEFON}?text=${mesaj}`; // FIXED: use correct template and slash
                 sagWpBtn.target = "_blank";
                 sagWpBtn.textContent = "🤝 Alıcı Ol / Randevu Al";
                 sagWpBtn.style.backgroundColor = "";
@@ -351,7 +358,12 @@ function vitrinGuncelle(idx) {
         if (document.getElementById("urun_isim_sag")) document.getElementById("urun_isim_sag").textContent = "Fırsat İlanı Bekleniyor...";
         if (document.getElementById("urun_kod_sag")) document.getElementById("urun_kod_sag").textContent = "--";
         if (document.getElementById("urun_fiyat_sag")) document.getElementById("urun_fiyat_sag").textContent = "0 TL";
-        if (document.getElementById("urun_resim_sag")) document.getElementById("urun_resim_sag").src = "/static/uploads/varsayilan_araba.jpg";
+        if (document.getElementById("urun_resim_sag")) {
+            const el = document.getElementById("urun_resim_sag");
+            el.src = "/static/uploads/varsayilan_araba.jpg";
+            el.alt = "";
+            el.loading = 'lazy';
+        }
     }
 }
 
@@ -361,7 +373,7 @@ function ilanlariDiz(liste) {
     if(!izgara) return;
     izgara.innerHTML = "";
 
-    if(liste.length === 0) {
+    if(!Array.isArray(liste) || liste.length === 0) {
         izgara.innerHTML = "<p style='grid-column:1/-1; text-align:center;'>Kriterlere uygun ilan bulunamadı.</p>";
         return;
     }
@@ -387,17 +399,26 @@ function ilanlariDiz(liste) {
 
         let anaImg = ilan.resim ? "/static/uploads/" + ilan.resim : "/static/uploads/varsayilan_araba.jpg";
 
-        // KESİN ÇÖZÜM: Canlı arama listesindeki ilan kartı şablonu güncellenerek detay linki bağlandı
-        
         let renk = "#ff9f43";
 
-if (kategori === "Otomobil") renk = "#3498db";
-else if (kategori === "Daire") renk = "#53d318";
-else if (kategori === "Ev") renk = "#393ff2";
-else if (kategori === "Arsa") renk = "#9b59b6";
-else if (kategori === "Tarla") renk = "#b81313";
+        if (kategori === "Otomobil") renk = "#3498db";
+        else if (kategori === "Daire") renk = "#53d318";
+        else if (kategori === "Ev") renk = "#393ff2";
+        else if (kategori === "Arsa") renk = "#9b59b6";
+        else if (kategori === "Tarla") renk = "#b81313";
 
-let kartHtml = `
+        // Güvenli WhatsApp link parçalarını hesapla
+        const uyeGiris = (typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI);
+        const mesajMetni = `Merhaba, ${ilan.kod || ''} kodlu "${ilan.ad || ''}" ilanınız için alıcı olmak ve randevu oluşturmak istiyorum.`;
+        const wpHref = uyeGiris ? `https://wa.me/${SABIT_TELEFON}?text=${encodeURIComponent(mesajMetni)}` : "/kaydol";
+        const wpTargetAttr = uyeGiris ? 'target="_blank"' : '';
+        const wpStyleAttr = uyeGiris ? '' : 'style="background-color: #e67e22;"';
+        const wpText = uyeGiris ? '🤝 Alıcı Ol / Randevu Al' : '🔒 İletişim İçin Kaydol';
+
+        // Escape ilan.ad için alt attribute (basit kaçış)
+        const ilanAdAlt = (ilan.ad || '').replace(/"/g, '&quot;');
+
+        let kartHtml = `
 <div class="vitrin-kutusu arac-kart" style="position:relative;">
 
     <div style="
@@ -417,7 +438,7 @@ let kartHtml = `
 
     <!-- Resme tıklayınca detay sayfasına gider -->
     <a href="/ilan/${ilan.id}" class="vitrin-kart-link">
-        <img src="${anaImg}" class="kart-ana-resim">
+        <img src="${anaImg}" class="kart-ana-resim" alt="${ilanAdAlt}" loading="lazy">
     </a>
 
     <div class="kart-icerik">
@@ -426,10 +447,10 @@ let kartHtml = `
 
             <!-- Başlığa tıklayınca detay sayfasına gider -->
             <a href="/ilan/${ilan.id}" class="vitrin-baslik-link">
-                <h4>${ilan.ad}</h4>
+                <h4>${ilan.ad || ''}</h4>
             </a>
 
-            <span class="v-kod">${ilan.kod}</span>
+            <span class="v-kod">${ilan.kod || ''}</span>
 
         </div>
 
@@ -441,21 +462,13 @@ let kartHtml = `
             ${rozetHtml}
         </div>
 
-
-
-
-
         <div class="kart-alt-fiyat-grup">
             <span class="k-fiyat">
-                ${Number(ilan.fiyat).toLocaleString('tr-TR')} TL
+                ${Number(ilan.fiyat || 0).toLocaleString('tr-TR')} TL
             </span>
 
-            <!-- ESKİ REHBER LİNKİ SİLİNDİ, YERİNE BU GELDI: -->
-                <a href="${(typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI) ? `https://wa.me/${SABIT_TELEFON}?text=${encodeURIComponent('Merhaba, ' + (ilan.kod || '') + ' kodlu \"' + ilan.ad + '\" ilanınız için alıcı olmak ve randevu oluşturmak istiyorum.')}` : '/kaydol'}" 
-               class="btn-wp-aracilik" 
-               ${(typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI) ? 'target="_blank"' : ''}
-               style="${(typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI) ? '' : 'background-color: #e67e22;'}">
-                ${(typeof UYE_GIRIS_YAPTI_MI !== 'undefined' && UYE_GIRIS_YAPTI_MI) ? '🤝 Alıcı Ol / Randevu Al' : '🔒 İletişim İçin Kaydol'}
+            <a href="${wpHref}" class="btn-wp-aracilik" ${wpTargetAttr} ${wpStyleAttr}>
+                ${wpText}
             </a>
         </div>
 
