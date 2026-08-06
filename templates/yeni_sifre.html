@@ -1,0 +1,26 @@
+{% extends "taslak.html" %}
+{% block baslik %} Yeni Şifre {% endblock %}
+
+{% block icerik %}
+<div class="main">
+    <form action="{{ url_for('yeni_sifre_kaydet') }}" method="post">
+
+        <input type="hidden" name="token" value="{{ token }}">
+
+        <label class="form-baslik">
+            🔒 Yeni Şifre Oluştur
+        </label>
+
+        <input
+            type="password"
+            name="sifre"
+            placeholder="Yeni Şifre"
+            required>
+
+        <button type="submit">
+            Şifreyi Kaydet
+        </button>
+
+    </form>
+</div>
+{% endblock %}
