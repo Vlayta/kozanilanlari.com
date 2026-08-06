@@ -199,18 +199,12 @@
             </div>
         </div>
 
-        <!-- Fotoğraf Yenileme Izgarası -->
-        <div class="form-grup-resimler">
-            <span style="font-size:13px; font-weight:bold; display:block; margin-bottom:8px; color:#ff9f43; text-align:center;">📸 Fotoğrafları Yenile (Değiştirmek istemediklerinizi boş bırakın)</span>
-            <div class="resim-yukleme-izgarasi">
-                <div class="resim-girdi-kutu"><span>1. Resim (Yeni Kapak)</span><input type="file" name="resim1" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>2. Resim</span><input type="file" name="resim2" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>3. Resim</span><input type="file" name="resim3" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>4. Resim</span><input type="file" name="resim4" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>5. Resim</span><input type="file" name="resim5" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>6. Resim</span><input type="file" name="resim6" accept="image/*"></div>
-            </div>
-        </div>
+        <!-- Fotoğraf Yenileme Izgarası -->  
+<input
+type="file"
+name="resimler"
+multiple
+accept="image/*">
 
         <!-- Butonlar -->
         <button type="submit"> 🚀 Güncelleştirmeleri Kaydet </button>
@@ -245,3 +239,4 @@
     });
 </script>
 {% endblock %}
+
