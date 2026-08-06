@@ -35,7 +35,7 @@
                 <h3 style="margin: 0 0 6px 0; color: #fff; font-size: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">📋 İlan Özeti</h3>
                 <div style="display: flex; flex-direction: column; gap: 5px; font-size: 14px; color: #ddd;">
                     <div><strong>Kategori:</strong> <span style="color: #ff9f43; font-weight: bold;">{{ ilan.kategori if ilan.kategori else 'Otomobil' }}</span></div>
-                    <div><strong>Fiyat:</strong> <span style="color: #2ecc71; font-weight: bold; font-size: 16px;">{{ ilan.fiyat }} TL</span></div>
+                    <div><strong>Fiyat:</strong> <span style="color: #2ecc71; font-weight: bold; font-size: 16px;">{{ "{:,.0f}".format(ilan.fiyat|float).replace(",", ".") }} TL</span></div>
                     <div><strong>İlan Sahibi:</strong> <span>{{ ilan.ilani_veren }}</span></div>
                     
                     <!-- Kategorisel Hücre Filtre Eşleşmeleri -->
