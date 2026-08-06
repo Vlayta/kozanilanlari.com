@@ -2,7 +2,10 @@
 import os
 import json
 import sqlite3
-from flask import Flask, render_template, request, redirect, session, jsonify, url_for
+
+from flask import Flask, render_template, request, redirect, session, jsonify, url_for, flash
+import secrets
+import datetime
 from werkzeug.utils import secure_filename
 
 import veritabanini_kur as db
@@ -42,19 +45,101 @@ def login():
 
 @app.route("/loginbilgileri", methods=["POST"])
 def login_kontrol():
-    isim = request.form["isim"]
+    giris = request.form["isim"]
+    sifre = request.form["sifre"]
+
+    baglanti = sqlite3.connect(DB_YOLU)
+    baglanti.row_factory = sqlite3.Row
+    imlec = baglanti.cursor()
+
+    imlec.execute("""
+        SELECT *
+        FROM kullanicilar
+        WHERE (ad=? OR telefon=? OR email=?)
+        AND sifre=?
+    """, (giris, giris, giris, sifre))
+
+    kullanici = imlec.fetchone()
+    baglanti.close()
+
+    if not kullanici:
+        return render_template(
+            "login.html",
+            hata="Kullanıcı bilgileri hatalı."
+        )
+
+    session["ad"] = kullanici["ad"]
+    session["sifre"] = kullanici["sifre"]
+
+    return redirect("/")
+
+@app.route("/sifre_linki", methods=["POST"])
+def sifre_linki():
+    email = request.form["email"]
+    token = secrets.token_urlsafe(32)
+    sure = datetime.datetime.now() + datetime.timedelta(minutes=30)
+
+    baglanti = sqlite3.connect(DB_YOLU)
+    imlec = baglanti.cursor()
+
+    imlec.execute("""
+        UPDATE kullanicilar
+        SET sifre_token=?,
+            token_suresi=?
+        WHERE email=?
+    """, (token, str(sure), email))
+
+    baglanti.commit()
+    baglanti.close()
+
+    print("\nŞifre yenileme linki:\n")
+    print("http://127.0.0" + token)
+
+    flash("Şifre yenileme bağlantısı oluşturuldu.")
+    return redirect("/login")
+
+@app.route("/sifre_yenile/<token>")
+def sifre_yenile(token):
+    baglanti = sqlite3.connect(DB_YOLU)
+    baglanti.row_factory = sqlite3.Row
+    imlec = baglanti.cursor()
+
+    imlec.execute("""
+        SELECT *
+        FROM kullanicilar
+        WHERE sifre_token=?
+    """, (token,))
+
+    kullanici = imlec.fetchone()
+    baglanti.close()
+
+    if not kullanici:
+        return "Geçersiz bağlantı."
+
+    return render_template(
+        "sifre_yenile.html",
+        token=token
+    )
+
+@app.route("/sifre_degistir", methods=["POST"])
+def sifre_degistir():
+    token = request.form["token"]
     sifre = request.form["sifre"]
 
     baglanti = sqlite3.connect(DB_YOLU)
     imlec = baglanti.cursor()
-    imlec.execute("SELECT * FROM kullanicilar WHERE ad=? AND sifre=?", (isim, sifre))
-    kayitlar = imlec.fetchall()
+
+    imlec.execute("""
+        UPDATE kullanicilar
+        SET sifre=?,
+            sifre_token=NULL,
+            token_suresi=NULL
+        WHERE sifre_token=?
+    """, (sifre, token))
+
+    baglanti.commit()
     baglanti.close()
-    if len(kayitlar) == 0: 
-        return render_template("login.html", hata="Kullanıcı adı veya şifre hatalı")
-    session["ad"] = isim
-    session["sifre"] = sifre
-    return redirect("/")
+    return redirect("/login")
 
 @app.route("/cikis")  
 def cikis():
@@ -84,6 +169,47 @@ def kayit():
         return redirect("/")
     baglanti.close()
     return render_template("kaydol.html", hata="Bu kullanıcı zaten kayıtlı")
+
+    # ... (Yukarıdaki mevcut kayıt kodlarınızın devamı)
+    baglanti.close()
+    return render_template("kaydol.html", hata="Bu kullanıcı zaten kayıtlı")
+
+
+# =====================================================================
+#  YENİ EKLENEN KISIM: ŞİFREMİ UNUTTUM SAYFASI VE TETİKLEYİCİSİ
+# =====================================================================
+@app.route("/sifremi-unuttum")
+def sifremi_unuttum_sayfasi():
+    return render_template('sifremi_unuttum.html')
+
+@app.route("/sifremi-unuttum-gonder", methods=["POST"])
+def sifremi_unuttum_gonder():
+    email = request.form.get("email", "")
+    token = secrets.token_urlsafe(32)
+    sure = datetime.datetime.now() + datetime.timedelta(minutes=30)
+
+    baglanti = sqlite3.connect(DB_YOLU)
+    imlec = baglanti.cursor()
+    imlec.execute("""
+        UPDATE kullanicilar
+        SET sifre_token=?,
+            token_suresi=?
+        WHERE email=?
+    """, (token, str(sure), email))
+
+    baglanti.commit()
+    baglanti.close()
+
+    # Link formatı yerel ağda (192.168...) test ettiğiniz için dinamik hale getirildi
+    print("\nŞifre yenileme linki:\n")
+    print(f"http://{request.host}/sifre_yenile/{token}")
+
+    flash("Şifre yenileme bağlantısı oluşturuldu. Konsolu kontrol edin.")
+    return redirect("/login")
+# =====================================================================
+
+
+
 
 # --- MÜDAHALE KORUMALI İLAN YÖNETİM ALANI ---
 @app.route("/urunler")
@@ -172,6 +298,7 @@ def ilan_detay_sayfasi(id):
         ilan['resimler_liste'] = [ilan['resim']] if ilan['resim'] else ["varsayilan_araba.jpg"]
         
     return render_template("ilan_detay.html", ilan=ilan, yoneticiler=SITE_YONETICILERI)
+
 @app.route("/urunler/guncelle", methods=["POST"])
 def urun_kaydet():
     if not session.get("ad"): return redirect("/login")      
@@ -186,6 +313,7 @@ def urun_kaydet():
     ad = request.form.get("ad", "")
     fiyat = request.form.get("fiyat", "0")
     kategori = request.form.get("kategori", "").strip()
+    
     # KESİN ÇÖZÜM: Formdaki textarea name="acıklama" verisi tam olarak yakalanıyor
     acıklama = request.form.get("acıklama", "")
     current_user = str(session["ad"]).lower()
@@ -338,34 +466,50 @@ def urun_ekle():
     else:
         telefon = ""
 
+
     kaydedilen_resimler = []
     kapak = "varsayilan_araba.jpg"
-    
-    for i in range(1, 7):
-        file = request.files.get(f'resim{i}')
-        if file and file.filename != '':
+
+    dosyalar = request.files.getlist("resimler")
+
+    for i, file in enumerate(dosyalar, start=1):
+
+        if file and file.filename:
+
             g_ad = secure_filename(file.filename)
             b_isim = f"{i}_{secure_filename(kod)}_{g_ad}"
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], b_isim))
+
             kaydedilen_resimler.append(b_isim)
-            if i == 1: kapak = b_isim
+
+            if i == 1:
+                kapak = b_isim
 
     if not kaydedilen_resimler:
         kaydedilen_resimler.append(kapak)
-        
+
     resimler_json = json.dumps(kaydedilen_resimler)
     ilani_veren = session["ad"]
 
-    # KESİN ÇÖZÜM: 'acıklama' veritabanındaki 18. sütuna (en sona) hatasız yerleştirildi
     imlec.execute("""
-        INSERT INTO urunler (kod, ad, fiyat, resim, marka, model, yil, km, yakit, vites, degisen, boya, tramer, telefon, resimler, ilani_veren, kategori, acıklama)
+        INSERT INTO urunler (
+            kod, ad, fiyat, resim, marka, model, yil, km,
+            yakit, vites, degisen, boya, tramer,
+            telefon, resimler, ilani_veren, kategori, acıklama
+        )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (kod, ad, float(fiyat), kapak, marka, model, yil, km, yakit, vites, degisen, boya, tramer, telefon, resimler_json, ilani_veren, kategori, acıklama))
-    
+    """, (
+        kod, ad, float(fiyat), kapak,
+        marka, model, yil, km,
+        yakit, vites, degisen, boya, tramer,
+        telefon, resimler_json, ilani_veren,
+        kategori, acıklama
+    ))
+
     baglanti.commit()
     baglanti.close()
     return redirect("/urunler")
-
 @app.route("/api/ilanlar")
 def api_ilanlar():
     baglanti = sqlite3.connect(DB_YOLU)
@@ -382,7 +526,14 @@ def api_ilanlar():
             ilan['resimler'] = [ilan['resim']] if ilan['resim'] else []
     return jsonify(ilanlar)
 
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+
+"""if __name__ == "__main__":
+    import webbrowser
+    # Tarayıcıyı direkt ana sayfaya yönlendirecek şekilde güncellendi. borvserde açmak için kullanılacak
+    webbrowser.open("http://192.168.1.114:5000/")
+    app.run(debug=True, host="0.0.0.0", port=5000)"""
+
