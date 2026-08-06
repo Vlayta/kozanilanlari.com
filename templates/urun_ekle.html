@@ -200,19 +200,44 @@
             </div>
         </div>
 
-        <!-- Fotoğraf Yükleme Izgarası -->
-        <div class="form-grup-resimler">
-            <span style="font-size:13px; font-weight:bold; display:block; margin-bottom:8px; color:#ff9f43; text-align:center;">📸 İlan Fotoğrafları Ekle (En az 1 adet)</span>
-            <div class="resim-yukleme-izgarasi">
-                <div class="resim-girdi-kutu"><span>1. Resim (Kapak)</span><input type="file" name="resim1" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>2. Resim</span><input type="file" name="resim2" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>3. Resim</span><input type="file" name="resim3" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>4. Resim</span><input type="file" name="resim4" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>5. Resim</span><input type="file" name="resim5" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>6. Resim</span><input type="file" name="resim6" accept="image/*"></div>
-            </div>
-        </div>
+<!-- Fotoğraf Yükleme -->
+<div class="form-grup-resimler">
 
+    <span style="font-size:13px; font-weight:bold; display:block; margin-bottom:8px; color:#ff9f43; text-align:center;">
+        📸 Ekleme Alanı
+    </span>
+
+    <label for="resimler" style="
+        display:block;
+        text-align:center;
+        background:#eed1b5;
+        color:white;
+        padding:12px;
+        border-radius:8px;
+        cursor:pointer;
+        font-weight:bold;
+        margin-bottom:15px;">
+
+        📁 Fotoğrafları Seç
+
+    </label>
+
+    <input
+        type="file"
+        name="resimler"
+        id="resimler"
+        multiple
+        accept="image/*"
+        style="display:none;">
+
+    <div id="onizleme" style="
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+        gap:10px;
+        margin-top:10px;">
+    </div>
+
+</div>
         <!-- Butonlar -->
         <button type="submit"> 🚀 İlanı Pazar Havuzuna Gönder </button>
         <a href="/urunler" style="background:transparent; border:none; color:#ff6b6b; text-align:center; display:block; margin-top:15px; font-weight:bold;">❌ Vazgeç / İlanlarıma Dön</a>
@@ -228,3 +253,4 @@
     });
 </script>
 {% endblock %}
+
