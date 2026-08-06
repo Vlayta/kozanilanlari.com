@@ -10,15 +10,21 @@ def kur():
     baglanti = sqlite3.connect(DB_YOLU)
     imlec = baglanti.cursor()
     
+
+
     imlec.execute("""
         CREATE TABLE IF NOT EXISTS kullanicilar (
-            ad TEXT,
-            email TEXT,
+            ad TEXT PRIMARY KEY,
+            email TEXT UNIQUE,
             sifre TEXT,
-            telefon TEXT
+            telefon TEXT UNIQUE,
+            sifre_token TEXT,
+            token_suresi TEXT
         )
+        
+        
     """)
-    
+        
     imlec.execute("""
         CREATE TABLE IF NOT EXISTS urunler (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +52,7 @@ def kur():
 
     imlec.execute("SELECT * FROM kullanicilar WHERE ad='mahir'")
     if len(imlec.fetchall()) == 0:
-        imlec.execute("INSERT INTO kullanicilar VALUES ('mahir', 'm@gmail.com', '1234', '05051112233')")
+        imlec.execute(""" INSERT INTO kullanicilar (ad,email,sifre,telefon,sifre_token,token_suresi) VALUES ('mahir','m@gmail.com','1234','05051112233', NULL , NULL )""")
     
     imlec.execute("SELECT * FROM urunler")
     if len(imlec.fetchall()) == 0:
