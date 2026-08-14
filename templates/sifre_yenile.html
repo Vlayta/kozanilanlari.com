@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Yeni Şifre</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-family:
+                'Segoe UI',
+                Tahoma,
+                Geneva,
+                Verdana,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgb(3, 3, 60),
+                    rgb(20, 20, 120)
+                );
+
+            color: white;
+        }
+
+        .sifre-kutu {
+            width: 100%;
+            max-width: 430px;
+
+            padding: 30px;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border:
+                1px solid
+                rgba(255,255,255,0.12);
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0,0,0,0.35);
+
+            text-align: center;
+
+            backdrop-filter: blur(10px);
+        }
+
+        .sifre-baslik {
+            margin-bottom: 10px;
+
+            color: #ff9f43;
+
+            font-size: 26px;
+
+            font-weight: 700;
+        }
+
+        .sifre-aciklama {
+            margin-bottom: 22px;
+
+            color: #ddd;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        .sifre-kutu input {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            margin-bottom: 15px;
+
+            border:
+                1px solid
+                rgba(255,255,255,0.18);
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            color: white;
+
+            font-size: 15px;
+        }
+
+        .sifre-kutu input::placeholder {
+            color: #bbb;
+        }
+
+        .sifre-kutu input:focus {
+            border-color: #ff9f43;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(255,159,67,0.15);
+        }
+
+        .sifre-kutu button {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #ff9f43;
+
+            color: #111;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .sifre-kutu button:hover {
+            transform: translateY(-1px);
+            opacity: 0.92;
+        }
+
+        .geri-link {
+            display: block;
+
+            margin-top: 18px;
+
+            color: #ff9f43;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            font-size: 14px;
+        }
+
+        .geri-link:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="sifre-kutu">
+
+    <div class="sifre-baslik">
+        🔒 Yeni Şifre Oluştur
+    </div>
+
+    <div class="sifre-aciklama">
+        Hesabınız için yeni bir şifre oluşturun.
+    </div>
+
+    <form
+        action="/sifre_degistir"
+        method="POST"
+    >
+
+        <input
+            type="hidden"
+            name="token"
+            value="{{ token }}"
+        >
+
+        <input
+            type="password"
+            name="sifre"
+            placeholder="Yeni şifrenizi girin"
+            minlength="4"
+            required
+            autocomplete="new-password"
+        >
+
+        <button type="submit">
+            🔐 Şifreyi Kaydet
+        </button>
+
+    </form>
+
+    <a
+        href="/login"
+        class="geri-link"
+    >
+        ← Giriş Sayfasına Dön
+    </a>
+
+</div>
+
+</body>
+</html>

@@ -83,16 +83,17 @@ p { color: rgba(255, 255, 255, 0.8); font-size: 14px; }
 }
 
 a {
-    background-color: rgb(62, 165, 235);
+  
     border-radius: 8px;
     text-decoration: none;
-    padding: 8px 16px;
+    padding: 3px 6px;
     color: white;
     font-weight: bold;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
+
 
 /* ==========================================
    3. HAFTANIN FIRSATLARI - VİTRİN VE SLIDER ALANI
@@ -133,9 +134,8 @@ a {
 
 /* YAZILARI RESME DOĞRU YUKARI ÇEKME */
 .kart-icerik {
-    padding: 6px 18px 10px 18px !important;
+    padding: 3px 6px 4px 6px !important;
     flex: 1;
-    display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
@@ -175,7 +175,7 @@ a {
    ========================================== */
 .pazar-izgara { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; width: 100%; }
 .arac-kart { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
-.kart-ana-resim { width: 100%; height: 190px; object-fit: cover; cursor: pointer; }
+.kart-ana-resim { width: 100%; height: 180px; object-fit: cover; cursor: pointer; }
 .kart-galeri-serit { display: flex; gap: 5px; padding: 6px; background: rgba(0, 0, 0, 0.2); overflow-x: auto; }
 .galeri-serit-piksel { width: 52px; height: 38px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.1); }
 .kart-icerik h4 { margin: 0 0 4px 0; font-size: 14px; color: white; }
@@ -299,6 +299,401 @@ a {
 }
 .lightbox-kapat:hover { color: white; }
 
+/* Checkbox boyutu */
+input[type="checkbox"] {
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    min-height: 15px !important;
+    margin: 0 5px 0 0 !important;
+    padding: 0 !important;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+/* =========================================================
+   KOZAN İLANLARI - MODERN İLAN FORMU
+   ========================================================= */
+
+.ilan-form-panel {
+    max-width: 760px !important;
+    width: 100%;
+    padding: 24px !important;
+}
+
+/* ---------------------------------------------------------
+   FORM BAŞLIĞI
+   --------------------------------------------------------- */
+
+.ilan-form-panel .form-baslik {
+    margin-bottom: 16px !important;
+    font-size: 23px !important;
+    color: #ff9f43 !important;
+    letter-spacing: .2px;
+}
+
+/* ---------------------------------------------------------
+   KATEGORİ / TEMEL ALANLAR
+   --------------------------------------------------------- */
+
+.ilan-form-panel .form-satir {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px !important;
+    margin: 0 !important;
+}
+
+.ilan-form-panel .form-satir-uc {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px !important;
+    margin: 0 !important;
+}
+
+.ilan-form-panel .form-sutun {
+    min-width: 0;
+}
+
+/* ---------------------------------------------------------
+   INPUT / SELECT
+   --------------------------------------------------------- */
+
+.ilan-form-panel input,
+.ilan-form-panel select {
+    width: 100% !important;
+    height: 42px !important;
+    margin: 5px 0 !important;
+    padding: 8px 11px !important;
+
+    border-radius: 8px !important;
+
+    font-size: 13px !important;
+
+    background: rgba(255,255,255,.96) !important;
+    border: 1px solid rgba(255,255,255,.15) !important;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
+
+    transition:
+        border-color .18s ease,
+        box-shadow .18s ease,
+        transform .18s ease;
+}
+
+.ilan-form-panel input:focus,
+.ilan-form-panel select:focus,
+.ilan-form-panel textarea:focus {
+
+    outline: none;
+
+    border-color: #ff9f43 !important;
+
+    box-shadow:
+        0 0 0 3px rgba(255,159,67,.15),
+        0 4px 12px rgba(0,0,0,.12);
+}
+
+/* ---------------------------------------------------------
+   TEXTAREA
+   --------------------------------------------------------- */
+
+.ilan-form-panel textarea {
+
+    width: 100% !important;
+
+    min-height: 125px;
+
+    margin-top: 5px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
+}
+
+/* ---------------------------------------------------------
+   KATEGORİ ALANLARI
+   --------------------------------------------------------- */
+
+.ilan-form-panel .dinamik-alan {
+
+    margin-top: 8px;
+}
+
+/* ---------------------------------------------------------
+   BÖLÜM BAŞLIĞI
+   --------------------------------------------------------- */
+
+.ilan-bolum-basligi {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    margin: 12px 0 7px;
+
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    border-left: 3px solid #ff9f43;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,159,67,.12),
+            rgba(255,159,67,.035)
+        );
+
+    color: #ffb36c;
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+/* =========================================================
+   OTOMOBİL BÖLÜMÜ
+   ========================================================= */
+
+#alan-otomobil-ozel {
+
+    padding-bottom: 2px;
+}
+
+/* =========================================================
+   CHECKBOX TASARIMI
+   ========================================================= */
+
+.ilan-checkbox-grubu {
+
+    display: flex !important;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 6px !important;
+
+    margin: 7px 0 8px !important;
+
+    padding: 7px !important;
+
+    background:
+        rgba(0,0,0,.12) !important;
+
+    border:
+        1px solid rgba(255,255,255,.06);
+
+    border-radius: 8px;
+}
+
+.ilan-checkbox-grubu label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 5px 8px;
+
+    border-radius: 6px;
+
+    background:
+        rgba(255,255,255,.055);
+
+    color: #ddd;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background .15s ease,
+        transform .15s ease;
+}
+
+.ilan-checkbox-grubu label:hover {
+
+    background:
+        rgba(255,159,67,.12);
+
+    transform:
+        translateY(-1px);
+}
+
+.ilan-checkbox-grubu input[type="checkbox"] {
+
+    width: 14px !important;
+
+    height: 14px !important;
+
+    min-width: 14px !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    appearance: auto;
+
+    accent-color: #ff9f43;
+
+    box-shadow: none !important;
+}
+
+/* ---------------------------------------------------------
+   FOTOĞRAF ALANI
+   --------------------------------------------------------- */
+
+.ilan-form-panel .form-grup-resimler {
+
+    margin-top: 12px !important;
+
+    padding: 12px !important;
+
+    border-radius: 10px !important;
+
+    background:
+        rgba(0,0,0,.12) !important;
+}
+
+.ilan-form-panel .form-grup-resimler label[for="resimler"] {
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.ilan-form-panel .form-grup-resimler label[for="resimler"]:hover {
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 5px 15px rgba(255,159,67,.22);
+}
+
+/* ---------------------------------------------------------
+   FORM LABEL
+   --------------------------------------------------------- */
+
+.ilan-form-panel > form > .form-satir
+label {
+
+    font-size: 11px !important;
+}
+
+/* ---------------------------------------------------------
+   GÖNDER BUTONU
+   --------------------------------------------------------- */
+
+.ilan-form-panel > form > button[type="submit"] {
+
+    margin-top: 13px !important;
+
+    height: 46px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff9f43,
+            #ff7b22
+        );
+
+    box-shadow:
+        0 7px 18px rgba(255,159,67,.22);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.ilan-form-panel > form > button[type="submit"]:hover {
+
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 22px rgba(255,159,67,.30);
+}
+
+/* ---------------------------------------------------------
+   MOBİL
+   --------------------------------------------------------- */
+
+@media (max-width: 680px) {
+
+    .ilan-form-panel {
+
+        padding: 15px !important;
+    }
+
+    .ilan-form-panel .form-satir {
+
+        grid-template-columns: 1fr !important;
+    }
+
+    .ilan-form-panel .form-satir-uc {
+
+        grid-template-columns: 1fr !important;
+    }
+
+    .ilan-form-panel input,
+    .ilan-form-panel select {
+
+        height: 42px !important;
+    }
+
+    .ilan-checkbox-grubu {
+
+        justify-content: flex-start !important;
+    }
+
+}
+
+/* ---------------------------------------------------------
+   ÇOK KÜÇÜK TELEFON
+   --------------------------------------------------------- */
+
+@media (max-width: 400px) {
+
+    .ilan-form-panel {
+
+        padding: 10px !important;
+    }
+
+    .ilan-form-panel .form-baslik {
+
+        font-size: 20px !important;
+    }
+
+    .ilan-checkbox-grubu label {
+
+        font-size: 9px;
+        padding: 5px 6px;
+    }
+
+}
 
 /* =========================================================
    10. MOBİL UYUMLULUK

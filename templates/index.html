@@ -1,343 +1,1181 @@
 {% extends "taslak.html" %}
-{% block baslik %} Ana Sayfa {% endblock %} 
+
+{% block baslik %}
+Ana Sayfa
+{% endblock %}
+
+
 {% block icerik %}
-<div class="pazar-konteyner" style="width: 100%;">
 
-    <!-- HAFTANIN FIRSATLARI VİTRİN ALANI -->
-    <div class="firsat-vitrin-konteyner">
-        <div class="firsat-ust-serit">🔥 HAFTANIN KAÇIRILMAYACAK ÖNE ÇIKAN FIRSAT İLANLARI 🔥</div>
-        
-        <div class="firsat-slider-cerceve">
-            
-            <!-- SOL VİTRİN İLAN KARTI -->
-            <div class="vitrin-kutusu firsat-kart-sol arac-kart" style="position:relative;">
-                <!-- Resme ve Detaya Giden Link -->
-                <a href="#" id="urun_link_resim" class="vitrin-kart-link">
-                    <img src="/static/uploads/varsayilan_araba.jpg" id="urun_resim" class="kart-ana-resim">
+<div
+    class="pazar-konteyner"
+    style="width:95%;"
+>
+
+
+    <!-- =====================================================
+         HAFTANIN FIRSATLARI
+         ===================================================== -->
+
+    <div
+        class="firsat-vitrin-konteyner"
+    >
+
+        <div
+            class="firsat-ust-serit"
+        >
+            🔥 HAFTANIN ÖNE ÇIKAN İLANLARI 🔥
+        </div>
+
+
+        <div
+            class="firsat-slider-cerceve"
+        >
+
+
+            <!-- =================================================
+                 SOL VİTRİN
+                 ================================================= -->
+
+            <div
+                class="vitrin-kutusu firsat-kart-sol arac-kart"
+                style="position:relative;"
+            >
+
+                <a
+                    href="#"
+                    id="urun_link_resim"
+                    class="vitrin-kart-link"
+                >
+
+                    <img
+                        src="/static/uploads/varsayilan_araba.jpg"
+                        id="urun_resim"
+                        class="kart-ana-resim"
+                        alt="İlan"
+                    >
+
                 </a>
-                
-                <!-- Alt Galeri Şeridi -->
-                <div class="kart-galeri-serit" id="urun_galeri_serit_sol"></div>
 
-                <!-- Kart İçerik Alanı -->
-                <div class="kart-icerik">
-                    <div>
-                        <div class="vitrin-etiket-satir" style="margin-bottom: 4px;">
-                            <a href="#" id="urun_link_isim" class="vitrin-baslik-link">
-                                <h4 id="urun_isim" style="margin: 0;">Yükleniyor...</h4>
-                            </a>
-                            <span class="v-kod" id="urun_kod">--</span>
-                        </div>
-                        
-                        <!-- Yazı Arası İdeal Boşluklu Teknik Özellik Satırı -->
-                        <p id="urun_teknik_detay" style="color:#bbb; font-size:12px; margin:0 0 6px 0; text-align:left; line-height:1.3;">📅 -- | 🛣️ -- KM | ⚙️ --</p>
-                        
-                        <!-- Durum Rozeti Satırı -->
-                        <div style="text-align: left; margin-top: 4px; margin-bottom: 6px;">
-                            <span id="urun_rozet" class="kart-rozet hatasiz">Kontrol Ediliyor...</span>
-                        </div>
-                    </div>
 
-                    <!-- Fiyat ve WhatsApp / Randevu Butonu Satırı -->
-                    <div class="kart-alt-fiyat-grup" style="margin-top: 6px; padding-top: 6px;">
-                        <span class="k-fiyat" id="urun_fiyat">0 TL</span>
-                        <a href="#" id="urun_wp_link" class="btn-wp-aracilik">🤝 Alıcı Ol / Randevu Al</a>
-                    </div>
+                <div
+                    class="kart-galeri-serit"
+                    id="urun_galeri_serit_sol"
+                >
                 </div>
+
+
+                <div
+                    class="kart-icerik"
+                >
+
+                    <div>
+
+                        <div
+                            class="vitrin-etiket-satir"
+                        >
+
+                            <a
+                                href="#"
+                                id="urun_link_isim"
+                                class="vitrin-baslik-link"
+                            >
+
+                                <h4
+                                    id="urun_isim"
+                                >
+                                    Yükleniyor...
+                                </h4>
+
+                            </a>
+
+
+                            <span
+                                class="v-kod"
+                                id="urun_kod"
+                            >
+                                --
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            id="urun_teknik_detay"
+                            class="vitrin-teknik-detay"
+                        >
+                            İlan bilgileri yükleniyor...
+                        </div>
+
+
+                        <div
+                            class="vitrin-rozet-satir"
+                        >
+
+                            <span
+                                id="urun_rozet"
+                                class="kart-rozet hatasiz"
+                            >
+                                Kontrol Ediliyor...
+                            </span>
+
+                        </div>
+
+
+
+
+                    </div>
+
+
+                    <div
+                        class="kart-alt-fiyat-grup"
+                    >
+
+                        <span
+                            class="k-fiyat"
+                            id="urun_fiyat"
+                        >
+                            0 TL
+                        </span>
+
+
+                        <a
+                            href="/kaydol"
+                            id="urun_wp_link"
+                            class="btn-wp-aracilik"
+                        >
+                            🔐 İletişim için kaydol
+                        </a>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- SAĞ VİTRİN İLAN KARTI -->
-            <div class="vitrin-kutusu firsat-kart-sag arac-kart" style="position:relative;">
-                <!-- Resme ve Detaya Giden Link -->
-                <a href="#" id="urun_link_resim_sag" class="vitrin-kart-link">
-                    <img src="/static/uploads/varsayilan_araba.jpg" id="urun_resim_sag" class="kart-ana-resim">
+
+
+            <!-- =================================================
+                 SAĞ VİTRİN
+                 ================================================= -->
+
+            <div
+                class="vitrin-kutusu firsat-kart-sag arac-kart"
+                style="position:relative;"
+            >
+
+                <a
+                    href="#"
+                    id="urun_link_resim_sag"
+                    class="vitrin-kart-link"
+                >
+
+                    <img
+                        src="/static/uploads/varsayilan_araba.jpg"
+                        id="urun_resim_sag"
+                        class="kart-ana-resim"
+                        alt="İlan"
+                    >
+
                 </a>
-                
-                <!-- Alt Galeri Şeridi -->
-                <div class="kart-galeri-serit" id="urun_galeri_serit_sag"></div>
 
-                <!-- Kart İçerik Alanı -->
-                <div class="kart-icerik">
-                    <div>
-                        <div class="vitrin-etiket-satir" style="margin-bottom: 4px;">
-                            <a href="#" id="urun_link_isim_sag" class="vitrin-baslik-link">
-                                <h4 id="urun_isim_sag" style="margin: 0;">Yükleniyor...</h4>
-                            </a>
-                            <span class="v-kod" id="urun_kod_sag">--</span>
-                        </div>
-                        
-                        <!-- Yazı Arası İdeal Boşluklu Teknik Özellik Satırı -->
-                        <p id="urun_teknik_detay_sag" style="color:#bbb; font-size:12px; margin:0 0 6px 0; text-align:left; line-height:1.3;">📅 -- | 🛣️ -- KM | ⚙️ --</p>
-                        
-                        <!-- Durum Rozeti Satırı -->
-                        <div style="text-align: left; margin-top: 4px; margin-bottom: 6px;">
-                            <span id="urun_rozet_sag" class="kart-rozet kazali">Kontrol Ediliyor...</span>
-                        </div>
-                    </div>
 
-                    <!-- Fiyat ve WhatsApp / Randevu Butonu Satırı -->
-                    <div class="kart-alt-fiyat-grup" style="margin-top: 6px; padding-top: 6px;">
-                        <span class="k-fiyat" id="urun_fiyat_sag">0 TL</span>
-                        <a href="#" id="urun_wp_link_sag" class="btn-wp-aracilik">🤝 Alıcı Ol / Randevu Al</a>
-                    </div>
+                <div
+                    class="kart-galeri-serit"
+                    id="urun_galeri_serit_sag"
+                >
                 </div>
+
+
+                <div
+                    class="kart-icerik"
+                >
+
+                    <div>
+
+                        <div
+                            class="vitrin-etiket-satir"
+                        >
+
+                            <a
+                                href="#"
+                                id="urun_link_isim_sag"
+                                class="vitrin-baslik-link"
+                            >
+
+                                <h4
+                                    id="urun_isim_sag"
+                                >
+                                    Yükleniyor...
+                                </h4>
+
+                            </a>
+
+
+                            <span
+                                class="v-kod"
+                                id="urun_kod_sag"
+                            >
+                                --
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            id="urun_teknik_detay_sag"
+                            class="vitrin-teknik-detay"
+                        >
+                            İlan bilgileri yükleniyor...
+                        </div>
+
+
+                        <div
+                            class="vitrin-rozet-satir"
+                        >
+
+                            <span
+                                id="urun_rozet_sag"
+                                class="kart-rozet kazali"
+                            >
+                                Kontrol Ediliyor...
+                            </span>
+
+                        </div>
+
+
+                        
+
+                    </div>
+
+
+                    <div
+                        class="kart-alt-fiyat-grup"
+                    >
+
+                        <span
+                            class="k-fiyat"
+                            id="urun_fiyat_sag"
+                        >
+                            0 TL
+                        </span>
+
+
+                        <a
+                            href="/kaydol"
+                            id="urun_wp_link_sag"
+                            class="btn-wp-aracilik"
+                        >
+                            🔐 İletişim için kaydol
+                        </a>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
 
-        <!-- Kontrol Butonları -->
-        <div class="vitrin-butonlar">
-            <button id="onceki" class="gez">◀ Önceki</button>
-            <button id="rastgele" class="gez">🎲 Karıştır</button>
-            <button id="sonraki" class="gez">Sonraki ▶</button>
+
+        <!-- =====================================================
+             VİTRİN KONTROLLERİ
+             ===================================================== -->
+
+        <div
+            class="vitrin-butonlar"
+        >
+
+            <button
+                id="onceki"
+                class="gez"
+            >
+                ◀ Önceki
+            </button>
+
+
+            <button
+                id="rastgele"
+                class="gez"
+            >
+                🎲 Karıştır
+            </button>
+
+
+            <button
+                id="sonraki"
+                class="gez"
+            >
+                Sonraki ▶
+            </button>
+
         </div>
-    </div>
-    <!-- CANLI FİLTRELEME BARI -->
-    <div class="canli-filtre-bar">
-        <select id="pazarKategori" onchange="filtreleVeSirala()" style="flex: 1; min-width: 150px;">
-            <option value="hepsi">Kategori (Hepsi)</option>
-            <option value="Otomobil">🚗 Otomobil</option>
-            <option value="Daire">🏢 Daire</option>
-            <option value="Ev">🏡 Müstakil Ev</option>
-            <option value="Arsa">🌍 Arsa</option>
-            <option value="Tarla">🌾 Tarla</option>
-        </select>
-        <input type="text" id="pazarAra" placeholder="İlan başlığı, marka veya açıklama arayın..." oninput="filtreleVeSirala()" style="flex: 2; min-width: 200px;">
-        <select id="pazarKaza" onchange="filtreleVeSirala()" style="flex: 1; min-width: 150px;">
-            <option value="hepsi">Araç Kaza Durumu (Hepsi)</option>
-            <option value="hatasiz">Hatasız / Boyasız</option>
-            <option value="kazali">Kazalı / Hasarlı</option>
-        </select>
-        <select id="pazarSira" onchange="filtreleVeSirala()" style="flex: 1; min-width: 150px;">
-            <option value="varsayilan">Sıralama Seçiniz</option>
-            <option value="fiyatArtan">Fiyat: Ucuzdan Pahalıya</option>
-            <option value="fiyatAzalan">Fiyat: Pahalıdan Ucuza</option>
-            <option value="yilYeni">Yıl: En Yeni</option>
-            <option value="kmDusuk">Metrekare / KM: En Düşük</option>
-        </select>
+
     </div>
 
-    <!-- PAZAR İLAN LİSTESİ İZGARA ALANI -->
-    <div class="pazar-izgara" id="ilanListesiIzgara" style="position:relative; margin-top: 20px;"></div>
+
+
+    <!-- =====================================================
+         FİLTRELEME
+         ===================================================== -->
+
+    <div
+        class="canli-filtre-bar"
+    >
+
+        <select
+            id="pazarKategori"
+        >
+
+            <option
+                value="hepsi"
+            >
+                Kategori (Hepsi)
+            </option>
+
+            <option
+                value="Otomobil"
+            >
+                🚗 Otomobil
+            </option>
+
+            <option
+                value="Daire"
+            >
+                🏢 Daire
+            </option>
+
+            <option
+                value="Ev"
+            >
+                🏡 Müstakil Ev
+            </option>
+
+            <option
+                value="Dukkan"
+            >
+                🏪 Dükkan
+            </option>
+
+            <option
+                value="Arsa"
+            >
+                🌍 Arsa
+            </option>
+
+            <option
+                value="Tarla"
+            >
+                🌾 Tarla
+            </option>
+
+        </select>
+
+
+        <input
+            type="text"
+            id="pazarAra"
+            placeholder="İlan başlığı, marka, model veya ilan bilgisi arayın..."
+        >
+
+
+        <select
+            id="pazarKaza"
+        >
+
+            <option
+                value="hepsi"
+            >
+                Araç Kaza Durumu (Hepsi)
+            </option>
+
+            <option
+                value="hatasiz"
+            >
+                Hatasız / Boyasız
+            </option>
+
+            <option
+                value="kazali"
+            >
+                Kazalı / Hasarlı
+            </option>
+
+        </select>
+
+
+        <select
+            id="pazarSira"
+        >
+
+            <option
+                value="varsayilan"
+            >
+                Sıralama Seçiniz
+            </option>
+
+            <option
+                value="fiyatArtan"
+            >
+                Fiyat: Ucuzdan Pahalıya
+            </option>
+
+            <option
+                value="fiyatAzalan"
+            >
+                Fiyat: Pahalıdan Ucuza
+            </option>
+
+            <option
+                value="yilYeni"
+            >
+                Yıl: En Yeni
+            </option>
+
+            <option
+                value="kmDusuk"
+            >
+                Metrekare / KM: En Düşük
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         İLANLAR
+         ===================================================== -->
+
+    <div
+        class="pazar-izgara"
+        id="ilanListesiIzgara"
+    >
+    </div>
+
 </div>
 
-<!-- GÖRSEL LIGHTBOX MODALI -->
-<div id="pazarLightbox" class="pazar-lightbox">
-    <div class="lightbox-cerceve">
-        <!-- Yoğun siyah gölgeli kapatma çarpısı -->
-        <span class="lightbox-kapat" onclick="lightboxKapat()">&times;</span>
-        <img id="lightboxGorsel" src="">
-        <!-- Yoğun siyah gölgeli gezinme okları -->
-        <a class="lightbox-ok lb-sol" onclick="lightboxGez(-1)">❮</a>
-        <a class="lightbox-ok lb-sag" onclick="lightboxGez(1)">❯</a>
+
+
+<!-- =========================================================
+     LIGHTBOX
+     ========================================================= -->
+
+<div
+    id="pazarLightbox"
+    class="pazar-lightbox"
+>
+
+    <div
+        class="lightbox-cerceve"
+    >
+
+        <span
+            class="lightbox-kapat"
+            onclick="lightboxKapat()"
+        >
+            &times;
+        </span>
+
+
+        <img
+            id="lightboxGorsel"
+            src=""
+            alt="İlan fotoğrafı"
+        >
+
+
+        <a
+            class="lightbox-ok lb-sol"
+            onclick="lightboxGez(-1)"
+        >
+            ❮
+        </a>
+
+
+        <a
+            class="lightbox-ok lb-sag"
+            onclick="lightboxGez(1)"
+        >
+            ❯
+        </a>
+
     </div>
+
 </div>
+
+
+
+<!-- =========================================================
+     SAYFA CSS
+     ========================================================= -->
 
 <style>
-    .firsat-vitrin-konteyner { 
-        background: rgba(255, 159, 67, 0.05); 
-        border: 1px dashed #ff9f43; 
-        padding: 14px 18px; 
-        border-radius: 16px; 
-        width: 100%; 
-        max-width: 1000px; 
-        margin: 0 auto; 
-        box-sizing: border-box; 
-    }
-    .firsat-ust-serit { 
-        text-align: center; 
-        font-weight: 900; 
-        font-size: 15px; 
-        color: #ff9f43; 
-        letter-spacing: 1px; 
-        margin-bottom: 10px; 
-    }
-    .firsat-slider-cerceve { 
-        display: flex; 
-        gap: 20px; 
-        justify-content: center; 
-        width: 100%; 
-    }
-    @media(max-width: 768px) { 
-        .firsat-slider-cerceve { flex-direction: column; align-items: center; } 
-    }
-    .vitrin-kart-link { display: block; width: 100%; text-decoration: none; background: transparent; padding: 0; }
-    .vitrin-baslik-link { background: transparent; padding: 0; color: inherit; text-decoration: none; font-weight: inherit; text-align: left; display: inline-block; }
-    .vitrin-butonlar { 
-        display: flex; 
-        justify-content: center; 
-        gap: 10px; 
-        margin-top: 14px; 
-    }
-    .vitrin-butonlar button.gez { 
-        background: #ff9f43; 
-        color: white; 
-        border: none; 
-        height: 36px;
-        padding: 0 18px; 
-        border-radius: 6px; 
-        cursor: pointer; 
-        font-weight: bold; 
-        font-size: 13px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        line-height: 1;
-        transition: background 0.2s, transform 0.1s;
-    }
-    .vitrin-butonlar button.gez:hover { background: #e08832; }
-    .vitrin-butonlar button.gez:active { transform: scale(0.98); }
-    .canli-filtre-bar { 
-        margin-top: 20px !important; 
-        display: flex; 
-        gap: 10px; 
-        flex-wrap: wrap; 
-    }
-    .canli-filtre-bar select, .canli-filtre-bar input { 
-        padding: 10px 12px; 
-        background: #2f3542; 
-        color: white; 
-        border: 1px solid #57606f; 
-        border-radius: 6px; 
-        font-size: 13px;
-    }
-    .vitrin-kutusu .kart-ana-resim {
-        height: 170px !important;
-        object-fit: cover;
-        width: 100%;
-    }
-    .vitrin-kutusu .kart-icerik { 
-        padding: 10px 12px !important; 
-    }
-    .vitrin-kutusu h4 {
-        margin: 0 0 4px 0 !important;
-        font-size: 15px !important;
-    }
-    .vitrin-kutusu p {
-        margin: 0 0 4px 0 !important;
-    }
-    .vitrin-kutusu .kart-rozet {
-        padding: 3px 8px !important;
-        font-size: 11px !important;
-    }
-    .vitrin-kutusu .kart-alt-fiyat-grup {
-        margin-top: 8px !important;
-        padding-top: 8px !important;
-        border-top: 1px solid rgba(255,255,255,0.05);
+
+.firsat-vitrin-konteyner {
+
+    background:
+        rgba(
+            255,
+            159,
+            67,
+            0.05
+        );
+
+    border:
+        1px dashed
+        #ff9f43;
+
+    padding:
+        10px 14px;
+
+    border-radius:
+        16px;
+
+    width:
+        100%;
+
+    max-width:
+        1000px;
+
+    margin:
+        0 auto;
+
+    box-sizing:
+        border-box;
+}
+
+
+.firsat-ust-serit {
+
+    text-align:
+        center;
+
+    font-weight:
+        900;
+
+    font-size:
+        15px;
+
+    color:
+        #ff9f43;
+
+    letter-spacing:
+        1px;
+
+    margin-bottom:
+        8px;
+}
+
+
+.firsat-slider-cerceve {
+
+    display:
+        flex;
+
+    gap:
+        14px;
+
+    justify-content:
+        center;
+
+    width:
+        100%;
+}
+
+
+@media (
+    max-width:768px
+) {
+
+    .firsat-slider-cerceve {
+
+        flex-direction:
+            column;
+
+        align-items:
+            center;
     }
 
-    /* Görsel Elemanların Alt Katmanda Kalmasını Önleyen Stil Kuralları */
-    .firsat-vitrin-konteyner { position: relative; z-index: 1; }
-    .pazar-lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index: 99999 !important; justify-content: center; align-items: center; }
-    .lightbox-cerceve { position: relative; max-width: 85%; max-height: 85%; z-index: 100000 !important; }
-    
-    /* 3 Katmanlı Belirgin Gölgeli Kapatma Çarpısı (X) */
-    #pazarLightbox .lightbox-kapat, .lightbox-kapat {
-        display: inline-flex !important; visibility: visible !important; opacity: 1 !important;
-        position: absolute !important; top: -45px !important; right: 0 !important; z-index: 220000 !important;
-        color: #ffffff !important; font-size: 42px !important; font-family: 'Segoe UI', Arial, sans-serif !important;
-        font-weight: 500 !important; line-height: 1 !important; cursor: pointer !important;
-        border: none !important; background: transparent !important; padding: 5px !important;
-        filter: drop-shadow(0px 1px 2px rgba(0,0,0,1)) drop-shadow(0px 2px 6px rgba(0,0,0,0.8)) drop-shadow(0px 4px 16px rgba(0,0,0,0.6)) !important;
-        transition: transform 0.2s ease, color 0.2s ease !important;
-    }
-    #pazarLightbox .lightbox-kapat:hover, .lightbox-kapat:hover { color: #ff9f43 !important; transform: scale(1.15) !important; }
+}
 
-    /* 3 Katmanlı Yoğun Siyah Gölgeli Sola/Sağa Gezinme Okları */
-    .lightbox-ok {
-        position: absolute !important; top: 50% !important; transform: translateY(-50%) !important;
-        color: #ffffff !important; font-size: 38px !important; font-weight: bold !important; padding: 12px !important;
-        cursor: pointer !important; user-select: none !important; z-index: 220000 !important; text-decoration: none !important;
-        filter: drop-shadow(0px 1px 2px rgba(0,0,0,1)) drop-shadow(0px 2px 6px rgba(0,0,0,0.8)) drop-shadow(0px 4px 16px rgba(0,0,0,0.6)) !important;
-        transition: color 0.2s ease, transform 0.2s ease !important;
+
+.vitrin-kart-link {
+
+    display:
+        block;
+
+    width:
+        100%;
+
+    text-decoration:
+        none;
+
+    background:
+        transparent;
+
+    padding:
+        0;
+}
+
+
+.vitrin-baslik-link {
+
+    background:
+        transparent;
+
+    padding:
+        0;
+
+    color:
+        inherit;
+
+    text-decoration:
+        none;
+
+    text-align:
+        left;
+
+    display:
+        inline-block;
+}
+
+
+.vitrin-butonlar {
+
+    display:
+        flex;
+
+    justify-content:
+        center;
+
+    gap:
+        8px;
+
+    margin-top:
+        8px;
+}
+
+
+.vitrin-butonlar
+button.gez {
+
+    background:
+        #ff9f43;
+
+    color:
+        white;
+
+    border:
+        none;
+
+    height:
+        34px;
+
+    padding:
+        0 16px;
+
+    border-radius:
+        6px;
+
+    cursor:
+        pointer;
+
+    font-weight:
+        bold;
+
+    font-size:
+        13px;
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    line-height:
+        1;
+}
+
+
+.vitrin-butonlar
+button.gez:hover {
+
+    background:
+        #e08832;
+}
+
+
+.canli-filtre-bar {
+
+    margin-top:
+        12px !important;
+
+    display:
+        flex;
+
+    gap:
+        8px;
+
+    flex-wrap:
+        wrap;
+}
+
+
+.canli-filtre-bar
+select,
+.canli-filtre-bar
+input {
+
+    padding:
+        8px 10px;
+
+    background:
+        #2f3542;
+
+    color:
+        white;
+
+    border:
+        1px solid
+        #57606f;
+
+    border-radius:
+        6px;
+
+    font-size:
+        13px;
+}
+
+
+
+.vitrin-kutusu
+.kart-icerik {
+
+    padding:
+        7px 10px !important;
+}
+
+
+.vitrin-kutusu
+h4 {
+
+    margin:
+        0 0 3px 0 !important;
+
+    font-size:
+        15px !important;
+}
+
+
+.vitrin-kutusu
+.kart-alt-fiyat-grup {
+
+    margin-top:
+        5px !important;
+
+    padding-top:
+        5px !important;
+
+    border-top:
+        1px solid
+        rgba(
+            255,
+            255,
+            255,
+            0.05
+        );
+}
+
+
+/* =========================================================
+   VİTRİN TEKNİK BİLGİLER
+   Tek satır + alana sığdığı kadar göster
+   ========================================================= */
+
+.vitrin-teknik-detay {
+
+    color: #bbb;
+
+    font-size: 11px;
+
+    line-height: 1.25;
+
+    text-align: left;
+
+    margin: 1px 0 4px 0;
+
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ALT İLAN KARTLARI TEKNİK BİLGİLER
+   ========================================================= */
+
+.kart-teknik {
+
+    display: block;
+
+    width: 100%;
+
+    max-width: 100%;
+
+    font-size: 11px !important;
+
+    line-height: 1.25 !important;
+
+    margin: 2px 0 !important;
+
+    padding: 0 !important;
+
+    color: #bbb;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TEKNİK BİLGİLERDE AYRAÇ
+   ========================================================= */
+
+.teknik-ayrac {
+
+    color: #777;
+
+    margin: 0 3px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TEKNİK BİLGİLERİN İÇ KISMI
+   ========================================================= */
+
+.teknik-parca {
+
+    display: inline;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   VİTRİN KARTI
+   ========================================================= */
+
+.vitrin-kutusu .vitrin-teknik-detay {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ALT KART
+   ========================================================= */
+
+.pazar-izgara .kart-teknik {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MOBİL
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .vitrin-teknik-detay,
+    .kart-teknik {
+
+        font-size: 10px !important;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
     }
-    .lb-sol { left: -60px !important; }
-    .lb-sag { right: -60px !important; }
-    .lightbox-ok:hover { color: #ff9f43 !important; transform: translateY(-50%) scale(1.15) !important; }
+
+    .teknik-ayrac {
+
+        margin: 0 2px;
+
+    }
+
+}
+
+
+.vitrin-rozet-satir {
+
+    text-align:
+        left;
+
+    margin:
+        2px 0 4px 0;
+}
+
+
+.vitrin-telefon-alani {
+
+    margin:
+        2px 0 4px 0;
+}
+
+
+.kart-telefon {
+
+    display:
+        inline-block;
+
+    text-decoration:
+        none;
+}
+
+
+.uye-giris-gerekli {
+
+    color:
+        #ff9f43 !important;
+
+    font-weight:
+        700;
+
+}
+
+
+.kart-teknik {
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    margin: 2px 0 !important;
+    padding: 0 !important;
+}
+
+.kart-rozet-alani {
+
+    margin:
+        3px 0 !important;
+
+    padding:
+        0 !important;
+}
+
+
+.kart-alt-fiyat-grup {
+
+    margin-top:
+        4px !important;
+
+    padding-top:
+        0 !important;
+}
+
+
+.arac-kart
+.kart-icerik {
+
+    padding-bottom:
+        6px !important;
+}
+
+
+.teknik-ayrac {
+
+    color:
+        #777;
+
+    margin:
+        0 2px;
+}
+
+
+/* =========================================================
+   LIGHTBOX ÇIKIŞ
+   ========================================================= */
+
+#pazarLightbox
+.lightbox-kapat,
+.lightbox-kapat {
+
+    display:
+        inline-flex !important;
+
+    visibility:
+        visible !important;
+
+    opacity:
+        1 !important;
+
+    position:
+        absolute !important;
+
+    top:
+        20px !important;
+
+    right:
+        20px !important;
+
+    z-index:
+        220000 !important;
+
+    color:
+        #ffffff !important;
+
+    font-size:
+        38px !important;
+
+    font-family:
+        'Segoe UI',
+        Arial,
+        sans-serif !important;
+
+    font-weight:
+        400 !important;
+
+    line-height:
+        1 !important;
+
+    cursor:
+        pointer !important;
+
+    border:
+        none !important;
+
+    background:
+        transparent !important;
+
+    box-shadow:
+        none !important;
+
+    padding:
+        5px !important;
+
+    width:
+        auto !important;
+
+    height:
+        auto !important;
+
+}
+
+
+#pazarLightbox
+.lightbox-kapat:hover,
+.lightbox-kapat:hover {
+
+    color:
+        #ff9f43 !important;
+
+    transform:
+        scale(1.15) !important;
+}
+
+/* =========================================================
+   ALT İLAN KARTLARINDA FİYAT + WHATSAPP HİZALAMA
+   ========================================================= */
+
+.pazar-izgara .arac-kart {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.pazar-izgara .arac-kart .kart-icerik {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+}
+
+.pazar-izgara .arac-kart .kart-alt-fiyat-grup {
+    margin-top: auto !important;
+    min-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+}
+
+.pazar-izgara .arac-kart .btn-wp-aracilik {
+    margin-left: auto !important;
+    white-space: nowrap !important;
+}
+
+.kart-kategori {
+    padding-left: 8px !important;
+    box-sizing: border-box;
+}
+
 </style>
-<script>const UYE_GIRIS_YAPTI_MI = {% if session.get('ad') %} true {% else %} false {% endif %};</script>
-<script src="/static/js/script.js"></script>
-<script>
-    const orijinalVitrinGuncelle = vitrinGuncelle;
-    vitrinGuncelle = function(idx) {
-        orijinalVitrinGuncelle(idx);
-        
-        // 1. SOL VİTRİN KARTI İÇİN DETAY YAZMA
-        if (urunler && urunler[idx]) {
-            const solIlan = urunler[idx];
-            const solRozet = document.getElementById("urun_rozet");
-            const solDetapP = document.getElementById("urun_teknik_detay");
-            const katSol = solIlan.kategori || "Otomobil";
-            
-            if (solDetapP) {
-                if (katSol === "Otomobil") {
-                    solDetapP.innerHTML = `📅 ${solIlan.yil} | 🛣️ ${Number(solIlan.km).toLocaleString('tr-TR')} KM | ⚙️ ${solIlan.vites}`;
-                } else if (katSol === "Daire" || katSol === "Ev") {
-                    solDetapP.innerHTML = `📐 ${solIlan.km} m² | 🚪 Oda: ${solIlan.yakit} | 🏢 Kat: ${solIlan.vites}`;
-                } else {
-                    solDetapP.innerHTML = `📐 ${solIlan.km} m² | 🌍 İmar: ${solIlan.marka} | 📍 Ada/Parsel: ${solIlan.degisen}/${solIlan.boya}`;
-                }
-            }
-            
-            if (solRozet) {
-                if (katSol === "Otomobil") {
-                    let hasar = solIlan.degisen === "true" || solIlan.boya === "true" || solIlan.tramer === "true";
-                    solRozet.className = "kart-rozet " + (hasar ? "kazali" : "hatasiz");
-                    solRozet.textContent = hasar ? "⚠️ Hasarlı" : "✨ Hatasız";
-                } else {
-                    let kredi = solIlan.tramer === "true";
-                    solRozet.className = "kart-rozet " + (kredi ? "hatasiz" : "kazali");
-                    solRozet.textContent = kredi ? "🏦 Krediye Uygun" : "⚠️ Krediye Uygun Değil";
-                }
-            }
-        }
-        
-        // 2. SAĞ VİTRİN KARTI İÇİN DETAY YAZMA
-        if (urunler && urunler.length > 1) {
-            let sagIdx = (idx + 1) % urunler.length;
-            const sagIlan = urunler[sagIdx];
-            const sagRozet = document.getElementById("urun_rozet_sag");
-            const sagDetapP = document.getElementById("urun_teknik_detay_sag");
-            const katSag = sagIlan.kategori || "Otomobil";
-            
-            if (sagDetapP) {
-                if (katSag === "Otomobil") {
-                    sagDetapP.innerHTML = `📅 ${sagIlan.yil} | 🛣️ ${Number(sagIlan.km).toLocaleString('tr-TR')} KM | ⚙️ ${sagIlan.vites}`;
-                } else if (katSag === "Daire" || katSag === "Ev") {
-                    sagDetapP.innerHTML = `📐 ${sagIlan.km} m² | 🚪 Oda: ${sagIlan.yakit} | 🏢 Kat: ${sagIlan.vites}`;
-                } else {
-                    sagDetapP.innerHTML = `📐 ${sagIlan.km} m² | 🌍 İmar: ${sagIlan.marka} | 📍 Ada/Parsel: ${sagIlan.degisen}/${sagIlan.boya}`;
-                }
-            }
-            
-            if (sagRozet) {
-                if (katSag === "Otomobil") {
-                    let hasar = sagIlan.degisen === "true" || sagIlan.boya === "true" || sagIlan.tramer === "true";
-                    sagRozet.className = "kart-rozet " + (hasar ? "kazali" : "hatasiz");
-                    sagRozet.textContent = hasar ? "⚠️ Hasarlı" : "✨ Hatasız";
-                } else {
-                    let kredi = sagIlan.tramer === "true";
-                    sagRozet.className = "kart-rozet " + (kredi ? "hatasiz" : "kazali");
-                    sagRozet.textContent = kredi ? "🏦 Krediye Uygun" : "⚠️ Krediye Uygun Değil";
-                }
-            }
-        }
-    };
 
-    // Açıklama alanının ilk satırdan itibaren eksiksiz gelmesini sağlayan liste döngü entegrasyonu
-    const eskiIlanlariDiz = ilanlariDiz;
-    ilanlariDiz = function(liste) {
-        eskiIlanlariDiz(liste);
-        if (!UYE_GIRIS_YAPTI_MI) {
-            const wpButonlari = document.querySelectorAll(".btn-wp-aracilik");
-            wpButonlari.forEach(btn => {
-                btn.href = "/kaydol";
-                btn.removeAttribute("target");
-                btn.textContent = "🔒 İletişim İçin Kaydol";
-                btn.style.backgroundColor = "#e67e22";
-            });
-        }
-    };
+
+
+<!-- =========================================================
+     ÜYELİK DURUMUNU JAVASCRIPT'E AKTAR
+     ========================================================= -->
+
+<script>
+
+const UYE_GIRIS_YAPTI_MI =
+    {% if UYE_GIRIS_YAPTI_MI %}
+        true
+    {% else %}
+        false
+    {% endif %};
+
 </script>
+
+
+
+<!-- =========================================================
+     ANA SCRIPT
+     ========================================================= -->
+
+<script
+    src="/static/js/script.js"
+></script>
+
+
 {% endblock %}

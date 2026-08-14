@@ -1,14 +1,113 @@
 {% extends "taslak.html" %}
-{% block baslik %} Giriş Yap {% endblock %} 
+
+{% block baslik %}
+Giriş Yap
+{% endblock %}
+
 {% block icerik %}
+
 <div class="main">
-    <form action="{{ url_for('login_kontrol') }}" method="post">
-        <label class="form-baslik"> 🔐 Giriş </label>
-        <input type="text" name="isim" placeholder="Kullanıcı adı" required>
-        <input type="password" name="sifre" placeholder="Şifre giriniz" required>
-        <button type="submit"> Giriş Yap </button>
-        <a href="/kaydol" style="background:transparent; border:none; color:rgb(62,165,235); text-align:center; display:block; margin-top:10px;">Hesap Oluştur (Kaydol)</a>
-        {% if hata %} <label class="hata"> {{ hata }} </label> {% endif %}
+
+    <form
+        action="{{ url_for('login_kontrol') }}"
+        method="post"
+    >
+
+        <label class="form-baslik">
+            🔐 Giriş Yap
+        </label>
+
+        <input
+            type="text"
+            name="isim"
+            placeholder="Kullanıcı Adı / Telefon / E-posta"
+            required
+            autocomplete="username"
+        >
+
+        <input
+            type="password"
+            name="sifre"
+            placeholder="Şifre"
+            required
+            autocomplete="current-password"
+        >
+
+        <button type="submit">
+            Giriş Yap
+        </button>
+
+        <a
+            href="{{ url_for('sifremi_unuttum') }}"
+            style="
+                display:block;
+                margin-top:10px;
+                color:#ff9f43;
+                text-align:center;
+                text-decoration:none;
+                font-weight:bold;
+            "
+        >
+            🔑 Şifremi Unuttum
+        </a>
+
+        <a
+            href="{{ url_for('kaydol') }}"
+            style="
+                display:block;
+                margin-top:10px;
+                color:white;
+                text-align:center;
+                text-decoration:none;
+                font-weight:bold;
+            "
+        >
+            📝 Hesap Oluştur (Kaydol)
+        </a>
+
+        {% if hata %}
+
+        <label
+            class="hata"
+            style="
+                display:block;
+                margin-top:12px;
+            "
+        >
+            {{ hata }}
+        </label>
+
+        {% endif %}
+
+        {% with mesajlar = get_flashed_messages() %}
+
+            {% if mesajlar %}
+
+                {% for mesaj in mesajlar %}
+
+                <div
+                    style="
+                        margin-top:12px;
+                        padding:10px;
+                        border-radius:8px;
+                        background:rgba(255,159,67,0.12);
+                        border:1px solid rgba(255,159,67,0.35);
+                        color:#ff9f43;
+                        text-align:center;
+                        font-size:14px;
+                    "
+                >
+                    {{ mesaj }}
+                </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
     </form>
+
 </div>
+
 {% endblock %}

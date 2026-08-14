@@ -1,130 +1,1271 @@
 {% extends "taslak.html" %}
 
-{% block baslik %} İlan Yönetimi {% endblock %} 
+{% block baslik %}
+İlan Yönetimi
+{% endblock %}
 
 {% block icerik %}
-<div class="main genis-panel pazar-yonetim-konteyner">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-        <!-- Rol Bildirim Başlığı -->
-        <h3 style="margin:0; color:white;">
-            📋 {% if session['ad']|lower in yoneticiler %} Site Genel İlan Denetim Masası (Yönetici) {% else %} İlan Havuzu Listeniz {% endif %}
-        </h3>
-        
-        <!-- Kategori Filtreleme Menüsü -->
-        <div style="display:flex; gap:10px; align-items:center;">
-            <form method="GET" action="/urunler" id="yonetimFiltreForm" style="margin:0;">
-                <select name="kategori" onchange="document.getElementById('yonetimFiltreForm').submit();" style="padding:6px 12px; background:#3f4656; color:white; border:1px solid #57606f; border-radius:4px; font-size:13px;">
-                    <option value="">Tüm Kategoriler</option>
-                    <option value="Otomobil" {% if secilen_kategori == 'Otomobil' %}selected{% endif %}>Otomobil</option>
-                    <option value="Daire" {% if secilen_kategori == 'Daire' %}selected{% endif %}>Daire</option>
-                    <option value="Ev" {% if secilen_kategori == 'Ev' %}selected{% endif %}>Müstakil Ev</option>
-                    <option value="Arsa" {% if secilen_kategori == 'Arsa' %}selected{% endif %}>Arsa</option>
-                    <option value="Tarla" {% if secilen_kategori == 'Tarla' %}selected{% endif %}>Tarla</option>
-                </select>
-            </form>
-            <a href="/" style="background:rgba(255,255,255,0.1); border:1px solid #ccc; height:auto; padding:6px 12px; text-decoration:none; color:white; border-radius:4px; font-size:13px;">🏠 Ana Sayfa</a>
-        </div>
-    </div>
-    
-    <table class="urunler" style="width:100%; border-collapse:collapse; margin-top:10px;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Kategori</th>
-                <th>İlan Sahibi</th>
-                <th>Kod</th>
-                <th>İlan Detayı</th>
-                <th>Fiyat</th>
-                <th>Kapak</th>
-                <th>İşlem</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Yeni İlan Ekleme Satırı (Kırık olan link /urun_ekle_sayfa olarak düzeltildi) -->
-            <tr>
-                <td colspan="8" class="ekle-satiri" style="text-align:center; padding:10px;"> 
-                    <a href="/urun_ekle_sayfa" class="ekle" style="background:#ff9f43; color:white; padding:8px 16px; text-decoration:none; font-weight:bold; border-radius:4px; display:inline-block;">➕ Yeni İlan Ekle</a>
-                </td>
-            </tr>
-            {% for urun in urunler %}
-            <tr>
-                <td> #{{ urun.id }} </td>
-                <!-- İlan Kategorisi Gösterimi -->
 
-<td>
-    {% set renk = "#ff9f43" %}
+<div
+    class="main genis-panel pazar-yonetim-konteyner"
+    style="
+        max-width:1400px;
+        width:100%;
+        box-sizing:border-box;
+        padding:14px;
+    "
+>
 
-    {% if not urun.kategori or urun.kategori == "Otomobil" %}
-        {% set renk = "#3498db" %}
-    {% elif urun.kategori == "Daire" %}
-        {% set renk = "#2ecc71" %}
-    {% elif urun.kategori == "Ev" %}
-        {% set renk = "#16a085" %}
-    {% elif urun.kategori == "Arsa" %}
-        {% set renk = "#9b59b6" %}
-    {% elif urun.kategori == "Tarla" %}
-        {% set renk = "#27ae60" %}
-    {% endif %}
+    <!-- =========================================================
+         ÜST BAŞLIK
+         ========================================================= -->
 
-    <span style="
-        background:{{ renk }};
-        color:#fff;
-        padding:4px 10px;
-        border-radius:6px;
-        font-size:11px;
-        font-weight:bold;
-        text-transform:uppercase;
-        display:inline-block;
-        min-width:80px;
-        text-align:center;">
-        {{ urun.kategori if urun.kategori else 'Otomobil' }}
-    </span>
-</td>
+    <div
+        style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:12px;
+            flex-wrap:wrap;
+        "
+    >
 
+        <h3
+            style="
+                margin:0;
+                color:white;
+                font-size:18px;
+                font-weight:900;
+            "
+        >
 
-                
-                <!-- İlanın kime ait olduğunu gösteren hücre -->
-                <td> 
-                    <span style="font-weight:bold; color:{% if urun.ilani_veren|lower in yoneticiler %}#ff9f43{% else %}#10ac84{% endif %};">
-                        {{ urun.ilani_veren }} {% if urun.ilani_veren|lower in yoneticiler %} (Yönetici) {% endif %}
-                    </span> 
-                </td>
-                <td> <span style="background:rgba(0,0,0,0.1); padding:3px 6px; border-radius:4px; font-weight:bold;">{{ urun.kod }}</span> </td>
-                <!-- Kategorilere göre dinamik detay gösterim alanı -->
-                <td> 
-                    <strong>{{ urun.ad }}</strong><br>
-                    <small style="color:#b2bec3;">
-                        {% if not urun.kategori or urun.kategori == 'Otomobil' %}
-                            🚗 {{ urun.marka }} {{ urun.model }} | 📅 {{ urun.yil }} | 🛣️ {{ urun.km }} KM
-                        {% elif urun.kategori == 'Daire' or urun.kategori == 'Ev' %}
-                            🏢 {{ urun.marka }} ({{ urun.model }}) | 📐 {{ urun.km }} m² | 🚪 Oda: {{ urun.yakit }}
-                        {% else %}
-                            🌍 {{ urun.marka }} ({{ urun.model }}) | 📐 {{ urun.km }} m² | 📍 Ada/Parsel: {{ urun.degisen }}/{{ urun.boya }}
-                        {% endif %}
-                    </small> 
-                </td>
-                <td> <strong style="color:#ff9f43;">{{ urun.fiyat }} TL</strong> </td>
-                <td> 
-                    {% if urun.resim %}
-                        <img src="/static/uploads/{{ urun.resim }}" class="tablo-resim-onizleme" style="width:60px; height:45px; object-fit:cover; border-radius:4px;" /> 
-                    {% else %}
-                        <img src="/static/uploads/varsayilan_araba.jpg" class="tablo-resim-onizleme" style="width:60px; height:45px; object-fit:cover; border-radius:4px;" /> 
-                    {% endif %}
-                </td>
-                <td> 
-                    <a href="/urunler/guncelle/{{ urun.id }}" class="guncelle" style="background:#1e90ff; color:white; padding:4px 8px; text-decoration:none; border-radius:4px; font-size:12px; margin-right:5px; font-weight:bold;">Güncelle</a>
-                    <a href="/urunler/sil/{{ urun.id }}" class="sil" style="background:#ff4757; color:white; padding:4px 8px; text-decoration:none; border-radius:4px; font-size:12px; font-weight:bold;" onclick="return confirm('Bu ilanı kalıcı olarak pazar havuzundan kaldırmak istediğinize emin misiniz?')">Sil</a>
-                </td>
-            </tr>
+            📋
+
+            {% if session.get('ad','')|lower in yoneticiler|map('lower')|list %}
+
+                Site Genel İlan Denetim Masası
+
+                <span
+                    style="
+                        color:#ff9f43;
+                        font-size:12px;
+                        font-weight:normal;
+                    "
+                >
+                    (Yönetici)
+                </span>
+
             {% else %}
-            <!-- Eğer listelenecek ilan yoksa gösterilecek boş tablo tasarımı -->
-            <tr>
-                <td colspan="8" style="text-align: center; color: rgba(255,255,255,0.6); padding: 25px; background: rgba(0,0,0,0.1);">
-                    Şu anda yönetim panelinizde görüntülenecek aktif bir ilanınız bulunmamaktadır.
-                </td>
-            </tr>
+
+                İlan Havuzu Listeniz
+
+            {% endif %}
+
+        </h3>
+
+
+        <!-- =====================================================
+             BUTONLAR
+             ===================================================== -->
+
+        <div
+            style="
+                display:flex;
+                gap:7px;
+                align-items:center;
+                flex-wrap:wrap;
+            "
+        >
+
+            <form
+                method="GET"
+                action="{{ url_for('urunler') }}"
+                id="yonetimFiltreForm"
+                style="margin:0;"
+            >
+
+                <select
+                    name="kategori"
+                    onchange="
+                        document
+                        .getElementById('yonetimFiltreForm')
+                        .submit();
+                    "
+                    style="
+                        padding:8px 12px;
+                        background:#3f4656;
+                        color:white;
+                        border:1px solid #57606f;
+                        border-radius:6px;
+                        font-size:12px;
+                        min-width:150px;
+                    "
+                >
+
+                    <option value="">
+                        Tüm Kategoriler
+                    </option>
+
+                    <option
+                        value="Otomobil"
+                        {% if secilen_kategori == 'Otomobil' %}
+                            selected
+                        {% endif %}
+                    >
+                        🚗 Otomobil
+                    </option>
+
+                    <option
+                        value="Daire"
+                        {% if secilen_kategori == 'Daire' %}
+                            selected
+                        {% endif %}
+                    >
+                        🏢 Daire
+                    </option>
+
+                    <option
+                        value="Ev"
+                        {% if secilen_kategori == 'Ev' %}
+                            selected
+                        {% endif %}
+                    >
+                        🏡 Müstakil Ev
+                    </option>
+
+                    <option
+                        value="Dukkan"
+                        {% if secilen_kategori in ['Dukkan','Dükkan'] %}
+                            selected
+                        {% endif %}
+                    >
+                        🏪 Dükkan / İş Yeri
+                    </option>
+
+                    <option
+                        value="Arsa"
+                        {% if secilen_kategori == 'Arsa' %}
+                            selected
+                        {% endif %}
+                    >
+                        🌍 Arsa
+                    </option>
+
+                    <option
+                        value="Tarla"
+                        {% if secilen_kategori == 'Tarla' %}
+                            selected
+                        {% endif %}
+                    >
+                        🌾 Tarla
+                    </option>
+
+                </select>
+
+            </form>
+
+
+            <a
+                href="{{ url_for('urun_ekle_sayfa') }}"
+                style="
+                    background:#ff9f43;
+                    color:white;
+                    padding:8px 12px;
+                    text-decoration:none;
+                    border-radius:6px;
+                    font-size:12px;
+                    font-weight:bold;
+                "
+            >
+                ➕ Yeni İlan
+            </a>
+
+
+            <a
+                href="{{ url_for('abonelik_sayfasi') }}"
+                style="
+                    background:#6c5ce7;
+                    color:white;
+                    padding:8px 12px;
+                    text-decoration:none;
+                    border-radius:6px;
+                    font-size:12px;
+                    font-weight:bold;
+                "
+            >
+                ⭐ Aboneliğim
+            </a>
+
+
+            <a
+                href="{{ url_for('hello_world') }}"
+                style="
+                    background:rgba(255,255,255,.08);
+                    border:1px solid rgba(255,255,255,.2);
+                    padding:8px 12px;
+                    text-decoration:none;
+                    color:white;
+                    border-radius:6px;
+                    font-size:12px;
+                "
+            >
+                🏠 Ana Sayfa
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         BİLGİ BARI
+         ========================================================= -->
+
+    <div
+        style="
+            margin-bottom:10px;
+            padding:10px 12px;
+            background:rgba(255,159,67,.07);
+            border:1px solid rgba(255,159,67,.20);
+            border-radius:8px;
+            color:#b9b9b9;
+            font-size:11px;
+            text-align:left;
+            line-height:1.5;
+        "
+    >
+
+        🔢
+        <strong style="color:#ff9f43;">
+            İlan kodu:
+        </strong>
+        Otomatik ve benzersiz atanır.
+
+        &nbsp; | &nbsp;
+
+        📸
+        <strong style="color:#ff9f43;">
+            Fotoğraf:
+        </strong>
+        İlan başına en fazla 10 fotoğraf.
+
+        &nbsp; | &nbsp;
+
+        👤
+        <strong style="color:#ff9f43;">
+            Yetki:
+        </strong>
+        İlan sahibi kendi ilanını yönetebilir;
+        yöneticiler tüm ilanları yönetebilir.
+
+    </div>
+
+
+    <!-- =========================================================
+         TABLO
+         ========================================================= -->
+
+    <div
+        style="
+            overflow-x:auto;
+            width:100%;
+            -webkit-overflow-scrolling:touch;
+        "
+    >
+
+        <table
+            class="urunler"
+            style="
+                width:100%;
+                border-collapse:separate;
+                border-spacing:0;
+                margin-top:4px;
+                min-width:1100px;
+            "
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th style="padding:9px; text-align:center;">
+                        ID
+                    </th>
+
+                    <th style="padding:9px; text-align:center;">
+                        Kategori
+                    </th>
+
+                    <th style="padding:9px; text-align:center;">
+                        İlan Sahibi
+                    </th>
+
+                    <th style="padding:9px; text-align:center;">
+                        İlan Kodu
+                    </th>
+
+                    <th style="padding:9px; text-align:left;">
+                        İlan Bilgileri
+                    </th>
+
+                    <th style="padding:9px; text-align:center;">
+                        Fiyat
+                    </th>
+
+                    <th style="padding:9px; text-align:center;">
+                        Fotoğraf
+                    </th>
+
+                    <th style="padding:9px; text-align:center;">
+                        İşlem
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for urun in urunler %}
+
+                {% set kategori = urun.kategori or 'Otomobil' %}
+
+                {% set kategori_renk = '#ff9f43' %}
+                {% set kategori_ikon = '📋' %}
+                {% set kategori_adi = kategori %}
+
+                {% if kategori == 'Otomobil' %}
+
+                    {% set kategori_renk = '#3498db' %}
+                    {% set kategori_ikon = '🚗' %}
+
+                {% elif kategori == 'Daire' %}
+
+                    {% set kategori_renk = '#2ecc71' %}
+                    {% set kategori_ikon = '🏢' %}
+
+                {% elif kategori == 'Ev' %}
+
+                    {% set kategori_renk = '#16a085' %}
+                    {% set kategori_ikon = '🏡' %}
+
+                {% elif kategori == 'Dukkan' %}
+
+                    {% set kategori_renk = '#e67e22' %}
+                    {% set kategori_ikon = '🏪' %}
+                    {% set kategori_adi = 'Dükkan' %}
+
+                {% elif kategori == 'Arsa' %}
+
+                    {% set kategori_renk = '#9b59b6' %}
+                    {% set kategori_ikon = '🌍' %}
+
+                {% elif kategori == 'Tarla' %}
+
+                    {% set kategori_renk = '#27ae60' %}
+                    {% set kategori_ikon = '🌾' %}
+
+                {% endif %}
+
+
+                {% set sahip =
+                    (urun.ilan_sahibi or '')|lower
+                %}
+
+                {% set yonetici =
+                    session.get('ad','')|lower
+                    in
+                    yoneticiler|map('lower')|list
+                %}
+
+                {% set sahip_ilan =
+                    session.get('ad','')|lower
+                    == sahip
+                %}
+
+
+                <tr
+                    style="
+                        border-bottom:1px solid rgba(255,255,255,.06);
+                    "
+                >
+
+                    <!-- ID -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            vertical-align:middle;
+                            color:#aaa;
+                            font-size:11px;
+                            text-align:center;
+                        "
+                    >
+                        #{{ urun.id }}
+                    </td>
+
+
+                    <!-- KATEGORİ -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            vertical-align:middle;
+                            text-align:center;
+                        "
+                    >
+
+                        <span
+                            style="
+                                background:{{ kategori_renk }};
+                                color:#fff;
+                                padding:5px 9px;
+                                border-radius:6px;
+                                font-size:10px;
+                                font-weight:bold;
+                                display:inline-block;
+                                min-width:78px;
+                                text-align:center;
+                                white-space:nowrap;
+                            "
+                        >
+                            {{ kategori_ikon }}
+                            {{ kategori_adi }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- İLAN SAHİBİ -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            vertical-align:middle;
+                            text-align:center;
+                            min-width:110px;
+                        "
+                    >
+
+                        <div
+                            style="
+                                font-weight:bold;
+                                color:
+                                {% if sahip in yoneticiler|map('lower')|list %}
+                                    #ff9f43
+                                {% else %}
+                                    #10ac84
+                                {% endif %};
+                                white-space:nowrap;
+                            "
+                        >
+                            {{ urun.ilan_sahibi or '-' }}
+                        </div>
+
+
+                        {% if sahip in yoneticiler|map('lower')|list %}
+
+                        <div
+                            style="
+                                color:#ff9f43;
+                                font-size:9px;
+                                margin-top:3px;
+                                font-weight:bold;
+                            "
+                        >
+                            👑 Yönetici
+                        </div>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- İLAN KODU -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            vertical-align:middle;
+                            text-align:center;
+                        "
+                    >
+
+                        <span
+                            style="
+                                display:inline-block;
+                                background:rgba(255,159,67,.12);
+                                border:1px solid rgba(255,159,67,.35);
+                                color:#ff9f43;
+                                padding:4px 7px;
+                                border-radius:5px;
+                                font-weight:900;
+                                font-size:11px;
+                                letter-spacing:.4px;
+                            "
+                        >
+                            {{ urun.ilan_kodu or '--' }}
+                        </span>
+
+                    </td>
+
+
+                    <!-- İLAN BİLGİLERİ -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            min-width:400px;
+                            max-width:550px;
+                            vertical-align:middle;
+                            line-height:1.5;
+                        "
+                    >
+
+                        <a
+                            href="{{ url_for(
+                                'ilan_detay_sayfasi',
+                                id=urun.id
+                            ) }}"
+                            style="
+                                color:#fff;
+                                text-decoration:none;
+                                font-weight:900;
+                                font-size:13px;
+                            "
+                        >
+                            {{ urun.baslik or 'Başlıksız İlan' }}
+                        </a>
+
+
+                        <!-- OTOMOBİL -->
+
+                        {% if kategori == 'Otomobil' %}
+
+                        <div
+                            style="
+                                color:#b2bec3;
+                                font-size:11px;
+                                margin-top:5px;
+                                line-height:1.65;
+                            "
+                        >
+
+                            {% if urun.marka or urun.model %}
+                                🚗
+                                <strong>
+                                    {{ urun.marka or '' }}
+                                    {{ urun.model or '' }}
+                                </strong>
+                            {% endif %}
+
+                            {% if urun.yil is not none %}
+                                &nbsp;|&nbsp; 📅 {{ urun.yil }}
+                            {% endif %}
+
+                            {% if urun.km is not none %}
+                                &nbsp;|&nbsp;
+                                🛣️
+                                {{
+                                    "{:,.0f}".format(
+                                        urun.km|float
+                                    ).replace(',', '.')
+                                }}
+                                km
+                            {% endif %}
+
+                            {% if urun.yakit %}
+                                &nbsp;|&nbsp; ⛽ {{ urun.yakit }}
+                            {% endif %}
+
+                            {% if urun.vites %}
+                                &nbsp;|&nbsp; ⚙️ {{ urun.vites }}
+                            {% endif %}
+
+                            {% if urun.kasa_tipi %}
+                                &nbsp;|&nbsp; 🚘 {{ urun.kasa_tipi }}
+                            {% endif %}
+
+                            {% if urun.renk %}
+                                &nbsp;|&nbsp; 🎨 {{ urun.renk }}
+                            {% endif %}
+
+                            {% if urun.motor_hacmi %}
+                                &nbsp;|&nbsp; 🔧 {{ urun.motor_hacmi }}
+                            {% endif %}
+
+                            {% if urun.motor_gucu %}
+                                &nbsp;|&nbsp; ⚡ {{ urun.motor_gucu }}
+                            {% endif %}
+
+                            {% if urun.cekis %}
+                                &nbsp;|&nbsp; 🛞 {{ urun.cekis }}
+                            {% endif %}
+
+                            {% if urun.degisen|int == 1 %}
+                                <span style="color:#ff9f43;">
+                                    &nbsp;|&nbsp; 🔄 Değişen
+                                </span>
+                            {% endif %}
+
+                            {% if urun.boya|int == 1 %}
+                                <span style="color:#ff9f43;">
+                                    &nbsp;|&nbsp; 🎨 Boya
+                                </span>
+                            {% endif %}
+
+                            {% if urun.tramer|int == 1 %}
+                                <span style="color:#ff9f43;">
+                                    &nbsp;|&nbsp; 🧾 Tramer
+                                </span>
+                            {% endif %}
+
+                            {% if urun.takas|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp; 🔁 Takas
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DAİRE / EV -->
+
+                        {% elif kategori in ['Daire','Ev'] %}
+
+                        <div
+                            style="
+                                color:#b2bec3;
+                                font-size:11px;
+                                margin-top:5px;
+                                line-height:1.65;
+                            "
+                        >
+
+                            {% if urun.bina_tipi %}
+                                🏢 {{ urun.bina_tipi }}
+                            {% endif %}
+
+                            {% if urun.metrekare is not none %}
+                                &nbsp;|&nbsp;
+                                📐
+                                {{
+                                    "{:,.0f}".format(
+                                        urun.metrekare|float
+                                    ).replace(',', '.')
+                                }}
+                                m²
+                            {% endif %}
+
+                            {% if urun.oda_sayisi %}
+                                &nbsp;|&nbsp;
+                                🚪 {{ urun.oda_sayisi }}
+                            {% endif %}
+
+                            {% if urun.bulundugu_kat %}
+                                &nbsp;|&nbsp;
+                                🏢 {{ urun.bulundugu_kat }}
+                            {% endif %}
+
+                            {% if urun.bina_yasi is not none %}
+                                &nbsp;|&nbsp;
+                                🏗️ {{ urun.bina_yasi }} yaş
+                            {% endif %}
+
+                            {% if urun.ilan_durumu %}
+                                &nbsp;|&nbsp;
+                                📋 {{ urun.ilan_durumu }}
+                            {% endif %}
+
+                            {% if urun.isitma %}
+                                &nbsp;|&nbsp;
+                                🔥 {{ urun.isitma }}
+                            {% endif %}
+
+                            {% if urun.asansor|int == 1 %}
+                                &nbsp;|&nbsp; 🛗 Asansör
+                            {% endif %}
+
+                            {% if urun.otopark|int == 1 %}
+                                &nbsp;|&nbsp; 🚗 Otopark
+                            {% endif %}
+
+                            {% if urun.esyali|int == 1 %}
+                                &nbsp;|&nbsp; 🛋️ Eşyalı
+                            {% endif %}
+
+                            {% if urun.balkon|int == 1 %}
+                                &nbsp;|&nbsp; 🌿 Balkon
+                            {% endif %}
+
+                            {% if urun.kredi_uygun_emlak|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🏦 Krediye Uygun
+                                </span>
+                            {% endif %}
+
+                            {% if urun.takas_emlak|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🔁 Takas
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- DÜKKAN -->
+
+                        {% elif kategori == 'Dukkan' %}
+
+                        <div
+                            style="
+                                color:#b2bec3;
+                                font-size:11px;
+                                margin-top:5px;
+                                line-height:1.65;
+                            "
+                        >
+
+                            {% if urun.isyeri_tipi %}
+                                🏪 {{ urun.isyeri_tipi }}
+                            {% endif %}
+
+                            {% if urun.isyeri_metrekare is not none %}
+                                &nbsp;|&nbsp;
+                                📐
+                                {{
+                                    "{:,.0f}".format(
+                                        urun.isyeri_metrekare|float
+                                    ).replace(',', '.')
+                                }}
+                                m²
+                            {% endif %}
+
+                            {% if urun.isyeri_oda_sayisi %}
+                                &nbsp;|&nbsp;
+                                🚪 Bölüm {{ urun.isyeri_oda_sayisi }}
+                            {% endif %}
+
+                            {% if urun.isyeri_kat %}
+                                &nbsp;|&nbsp;
+                                🏢 {{ urun.isyeri_kat }}
+                            {% endif %}
+
+                            {% if urun.isyeri_bina_yasi is not none %}
+                                &nbsp;|&nbsp;
+                                🏗️ {{ urun.isyeri_bina_yasi }} yaş
+                            {% endif %}
+
+                            {% if urun.isyeri_ilan_durumu %}
+                                &nbsp;|&nbsp;
+                                📋 {{ urun.isyeri_ilan_durumu }}
+                            {% endif %}
+
+                            {% if urun.isyeri_isitma %}
+                                &nbsp;|&nbsp;
+                                🔥 {{ urun.isyeri_isitma }}
+                            {% endif %}
+
+                            {% if urun.isyeri_banyo|int == 1 %}
+                                &nbsp;|&nbsp; 🚿 Banyo
+                            {% endif %}
+
+                            {% if urun.isyeri_mutfak|int == 1 %}
+                                &nbsp;|&nbsp; 🍳 Mutfak
+                            {% endif %}
+
+                            {% if urun.isyeri_depo|int == 1 %}
+                                &nbsp;|&nbsp; 📦 Depo
+                            {% endif %}
+
+                            {% if urun.isyeri_vitrin|int == 1 %}
+                                &nbsp;|&nbsp; 🪟 Vitrin
+                            {% endif %}
+
+                            {% if urun.isyeri_asansor|int == 1 %}
+                                &nbsp;|&nbsp; 🛗 Asansör
+                            {% endif %}
+
+                            {% if urun.isyeri_otopark|int == 1 %}
+                                &nbsp;|&nbsp; 🚗 Otopark
+                            {% endif %}
+
+                            {% if urun.kredi_uygun_isyeri|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🏦 Krediye Uygun
+                                </span>
+                            {% endif %}
+
+                            {% if urun.takas_isyeri|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🔁 Takas
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ARSA -->
+
+                        {% elif kategori == 'Arsa' %}
+
+                        <div
+                            style="
+                                color:#b2bec3;
+                                font-size:11px;
+                                margin-top:5px;
+                                line-height:1.65;
+                            "
+                        >
+
+                            {% if urun.arsa_metrekare is not none %}
+                                📐
+                                {{
+                                    "{:,.0f}".format(
+                                        urun.arsa_metrekare|float
+                                    ).replace(',', '.')
+                                }}
+                                m²
+                            {% endif %}
+
+                            {% if urun.imar_durumu %}
+                                &nbsp;|&nbsp;
+                                🌍 {{ urun.imar_durumu }}
+                            {% endif %}
+
+                            {% if urun.ada_no %}
+                                &nbsp;|&nbsp;
+                                📍 Ada: {{ urun.ada_no }}
+                            {% endif %}
+
+                            {% if urun.parsel_no %}
+                                &nbsp;|&nbsp;
+                                Parsel: {{ urun.parsel_no }}
+                            {% endif %}
+
+                            {% if urun.arsa_ilan_durumu %}
+                                &nbsp;|&nbsp;
+                                📋 {{ urun.arsa_ilan_durumu }}
+                            {% endif %}
+
+                            {% if urun.arsa_cephe %}
+                                &nbsp;|&nbsp;
+                                ↔️ {{ urun.arsa_cephe }}
+                            {% endif %}
+
+                            {% if urun.yol_durumu %}
+                                &nbsp;|&nbsp;
+                                🛣️ {{ urun.yol_durumu }}
+                            {% endif %}
+
+                            {% if urun.merkeze_uzaklik %}
+                                &nbsp;|&nbsp;
+                                📍 {{ urun.merkeze_uzaklik }}
+                            {% endif %}
+
+                            {% if urun.kredi_uygun_arsa|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🏦 Krediye Uygun
+                                </span>
+                            {% endif %}
+
+                            {% if urun.takas_arsa|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🔁 Takas
+                                </span>
+                            {% endif %}
+
+                            {% if urun.kat_karsiligi|int == 1 %}
+                                <span style="color:#ff9f43;">
+                                    &nbsp;|&nbsp;
+                                    🏗️ Kat Karşılığı
+                                </span>
+                            {% endif %}
+
+                            {% if urun.ifrazli|int == 1 %}
+                                <span style="color:#ff9f43;">
+                                    &nbsp;|&nbsp;
+                                    📐 İfrazlı
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- TARLA -->
+
+                        {% elif kategori == 'Tarla' %}
+
+                        <div
+                            style="
+                                color:#b2bec3;
+                                font-size:11px;
+                                margin-top:5px;
+                                line-height:1.65;
+                            "
+                        >
+
+                            {% if urun.arsa_metrekare is not none %}
+                                🌾
+                                {{
+                                    "{:,.0f}".format(
+                                        urun.arsa_metrekare|float
+                                    ).replace(',', '.')
+                                }}
+                                m²
+                            {% endif %}
+
+                            {% if urun.ada_no %}
+                                &nbsp;|&nbsp;
+                                📍 Ada: {{ urun.ada_no }}
+                            {% endif %}
+
+                            {% if urun.parsel_no %}
+                                &nbsp;|&nbsp;
+                                Parsel: {{ urun.parsel_no }}
+                            {% endif %}
+
+                            {% if urun.arsa_ilan_durumu %}
+                                &nbsp;|&nbsp;
+                                📋 {{ urun.arsa_ilan_durumu }}
+                            {% endif %}
+
+                            {% if urun.yol_durumu %}
+                                &nbsp;|&nbsp;
+                                🛣️ {{ urun.yol_durumu }}
+                            {% endif %}
+
+                            {% if urun.merkeze_uzaklik %}
+                                &nbsp;|&nbsp;
+                                📍 {{ urun.merkeze_uzaklik }}
+                            {% endif %}
+
+                            {% if urun.kredi_uygun_arsa|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🏦 Krediye Uygun
+                                </span>
+                            {% endif %}
+
+                            {% if urun.takas_arsa|int == 1 %}
+                                <span style="color:#20bf6b;">
+                                    &nbsp;|&nbsp;
+                                    🔁 Takas
+                                </span>
+                            {% endif %}
+
+                            {% if urun.elektrik|int == 1 %}
+                                &nbsp;|&nbsp; ⚡ Elektrik
+                            {% endif %}
+
+                            {% if urun.su|int == 1 %}
+                                &nbsp;|&nbsp; 💧 Su
+                            {% endif %}
+
+                            {% if urun.kanalizasyon|int == 1 %}
+                                &nbsp;|&nbsp; 🚰 Kanalizasyon
+                            {% endif %}
+
+                            {% if urun.dogalgaz|int == 1 %}
+                                &nbsp;|&nbsp; 🔥 Doğalgaz
+                            {% endif %}
+
+                            {% if urun.kadastro_yolu|int == 1 %}
+                                &nbsp;|&nbsp; 🛣️ Kadastro Yolu
+                            {% endif %}
+
+                        </div>
+
+                        {% endif %}
+
+
+                        <!-- AÇIKLAMA -->
+
+                        {% if urun.aciklama %}
+
+                        <div
+                            style="
+                                margin-top:5px;
+                                color:#888;
+                                font-size:10px;
+                                max-width:520px;
+                                white-space:nowrap;
+                                overflow:hidden;
+                                text-overflow:ellipsis;
+                            "
+                            title="{{ urun.aciklama }}"
+                        >
+                            📝 {{ urun.aciklama }}
+                        </div>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- FİYAT -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            white-space:nowrap;
+                            vertical-align:middle;
+                            text-align:center;
+                        "
+                    >
+
+                        <strong
+                            style="
+                                color:#ff9f43;
+                                font-size:13px;
+                            "
+                        >
+                            {{
+                                "{:,.0f}".format(
+                                    urun.fiyat|float
+                                ).replace(',', '.')
+                            }}
+                            TL
+                        </strong>
+
+                    </td>
+
+
+                    <!-- FOTOĞRAF -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            text-align:center;
+                            vertical-align:middle;
+                        "
+                    >
+
+                        <a
+                            href="{{ url_for(
+                                'ilan_detay_sayfasi',
+                                id=urun.id
+                            ) }}"
+                            style="
+                                display:inline-flex;
+                                align-items:center;
+                                justify-content:center;
+                                text-decoration:none;
+                            "
+                        >
+
+                            <img
+                                src="{{ urun.resim_url }}"
+                                onerror="
+                                    this.onerror=null;
+                                    this.src='{{ url_for(
+                                        'static',
+                                        filename='uploads/varsayilan_araba.jpg'
+                                    ) }}';
+                                "
+                                alt="{{ urun.baslik or 'İlan fotoğrafı' }}"
+                                style="
+                                    width:88px;
+                                    height:62px;
+                                    object-fit:cover;
+                                    border-radius:7px;
+                                    border:1px solid rgba(255,255,255,.12);
+                                    display:block;
+                                "
+                            >
+
+                        </a>
+
+
+                        <div
+                            style="
+                                margin-top:4px;
+                                color:#aaa;
+                                font-size:10px;
+                            "
+                        >
+                            📸
+                            {{ urun.resimler_liste|length }}
+                            /10
+                        </div>
+
+                    </td>
+
+
+                    <!-- İŞLEMLER -->
+
+                    <td
+                        style="
+                            padding:9px;
+                            white-space:nowrap;
+                            vertical-align:middle;
+                            text-align:center;
+                        "
+                    >
+
+                        {% if yonetici or sahip_ilan %}
+
+                            <a
+                                href="{{ url_for(
+                                    'ilan_detay_sayfasi',
+                                    id=urun.id
+                                ) }}"
+                                style="
+                                    background:#6c5ce7;
+                                    color:white;
+                                    padding:5px 7px;
+                                    text-decoration:none;
+                                    border-radius:4px;
+                                    font-size:10px;
+                                    margin-right:3px;
+                                    font-weight:bold;
+                                    display:inline-block;
+                                "
+                            >
+                                👁 Görüntüle
+                            </a>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'urun_guncelle',
+                                    id=urun.id
+                                ) }}"
+                                style="
+                                    background:#1e90ff;
+                                    color:white;
+                                    padding:5px 7px;
+                                    text-decoration:none;
+                                    border-radius:4px;
+                                    font-size:10px;
+                                    margin-right:3px;
+                                    font-weight:bold;
+                                    display:inline-block;
+                                "
+                            >
+                                ✏️ Güncelle
+                            </a>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'urun_sil',
+                                    id=urun.id
+                                ) }}"
+                                style="
+                                    background:#ff4757;
+                                    color:white;
+                                    padding:5px 7px;
+                                    text-decoration:none;
+                                    border-radius:4px;
+                                    font-size:10px;
+                                    font-weight:bold;
+                                    display:inline-block;
+                                "
+                                onclick="
+                                    return confirm(
+                                        'Bu ilanı ve tüm fotoğraflarını kalıcı olarak silmek istediğinize emin misiniz?'
+                                    );
+                                "
+                            >
+                                🗑 Sil
+                            </a>
+
+                        {% else %}
+
+                            <a
+                                href="{{ url_for(
+                                    'ilan_detay_sayfasi',
+                                    id=urun.id
+                                ) }}"
+                                style="
+                                    background:#6c5ce7;
+                                    color:white;
+                                    padding:5px 8px;
+                                    text-decoration:none;
+                                    border-radius:4px;
+                                    font-size:10px;
+                                    font-weight:bold;
+                                    display:inline-block;
+                                "
+                            >
+                                👁 Görüntüle
+                            </a>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        style="
+                            text-align:center;
+                            color:rgba(255,255,255,.6);
+                            padding:30px 15px;
+                            background:rgba(0,0,0,.10);
+                            font-size:13px;
+                        "
+                    >
+
+                        {% if secilen_kategori %}
+
+                            📭
+
+                            <strong style="color:#ff9f43;">
+                                {{ secilen_kategori }}
+                            </strong>
+
+                            kategorisinde aktif ilan bulunmamaktadır.
+
+                        {% else %}
+
+                            📭
+                            Şu anda görüntülenecek aktif ilan bulunmamaktadır.
+
+                        {% endif %}
+
+
+                        <div
+                            style="
+                                margin-top:8px;
+                                font-size:11px;
+                                color:#888;
+                            "
+                        >
+                            Yeni ilan oluşturmak için
+                            <strong style="color:#ff9f43;">
+                                Yeni İlan
+                            </strong>
+                            butonunu kullanabilirsiniz.
+                        </div>
+
+                    </td>
+
+                </tr>
+
             {% endfor %}
-        </tbody>
-    </table>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
+
 {% endblock %}

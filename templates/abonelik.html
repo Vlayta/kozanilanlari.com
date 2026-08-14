@@ -1,0 +1,53 @@
+{% extends "taslak.html" %}
+{% block baslik %}Abonelik Yönetimi{% endblock %}
+{% block icerik %}
+<div class="main genis-panel" style="max-width:900px;">
+    <div style="text-align:center;margin-bottom:14px;">
+        <h2 style="margin:0;color:#ff9f43;">⭐ Üyelik ve Abonelik</h2>
+        <p style="margin:5px 0;color:#aaa;font-size:12px;">Yeni üyeler ilk 30 gün ücretsizdir. Sonrasında isteğe bağlı paket seçebilirsiniz.</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div style="padding:9px 11px;margin-bottom:12px;background:rgba(32,191,107,.12);border:1px solid rgba(32,191,107,.35);border-radius:8px;color:#20bf6b;text-align:center;font-size:12px;">
+            {% for message in messages %}{{ message }}{% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    {% if abonelik %}
+    <div style="padding:12px;margin-bottom:14px;background:rgba(255,159,67,.08);border:1px solid rgba(255,159,67,.25);border-radius:9px;text-align:center;">
+        <div style="color:#aaa;font-size:11px;">Mevcut paket</div>
+        <strong style="display:block;color:#fff;font-size:17px;margin:3px 0;">{{ paketler.get(abonelik.paket, {}).get('ad', abonelik.paket) }}</strong>
+        <span style="font-size:11px;color:{% if abonelik.aktif %}#20bf6b{% else %}#ff7675{% endif %};font-weight:bold;">
+            {% if abonelik.aktif %}● Aktif{% else %}● Süresi doldu{% endif %}
+        </span>
+        <div style="color:#aaa;font-size:10px;margin-top:3px;">Bitiş: {{ abonelik.bitis_tarihi|replace('T',' ') }}</div>
+    </div>
+    {% endif %}
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;">
+        {% for anahtar,bilgi in paketler.items() %}
+        <div style="padding:13px;background:rgba(0,0,0,.16);border:1px solid {% if anahtar=='Ucretsiz' %}rgba(32,191,107,.4){% else %}rgba(255,159,67,.2){% endif %};border-radius:10px;text-align:center;">
+            <div style="font-size:16px;font-weight:900;color:#fff;">{{ bilgi.ad }}</div>
+            <div style="font-size:24px;font-weight:900;color:#ff9f43;margin:7px 0;">{% if bilgi.fiyat == 0 %}Ücretsiz{% else %}{{ bilgi.fiyat }} TL{% endif %}</div>
+            <div style="font-size:11px;color:#aaa;margin-bottom:9px;">{{ bilgi.gun }} gün kullanım</div>
+            {% if anahtar == 'Ucretsiz' %}
+                <div style="padding:7px;border-radius:6px;background:rgba(32,191,107,.12);color:#20bf6b;font-size:11px;font-weight:bold;">Yeni üyeye otomatik tanımlanır</div>
+            {% else %}
+                <form method="post" action="{{ url_for('abonelik_demo_aktif_et') }}">
+                    <input type="hidden" name="paket" value="{{ anahtar }}">
+                    <button type="submit" style="width:100%;padding:8px;border:0;border-radius:6px;background:#ff9f43;color:#fff;font-weight:bold;cursor:pointer;font-size:11px;">💳 Demo Olarak Seç</button>
+                </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top:14px;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#aaa;font-size:10px;line-height:1.5;">
+        <strong style="color:#ff9f43;">Önemli:</strong> Bu ekrandaki ücretli paketler şu anda <strong>demo</strong> amaçlıdır; gerçek para tahsilatı yapılmaz. Gerçek ödeme almak için ayrıca PayTR, iyzico veya benzeri bir ödeme kuruluşunun API entegrasyonu yapılmalıdır.
+    </div>
+
+    <a href="{{ url_for('urunler') }}" style="display:block;text-align:center;margin-top:12px;color:#ff9f43;text-decoration:none;font-size:12px;font-weight:bold;">← İlan Yönetimine Dön</a>
+</div>
+{% endblock %}

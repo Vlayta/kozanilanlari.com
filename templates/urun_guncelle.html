@@ -1,247 +1,3370 @@
 {% extends "taslak.html" %}
-{% block baslik %} İlan Güncelle {% endblock %} 
+
+{% block baslik %}
+İlan Güncelle
+{% endblock %}
+
 {% block icerik %}
-<div class="main genis-panel" style="max-width: 720px;">
-    <!-- Tarayıcı kilitlerini kaldıran novalidate niteliği eklendi -->
-    <form action="{{ url_for('urun_kaydet') }}" method="post" enctype="multipart/form-data" novalidate>
-        <label class="form-baslik"> 🔄 İlanı ve Fotoğrafları Düzenle </label>
-        
-        <!-- Mevcut Kapak Resmi Gösterimi -->
-        <div style="text-align: center; margin-bottom: 20px;">
-            <span style="font-size: 13px; display: block; margin-bottom: 5px; color: #ccc;">Mevcut Kapak Resmi:</span>
-            {% if urun.resim %}
-                <img src="/static/uploads/{{ urun.resim }}" style="width: 150px; height: 110px; object-fit: cover; border-radius: 8px; border: 2px solid #ff9f43;">
-            {% else %}
-                <img src="/static/uploads/varsayilan_araba.jpg" style="width: 150px; height: 110px; object-fit: cover; border-radius: 8px;">
-            {% endif %}
+
+<div
+    class="main genis-panel ilan-form-panel"
+    style="
+        max-width:900px;
+        width:100%;
+        box-sizing:border-box;
+        padding:24px;
+    "
+>
+
+<form
+    action="{{ url_for('urun_kaydet') }}"
+    method="post"
+    enctype="multipart/form-data"
+    novalidate
+    id="ilanGuncelleForm"
+>
+
+    <!-- =========================================================
+         SAYFA BAŞLIĞI
+         ========================================================= -->
+
+    <label class="form-baslik">
+        🔄 İlanı ve Fotoğrafları Düzenle
+    </label>
+
+
+    <!-- =========================================================
+         GİZLİ BİLGİLER
+         ========================================================= -->
+
+    <input
+        type="hidden"
+        name="id"
+        value="{{ urun.id }}"
+    >
+
+    <input
+        type="hidden"
+        name="kod"
+        value="{{ urun.ilan_kodu }}"
+    >
+
+
+    <!-- =========================================================
+         İLAN KODU
+         ========================================================= -->
+
+    <div
+        style="
+            margin-bottom:14px;
+            padding:11px 14px;
+            background:rgba(255,159,67,.07);
+            border:1px solid rgba(255,159,67,.28);
+            border-radius:9px;
+            text-align:center;
+        "
+    >
+
+        <div
+            style="
+                color:#aaa;
+                font-size:11px;
+                margin-bottom:3px;
+            "
+        >
+            İlan Kodu
         </div>
 
-        <!-- Gizli Kimlik Bilgileri ve Kategori Bilgisi -->
-        <input type="hidden" name="id" value="{{ urun.id }}">
-        <input type="hidden" name="kod" value="{{ urun.kod }}">
-        <input type="hidden" name="kategori" value="{{ urun.kategori if urun.kategori else 'Otomobil' }}">
+        <strong
+            style="
+                color:#ff9f43;
+                font-size:19px;
+                font-weight:900;
+                letter-spacing:1px;
+            "
+        >
+            {{ urun.ilan_kodu or '--' }}
+        </strong>
 
-        <!-- Kategori Sabit Gösterimi -->
+        <div
+            style="
+                color:#888;
+                font-size:10px;
+                margin-top:4px;
+            "
+        >
+            İlan kodu sistem tarafından korunur ve değiştirilmez.
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         KATEGORİ
+         ========================================================= -->
+
+    <div
+        style="
+            margin-bottom:14px;
+            padding:12px;
+            background:rgba(255,255,255,.035);
+            border:1px solid rgba(255,255,255,.08);
+            border-radius:10px;
+        "
+    >
+
+        <label
+            style="
+                display:block;
+                margin-bottom:6px;
+                text-align:left;
+                font-size:12px;
+                color:#ff9f43;
+                font-weight:bold;
+            "
+        >
+            📂 İlan Kategorisi
+        </label>
+
+        <select
+            name="kategori"
+            id="kategori_secim"
+            style="
+                width:100%;
+                background:#2b313d;
+                color:#ff9f43;
+                font-weight:bold;
+                margin:0;
+            "
+        >
+
+            <option
+                value="Otomobil"
+                {% if urun.kategori == 'Otomobil' %}
+                selected
+                {% endif %}
+            >
+                🚗 Otomobil İlanı
+            </option>
+
+            <option
+                value="Daire"
+                {% if urun.kategori == 'Daire' %}
+                selected
+                {% endif %}
+            >
+                🏢 Daire İlanı
+            </option>
+
+            <option
+                value="Ev"
+                {% if urun.kategori == 'Ev' %}
+                selected
+                {% endif %}
+            >
+                🏡 Müstakil Ev İlanı
+            </option>
+
+            <option
+                value="Dukkan"
+                {% if urun.kategori in ['Dukkan','Dükkan'] %}
+                selected
+                {% endif %}
+            >
+                🏪 Dükkan / İş Yeri İlanı
+            </option>
+
+            <option
+                value="Arsa"
+                {% if urun.kategori == 'Arsa' %}
+                selected
+                {% endif %}
+            >
+                🌍 Arsa İlanı
+            </option>
+
+            <option
+                value="Tarla"
+                {% if urun.kategori == 'Tarla' %}
+                selected
+                {% endif %}
+            >
+                🌾 Tarla İlanı
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- =========================================================
+         BAŞLIK + FİYAT
+         ========================================================= -->
+
+    <div
+        class="ilan-temel-grid"
+        style="
+            display:grid;
+            grid-template-columns:minmax(0,2fr) minmax(220px,1fr);
+            gap:12px;
+            margin-bottom:14px;
+        "
+    >
+
+        <div>
+
+            <label
+                style="
+                    display:block;
+                    margin-bottom:6px;
+                    text-align:left;
+                    font-size:12px;
+                    color:#ff9f43;
+                    font-weight:bold;
+                "
+            >
+                📝 İlan Başlığı
+            </label>
+
+            <input
+                type="text"
+                name="ad"
+                id="ilan_baslik"
+                value="{{ urun.baslik or '' }}"
+                placeholder="İlan başlığını yazınız..."
+                required
+                style="
+                    width:100%;
+                    margin:0;
+                "
+            >
+
+        </div>
+
+
+        <div>
+
+            <label
+                style="
+                    display:block;
+                    margin-bottom:6px;
+                    text-align:left;
+                    font-size:12px;
+                    color:#ff9f43;
+                    font-weight:bold;
+                "
+            >
+                💰 Fiyat
+            </label>
+
+            <input
+                type="number"
+                name="fiyat"
+                id="ilan_fiyat"
+                value="{{ urun.fiyat if urun.fiyat is not none else '' }}"
+                min="0"
+                step="0.01"
+                placeholder="Fiyat (TL)"
+                required
+                style="
+                    width:100%;
+                    margin:0;
+                "
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         OTOMOBİL
+         ========================================================= -->
+
+    <div
+        id="alan-otomobil-ozel"
+        class="dinamik-alan kategori-panel"
+        style="
+            display:none;
+            margin-bottom:14px;
+        "
+    >
+
+        <div class="ilan-bolum-basligi otomobil-baslik">
+            🚗 Otomobil Bilgileri
+        </div>
+
+
+        <!-- MARKA / MODEL -->
+
         <div class="form-satir">
+
             <div class="form-sutun">
-                <select id="kategori_secim" disabled style="background:#2b313d; color:#ff9f43; font-weight:bold;">
-                    <option value="Otomobil" {% if not urun.kategori or urun.kategori == 'Otomobil' %}selected{% endif %}>🚗 Otomobil İlanı Güncelleniyor</option>
-                    <option value="Daire" {% if urun.kategori == 'Daire' %}selected{% endif %}>🏢 Daire İlanı Güncelleniyor</option>
-                    <option value="Ev" {% if urun.kategori == 'Ev' %}selected{% endif %}>🏡 Müstakil Ev İlanı Güncelleniyor</option>
-                    <option value="Arsa" {% if urun.kategori == 'Arsa' %}selected{% endif %}>🌍 Arsa İlanı Güncelleniyor</option>
-                    <option value="Tarla" {% if urun.kategori == 'Tarla' %}selected{% endif %}>🌾 Tarla İlanı Güncelleniyor</option>
+
+                <select
+                    name="marka"
+                    id="marka"
+                >
+
+                    <option value="">
+                        Marka Seçiniz
+                    </option>
+
+                    {% for marka in [
+                        'Alfa Romeo',
+                        'Audi',
+                        'BMW',
+                        'Chery',
+                        'Chevrolet',
+                        'Citroen',
+                        'Cupra',
+                        'Dacia',
+                        'DS',
+                        'Fiat',
+                        'Ford',
+                        'Honda',
+                        'Hyundai',
+                        'Isuzu',
+                        'Jaguar',
+                        'Jeep',
+                        'Kia',
+                        'Land Rover',
+                        'Lexus',
+                        'Mazda',
+                        'Mercedes-Benz',
+                        'MG',
+                        'Mini',
+                        'Mitsubishi',
+                        'Nissan',
+                        'Opel',
+                        'Peugeot',
+                        'Porsche',
+                        'Renault',
+                        'Seat',
+                        'Skoda',
+                        'Suzuki',
+                        'Tesla',
+                        'Tofaş',
+                        'Toyota',
+                        'Volkswagen',
+                        'Volvo'
+                    ] %}
+
+                    <option
+                        value="{{ marka }}"
+                        {% if urun.marka == marka %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ marka }}
+                    </option>
+
+                    {% endfor %}
+
                 </select>
+
             </div>
+
+
+            <div class="form-sutun">
+
+                <select
+                    name="model"
+                    id="model"
+                >
+
+                    <option value="">
+                        Model Seçiniz
+                    </option>
+
+                </select>
+
+            </div>
+
         </div>
 
-        <!-- Ortak Temel Bilgiler -->
+
+        <!-- YIL / KM / RENK -->
+
+        <div class="form-satir-uc">
+
+            <input
+                type="number"
+                name="yil"
+                id="yil_oto"
+                value="{{ urun.yil if urun.yil is not none else '' }}"
+                placeholder="Model Yılı"
+                min="1950"
+                max="2027"
+            >
+
+            <input
+                type="number"
+                name="km"
+                id="km_oto"
+                value="{{ urun.km if urun.km is not none else '' }}"
+                placeholder="Kilometre"
+                min="0"
+            >
+
+            <input
+                type="text"
+                name="renk"
+                value="{{ urun.renk or '' }}"
+                placeholder="Renk"
+            >
+
+        </div>
+
+
+        <!-- YAKIT / VİTES -->
+
         <div class="form-satir">
-            <div class="form-sutun"><input type="text" name="kod_gosterim" value="{{ urun.kod }}" placeholder="İlan Kodu" disabled></div>
-            <div class="form-sutun"><input type="text" name="ad" value="{{ urun.ad }}" placeholder="İlan Başlığı" required></div>
-        </div>
 
-        <div class="form-satir">
             <div class="form-sutun">
-                <input type="number" name="fiyat" value="{{ urun.fiyat }}" placeholder="Fiyat (TL)" required>
-            </div>
-        </div>
 
-        <!-- 1. OTOMOBİL ALANLARI -->
-        <div id="alan-otomobil-ozel" class="form-satir dinamik-alan">
-            <div class="form-sutun">
-               
-                <select name="marka" id="marka" onchange="modelleriYukle()">
-                    <option value="">Marka Seçiniz</option>
-
-                    <option value="Alfa Romeo" {% if urun.marka=='Alfa Romeo' %}selected{% endif %}>Alfa Romeo</option>
-                    <option value="Audi" {% if urun.marka=='Audi' %}selected{% endif %}>Audi</option>
-                    <option value="BMW" {% if urun.marka=='BMW' %}selected{% endif %}>BMW</option>
-                    <option value="Chery" {% if urun.marka=='Chery' %}selected{% endif %}>Chery</option>
-                    <option value="Citroen" {% if urun.marka=='Citroen' %}selected{% endif %}>Citroen</option>
-                    <option value="Cupra" {% if urun.marka=='Cupra' %}selected{% endif %}>Cupra</option>
-                    <option value="Dacia" {% if urun.marka=='Dacia' %}selected{% endif %}>Dacia</option>
-                    <option value="Fiat" {% if urun.marka=='Fiat' %}selected{% endif %}>Fiat</option>
-                    <option value="Ford" {% if urun.marka=='Ford' %}selected{% endif %}>Ford</option>
-                    <option value="Honda" {% if urun.marka=='Honda' %}selected{% endif %}>Honda</option>
-                    <option value="Hyundai" {% if urun.marka=='Hyundai' %}selected{% endif %}>Hyundai</option>
-                    <option value="Kia" {% if urun.marka=='Kia' %}selected{% endif %}>Kia</option>
-                    <option value="Mercedes-Benz" {% if urun.marka=='Mercedes-Benz' %}selected{% endif %}>Mercedes-Benz</option>
-                    <option value="Nissan" {% if urun.marka=='Nissan' %}selected{% endif %}>Nissan</option>
-                    <option value="Opel" {% if urun.marka=='Opel' %}selected{% endif %}>Opel</option>
-                    <option value="Peugeot" {% if urun.marka=='Peugeot' %}selected{% endif %}>Peugeot</option>
-                    <option value="Renault" {% if urun.marka=='Renault' %}selected{% endif %}>Renault</option>
-                    <option value="Seat" {% if urun.marka=='Seat' %}selected{% endif %}>Seat</option>
-                    <option value="Skoda" {% if urun.marka=='Skoda' %}selected{% endif %}>Skoda</option>
-                    <option value="Tesla" {% if urun.marka=='Tesla' %}selected{% endif %}>Tesla</option>
-                    <option value="Toyota" {% if urun.marka=='Toyota' %}selected{% endif %}>Toyota</option>
-                    <option value="Volkswagen" {% if urun.marka=='Volkswagen' %}selected{% endif %}>Volkswagen</option>
-                    <option value="Volvo" {% if urun.marka=='Volvo' %}selected{% endif %}>Volvo</option>
-                </select>
-
-            </div>
-            <div class="form-sutun">
-                <select name="model" id="model">
-                    <option value="{{ urun.model }}">{{ urun.model }}</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="alan-otomobil-teknik" class="dinamik-alan">
-            <div class="form-satir-uc">
-                <input type="number" name="yil" id="yil_oto" value="{{ urun.yil }}" placeholder="Model Yılı" min="1950" max="2027">
-                <input type="number" name="km" id="km_oto" value="{{ urun.km }}" placeholder="Kilometre">
-            </div>
-            <div class="form-satir">
                 <select name="yakit">
-                    <option value="Dizel" {% if urun.yakit == 'Dizel' %}selected{% endif %}>Dizel</option>
-                    <option value="Benzin" {% if urun.yakit == 'Benzin' %}selected{% endif %}>Benzin</option>
-                    <option value="Benzin & LPG" {% if urun.yakit == 'Benzin & LPG' %}selected{% endif %}>Benzin & LPG</option>
+
+                    <option value="">
+                        Yakıt Türü
+                    </option>
+
+                    {% for x in [
+                        'Dizel',
+                        'Benzin',
+                        'Benzin & LPG',
+                        'Elektrik',
+                        'Hibrit'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.yakit == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
                 </select>
+
+            </div>
+
+
+            <div class="form-sutun">
+
                 <select name="vites">
-                    <option value="Manuel" {% if urun.vites == 'Manuel' %}selected{% endif %}>Manuel</option>
-                    <option value="Otomatik" {% if urun.vites == 'Otomatik' %}selected{% endif %}>Otomatik</option>
+
+                    <option value="">
+                        Vites
+                    </option>
+
+                    {% for x in [
+                        'Manuel',
+                        'Otomatik'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.vites == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
                 </select>
+
             </div>
+
         </div>
 
-        <div id="alan-otomobil-check" class="dinamik-alan" style="display:flex; gap:15px; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
-            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="degisen" value="true" {% if urun.degisen == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Değişen Var</label>
-            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="boya" value="true" {% if urun.boya == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Boyalı Var</label>
-            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="tramer" value="true" {% if urun.tramer == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Tramer Var</label>
-        </div>
 
-        <!-- 2. EMLAK (DAİRE & EV) ALANLARI -->
-        <div id="alan-emlak-ozel" class="form-satir dinamik-alan" style="display:none;">
-            <div class="form-sutun">
-                <select name="bina_tipi" id="bina_tipi">
-                    <option value="">Bina Tipi Seçiniz</option>
-                    <option value="Apartman Dairesi" {% if urun.marka == 'Apartman Dairesi' %}selected{% endif %}>Apartman Dairesi</option>
-                    <option value="Rezidans" {% if urun.marka == 'Rezidans' %}selected{% endif %}>Rezidans</option>
-                    <option value="Müstakil Ev" {% if urun.marka == 'Müstakil Ev' %}selected{% endif %}>Müstakil Ev</option>
-                    <option value="Villa" {% if urun.marka == 'Villa' %}selected{% endif %}>Villa</option>
-                </select>
-            </div>
-            <div class="form-sutun">
-                <select name="ilan_durumu" id="ilan_durumu">
-                    <option value="Satılık" {% if urun.model == 'Satılık' %}selected{% endif %}>Satılık</option>
-                    <option value="Kiralık" {% if urun.model == 'Kiralık' %}selected{% endif %}>Kiralık</option>
-                </select>
-            </div>
-        </div>
+        <!-- KASA / MOTOR HACMİ -->
 
-        <div id="alan-emlak-teknik" class="dinamik-alan" style="display:none;">
-            <div class="form-satir-uc">
-                <input type="number" name="bina_yasi" id="bina_yasi" value="{{ urun.yil }}" placeholder="Bina Yaşı" min="0" max="100">
-                <input type="number" name="metrekare" id="metrekare" value="{{ urun.km }}" placeholder="Metrekare (m²)">
-                <select name="oda_sayisi" id="oda_sayisi">
-                    <option value="">Oda Sayısı</option>
-                    <option value="1+0" {% if urun.yakit == '1+0' %}selected{% endif %}>1+0</option>
-                    <option value="1+1" {% if urun.yakit == '1+1' %}selected{% endif %}>1+1</option>
-                    <option value="2+1" {% if urun.yakit == '2+1' %}selected{% endif %}>2+1</option>
-                    <option value="3+1" {% if urun.yakit == '3+1' %}selected{% endif %}>3+1</option>
-                    <option value="4+1" {% if urun.yakit == '4+1' %}selected{% endif %}>4+1</option>
-                </select>
-            </div>
-            <div class="form-satir" id="blok-daire-kat">
-                <select name="bulundugu_kat" id="bulundugu_kat">
-                    <option value="">Bulunduğu Kat</option>
-                    <option value="Giriş Kat" {% if urun.vites == 'Giriş Kat' %}selected{% endif %}>Giriş Kat</option>
-                    <option value="1. Kat" {% if urun.vites == '1. Kat' %}selected{% endif %}>1. Kat</option>
-                    <option value="2. Kat" {% if urun.vites == '2. Kat' %}selected{% endif %}>2. Kat</option>
-                    <option value="3. Kat" {% if urun.vites == '3. Kat' %}selected{% endif %}>3. Kat</option>
-                    <option value="4. Kat ve Üzeri" {% if urun.vites == '4. Kat ve Üzeri' %}selected{% endif %}>4. Kat ve Üzeri</option>
-                    <option value="En Üst Kat" {% if urun.vites == 'En Üst Kat' %}selected{% endif %}>En Üst Kat</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="alan-emlak-check" class="dinamik-alan" style="display:none; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
-            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="kredi_uygun" value="true" {% if urun.tramer == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Konut Kredisine Uygun</label>
-        </div>
-
-        <!-- 3. ARSA & TARLA ALANLARI -->
-        <div id="alan-arsa-ozel" class="form-satir dinamik-alan" style="display:none;">
-            <div class="form-sutun">
-                <select name="imar_durumu" id="imar_durumu">
-                    <option value="">İmar Durumu Seçiniz</option>
-                    <option value="Konut İmarı" {% if urun.marka == 'Konut İmarı' %}selected{% endif %}>Konut İmarı</option>
-                    <option value="Ticari İmar" {% if urun.marka == 'Ticari İmar' %}selected{% endif %}>Ticari İmar</option>
-                    <option value="Bağ / Bahçe" {% if urun.marka == 'Bağ / Bahçe' %}selected{% endif %}>Bağ / Bahçe</option>
-                    <option value="Zeytinlik" {% if urun.marka == 'Zeytinlik' %}selected{% endif %}>Zeytinlik</option>
-                    <option value="Tarla Statüsü" {% if urun.marka == 'Tarla Statüsü' %}selected{% endif %}>Tarla Statüsü</option>
-                </select>
-            </div>
-            <div class="form-sutun">
-                <select name="ilan_durumu_arsa" id="ilan_durumu_arsa">
-                    <option value="Satılık" {% if urun.model == 'Satılık' %}selected{% endif %}>Satılık</option>
-                    <option value="Kiralık" {% if urun.model == 'Kiralık' %}selected{% endif %}>Kiralık</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="alan-arsa-teknik" class="dinamik-alan" style="display:none;">
-            <div class="form-satir-uc">
-                <input type="number" name="metrekare_arsa" id="metrekare_arsa" value="{{ urun.km }}" placeholder="Toplam Alan (m²)">
-                <input type="text" name="ada_no" id="ada_no" value="{{ urun.degisen }}" placeholder="Ada No">
-                <input type="text" name="parsel_no" id="parsel_no" value="{{ urun.boya }}" placeholder="Parsel No">
-            </div>
-        </div>
-
-        <div id="alan-arsa-check" class="dinamik-alan" style="display:none; justify-content:center; margin:15px 0; background:rgba(0,0,0,0.15); padding:10px; border-radius:6px;">
-            <label style="font-size:14px; font-weight:normal; color:#fff;"><input type="checkbox" name="kredi_uygun_arsa" value="true" {% if urun.tramer == 'true' %}checked{% endif %} style="width:auto; height:auto; margin:0;"> Yatırıma / Krediye Uygun</label>
-        </div>
-
-        <!-- TAM DÜZELTİLMİŞ ALAN: Veritabanındaki 'acıklama' verisini buraya mühürledik -->
         <div class="form-satir">
+
             <div class="form-sutun">
-                <label style="font-size:13px; font-weight:bold; color:#ff9f43; display:block; margin-bottom:5px; text-align:left;">📝 İlan Açıklaması ve Ekstra Bilgiler</label>
-                <textarea name="acıklama" rows="5" placeholder="Araç ekspertiz durumu, boya/değişen detayları, ev özellikleri veya arsa konumu gibi ekstra bilgileri buraya yazabilirsiniz..." style="width:100%; padding:10px; background:#2f3542; color:white; border:1px solid #57606f; border-radius:6px; box-sizing:border-box; font-family:inherit; resize:vertical; font-size:14px;">{{ urun.acıklama if urun.acıklama else '' }}</textarea>
+
+                <select name="kasa_tipi">
+
+                    <option value="">
+                        Kasa Tipi
+                    </option>
+
+                    {% for x in [
+                        'Sedan',
+                        'Hatchback',
+                        'Station Wagon',
+                        'SUV',
+                        'Coupé',
+                        'Cabrio',
+                        'Pickup',
+                        'Minivan',
+                        'Panelvan',
+                        'Diğer'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.kasa_tipi == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
             </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="motor_hacmi"
+                    value="{{ urun.motor_hacmi or '' }}"
+                    placeholder="Motor Hacmi"
+                >
+
+            </div>
+
         </div>
 
-        <!-- Fotoğraf Yenileme Izgarası -->
-        <div class="form-grup-resimler">
-            <span style="font-size:13px; font-weight:bold; display:block; margin-bottom:8px; color:#ff9f43; text-align:center;">📸 Fotoğrafları Yenile (Değiştirmek istemediklerinizi boş bırakın)</span>
-            <div class="resim-yukleme-izgarasi">
-                <div class="resim-girdi-kutu"><span>1. Resim (Yeni Kapak)</span><input type="file" name="resim1" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>2. Resim</span><input type="file" name="resim2" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>3. Resim</span><input type="file" name="resim3" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>4. Resim</span><input type="file" name="resim4" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>5. Resim</span><input type="file" name="resim5" accept="image/*"></div>
-                <div class="resim-girdi-kutu"><span>6. Resim</span><input type="file" name="resim6" accept="image/*"></div>
+
+        <!-- MOTOR GÜCÜ / ÇEKİŞ -->
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="motor_gucu"
+                    value="{{ urun.motor_gucu or '' }}"
+                    placeholder="Motor Gücü"
+                >
+
             </div>
+
+
+            <div class="form-sutun">
+
+                <select name="cekis">
+
+                    <option value="">
+                        Çekiş
+                    </option>
+
+                    {% for x in [
+                        'Önden Çekiş',
+                        'Arkadan İtiş',
+                        '4x4',
+                        '4x2'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.cekis == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
         </div>
 
-        <!-- Butonlar -->
-        <button type="submit"> 🚀 Güncelleştirmeleri Kaydet </button>
-        <a href="/urunler" style="background:transparent; border:none; color:#ff6b6b; text-align:center; display:block; margin-top:15px; font-weight:bold;">❌ Vazgeç / İlanlarıma Dön</a>
-    </form>
+
+        <!-- HASAR -->
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="hasar_durumu"
+                    value="{{ urun.hasar_durumu or '' }}"
+                    placeholder="Hasar Durumu"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- CHECKBOX -->
+
+        <div class="ilan-checkbox-grubu">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="degisen"
+                    value="true"
+                    {% if urun.degisen|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Değişen Var
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="boya"
+                    value="true"
+                    {% if urun.boya|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Boyalı Var
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="tramer"
+                    value="true"
+                    {% if urun.tramer|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Tramer Var
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="takas"
+                    value="true"
+                    {% if urun.takas|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Takas
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="kredi_uygun"
+                    value="true"
+                    {% if urun.kredi_uygun|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Krediye Uygun
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DAİRE / EV
+         ========================================================= -->
+
+    <div
+        id="alan-emlak"
+        class="dinamik-alan kategori-panel"
+        style="
+            display:none;
+            margin-bottom:14px;
+        "
+    >
+
+        <div class="ilan-bolum-basligi emlak-baslik">
+            🏠 Daire / Ev Bilgileri
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <select name="bina_tipi">
+
+                    <option value="">
+                        Bina Tipi
+                    </option>
+
+                    {% for x in [
+                        'Apartman Dairesi',
+                        'Rezidans',
+                        'Müstakil Ev',
+                        'Villa'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.bina_tipi == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="ilan_durumu">
+
+                    <option
+                        value="Satılık"
+                        {% if urun.ilan_durumu == 'Satılık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Satılık
+                    </option>
+
+                    <option
+                        value="Kiralık"
+                        {% if urun.ilan_durumu == 'Kiralık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Kiralık
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir-uc">
+
+            <input
+                type="number"
+                name="bina_yasi"
+                value="{{ urun.bina_yasi if urun.bina_yasi is not none else '' }}"
+                min="0"
+                max="100"
+                placeholder="Bina Yaşı"
+            >
+
+            <input
+                type="number"
+                name="metrekare"
+                value="{{ urun.metrekare if urun.metrekare is not none else '' }}"
+                min="0"
+                step="0.01"
+                placeholder="Metrekare (m²)"
+            >
+
+            <select name="oda_sayisi">
+
+                <option value="">
+                    Oda Sayısı
+                </option>
+
+                {% for x in [
+                    '1+0',
+                    '1+1',
+                    '2+1',
+                    '3+1',
+                    '4+1',
+                    '5+1',
+                    '6+1'
+                ] %}
+
+                <option
+                    value="{{ x }}"
+                    {% if urun.oda_sayisi == x %}
+                    selected
+                    {% endif %}
+                >
+                    {{ x }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="salon_sayisi"
+                    value="{{ urun.salon_sayisi or '' }}"
+                    placeholder="Salon Sayısı"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="bulundugu_kat">
+
+                    <option value="">
+                        Bulunduğu Kat
+                    </option>
+
+                    {% for x in [
+                        'Giriş Kat',
+                        '1. Kat',
+                        '2. Kat',
+                        '3. Kat',
+                        '4. Kat ve Üzeri',
+                        'En Üst Kat'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.bulundugu_kat == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="number"
+                    name="toplam_kat"
+                    value="{{ urun.toplam_kat if urun.toplam_kat is not none else '' }}"
+                    min="0"
+                    placeholder="Toplam Kat"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="isitma">
+
+                    <option value="">
+                        Isıtma
+                    </option>
+
+                    {% for x in [
+                        'Yok',
+                        'Kombi',
+                        'Merkezi',
+                        'Merkezi Sistem',
+                        'Klima',
+                        'Soba',
+                        'Yerden Isıtma',
+                        'Diğer'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.isitma == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="number"
+                    name="banyo_sayisi"
+                    value="{{ urun.banyo_sayisi if urun.banyo_sayisi is not none else '' }}"
+                    min="0"
+                    placeholder="Banyo Sayısı"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="number"
+                    name="aidat"
+                    value="{{ urun.aidat if urun.aidat is not none else '' }}"
+                    min="0"
+                    step="0.01"
+                    placeholder="Aidat (TL)"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="ilan-checkbox-grubu">
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="balkon"
+                    value="true"
+                    {% if urun.balkon|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Balkon
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="asansor"
+                    value="true"
+                    {% if urun.asansor|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Asansör
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="otopark"
+                    value="true"
+                    {% if urun.otopark|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Otopark
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="esyali"
+                    value="true"
+                    {% if urun.esyali|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Eşyalı
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="site_icerisinde"
+                    value="true"
+                    {% if urun.site_icerisinde|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Site İçerisinde
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="kredi_uygun"
+                    value="true"
+                    {% if urun.kredi_uygun_emlak|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Konut Kredisine Uygun
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="takas"
+                    value="true"
+                    {% if urun.takas_emlak|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Takas
+            </label>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="tapu_durumu"
+                    value="{{ urun.tapu_durumu or '' }}"
+                    placeholder="Tapu Durumu"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="kullanim_durumu"
+                    value="{{ urun.kullanim_durumu or '' }}"
+                    placeholder="Kullanım Durumu"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DÜKKAN
+         ========================================================= -->
+
+    <div
+        id="alan-dukkan"
+        class="dinamik-alan kategori-panel"
+        style="
+            display:none;
+            margin-bottom:14px;
+        "
+    >
+
+        <div class="ilan-bolum-basligi dukkan-baslik">
+            🏪 Dükkan / İş Yeri Bilgileri
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <select name="dukkan_tipi">
+
+                    <option value="">
+                        İş Yeri Tipi
+                    </option>
+
+                    {% for x in [
+                        'Dükkan',
+                        'Mağaza',
+                        'Ofis',
+                        'Büro',
+                        'Plaza Katı',
+                        'Depo',
+                        'Fabrika',
+                        'Atölye',
+                        'Restoran',
+                        'Cafe / Kafe',
+                        'Market',
+                        'Diğer'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.isyeri_tipi == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="ilan_durumu_dukkan">
+
+                    <option
+                        value="Satılık"
+                        {% if urun.isyeri_ilan_durumu == 'Satılık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Satılık
+                    </option>
+
+                    <option
+                        value="Kiralık"
+                        {% if urun.isyeri_ilan_durumu == 'Kiralık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Kiralık
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir-uc">
+
+            <input
+                type="number"
+                name="dukkan_metrekare"
+                value="{{ urun.isyeri_metrekare if urun.isyeri_metrekare is not none else '' }}"
+                min="0"
+                step="0.01"
+                placeholder="Metrekare (m²)"
+            >
+
+            <input
+                type="number"
+                name="dukkan_bina_yasi"
+                value="{{ urun.isyeri_bina_yasi if urun.isyeri_bina_yasi is not none else '' }}"
+                min="0"
+                placeholder="Bina Yaşı"
+            >
+
+            <select name="dukkan_oda_sayisi">
+
+                <option value="">
+                    Bölüm / Oda
+                </option>
+
+                {% for x in [
+                    '1',
+                    '2',
+                    '3',
+                    '4',
+                    '5',
+                    '6+'
+                ] %}
+
+                <option
+                    value="{{ x }}"
+                    {% if urun.isyeri_oda_sayisi == x %}
+                    selected
+                    {% endif %}
+                >
+                    {{ x }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <select name="dukkan_bulundugu_kat">
+
+                    <option value="">
+                        Bulunduğu Kat
+                    </option>
+
+                    {% for x in [
+                        'Bodrum Kat',
+                        'Zemin Kat',
+                        'Giriş Kat',
+                        '1. Kat',
+                        '2. Kat',
+                        '3. Kat',
+                        '4. Kat ve Üzeri',
+                        'En Üst Kat'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.isyeri_kat == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="dukkan_isitma">
+
+                    <option value="">
+                        Isıtma
+                    </option>
+
+                    {% for x in [
+                        'Yok',
+                        'Klima',
+                        'Kombi',
+                        'Merkezi',
+                        'Merkezi Sistem',
+                        'Soba',
+                        'Yerden Isıtma',
+                        'Diğer'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.isyeri_isitma == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="number"
+                    name="dukkan_toplam_kat"
+                    value="{{ urun.isyeri_toplam_kat if urun.isyeri_toplam_kat is not none else '' }}"
+                    min="0"
+                    placeholder="Toplam Kat"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="number"
+                    name="dukkan_aidat"
+                    value="{{ urun.isyeri_aidat if urun.isyeri_aidat is not none else '' }}"
+                    min="0"
+                    step="0.01"
+                    placeholder="Aidat (TL)"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="dukkan_cephe"
+                    value="{{ urun.isyeri_cephe or '' }}"
+                    placeholder="Cephe"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="dukkan_tapu_durumu"
+                    value="{{ urun.isyeri_tapu_durumu or '' }}"
+                    placeholder="Tapu Durumu"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="dukkan_kullanim_durumu"
+                    value="{{ urun.isyeri_kullanim_durumu or '' }}"
+                    placeholder="Kullanım Durumu"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="ilan-checkbox-grubu">
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_banyo"
+                    value="true"
+                    {% if urun.isyeri_banyo|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Banyo
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_mutfak"
+                    value="true"
+                    {% if urun.isyeri_mutfak|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Mutfak
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_depo"
+                    value="true"
+                    {% if urun.isyeri_depo|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Depo
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_vitrin"
+                    value="true"
+                    {% if urun.isyeri_vitrin|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Vitrin
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_asansor"
+                    value="true"
+                    {% if urun.isyeri_asansor|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Asansör
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_otopark"
+                    value="true"
+                    {% if urun.isyeri_otopark|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Otopark
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_kredi_uygun"
+                    value="true"
+                    {% if urun.kredi_uygun_isyeri|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Krediye Uygun
+            </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="dukkan_takas"
+                    value="true"
+                    {% if urun.takas_isyeri|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+                Takas
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         ARSA
+         ========================================================= -->
+
+    <div
+        id="alan-arsa"
+        class="dinamik-alan kategori-panel"
+        style="
+            display:none;
+            margin-bottom:14px;
+        "
+    >
+
+        <div class="ilan-bolum-basligi arsa-baslik">
+            🌍 Arsa Bilgileri
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <select name="imar_durumu">
+
+                    <option value="">
+                        İmar Durumu
+                    </option>
+
+                    {% for x in [
+                        'Konut İmarı',
+                        'Ticari İmar',
+                        'Bağ / Bahçe',
+                        'Zeytinlik',
+                        'Tarla Statüsü'
+                    ] %}
+
+                    <option
+                        value="{{ x }}"
+                        {% if urun.imar_durumu == x %}
+                        selected
+                        {% endif %}
+                    >
+                        {{ x }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="ilan_durumu_arsa">
+
+                    <option
+                        value="Satılık"
+                        {% if urun.arsa_ilan_durumu == 'Satılık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Satılık
+                    </option>
+
+                    <option
+                        value="Kiralık"
+                        {% if urun.arsa_ilan_durumu == 'Kiralık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Kiralık
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-satir-uc">
+
+            <input
+                type="number"
+                name="metrekare_arsa"
+                value="{{ urun.arsa_metrekare if urun.arsa_metrekare is not none else '' }}"
+                min="0"
+                step="0.01"
+                placeholder="Toplam Alan (m²)"
+            >
+
+            <input
+                type="text"
+                name="ada_no"
+                value="{{ urun.ada_no or '' }}"
+                placeholder="Ada No"
+            >
+
+            <input
+                type="text"
+                name="parsel_no"
+                value="{{ urun.parsel_no or '' }}"
+                placeholder="Parsel No"
+            >
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="arsa_tapu_durumu"
+                    value="{{ urun.arsa_tapu_durumu or '' }}"
+                    placeholder="Tapu Durumu"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="yol_durumu"
+                    value="{{ urun.yol_durumu or '' }}"
+                    placeholder="Yol Durumu"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- ARSA ÖZEL -->
+
+        <div class="form-satir-uc">
+
+            <input
+                type="text"
+                name="kaks"
+                value="{{ urun.kaks or '' }}"
+                placeholder="KAKS"
+            >
+
+            <input
+                type="text"
+                name="emsal"
+                value="{{ urun.emsal or '' }}"
+                placeholder="Emsal"
+            >
+
+            <input
+                type="text"
+                name="gabari"
+                value="{{ urun.gabari or '' }}"
+                placeholder="Gabari"
+            >
+
+        </div>
+
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="arsa_cephe"
+                    value="{{ urun.arsa_cephe or '' }}"
+                    placeholder="Cephe"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="merkeze_uzaklik"
+                    value="{{ urun.merkeze_uzaklik or '' }}"
+                    placeholder="Merkeze Uzaklık"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="ilan-checkbox-grubu">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="kredi_uygun_arsa"
+                    value="true"
+                    {% if urun.kredi_uygun_arsa|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Yatırıma / Krediye Uygun
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="takas_arsa"
+                    value="true"
+                    {% if urun.takas_arsa|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Takas
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="kat_karsiligi"
+                    value="true"
+                    {% if urun.kat_karsiligi|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Kat Karşılığı
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="ifrazli"
+                    value="true"
+                    {% if urun.ifrazli|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                İfrazlı
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="elektrik"
+                    value="true"
+                    {% if urun.elektrik|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Elektrik
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="su"
+                    value="true"
+                    {% if urun.su|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Su
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="kanalizasyon"
+                    value="true"
+                    {% if urun.kanalizasyon|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Kanalizasyon
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="dogalgaz"
+                    value="true"
+                    {% if urun.dogalgaz|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Doğalgaz
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="kadastro_yolu"
+                    value="true"
+                    {% if urun.kadastro_yolu|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Kadastro Yolu
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         TARLA
+         ========================================================= -->
+
+    <div
+        id="alan-tarla"
+        class="dinamik-alan kategori-panel"
+        style="
+            display:none;
+            margin-bottom:14px;
+        "
+    >
+
+        <div class="ilan-bolum-basligi tarla-baslik">
+            🌾 Tarla Bilgileri
+        </div>
+
+
+        <!-- ARAZİ DURUMU + İLAN DURUMU -->
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <select name="imar_durumu">
+
+                    <option value="">
+                        Arazi / Tarla Durumu
+                    </option>
+
+                    <option
+                        value="Tarla Statüsü"
+                        {% if urun.imar_durumu == 'Tarla Statüsü' %}
+                        selected
+                        {% endif %}
+                    >
+                        Tarla Statüsü
+                    </option>
+
+                    <option
+                        value="Bağ / Bahçe"
+                        {% if urun.imar_durumu == 'Bağ / Bahçe' %}
+                        selected
+                        {% endif %}
+                    >
+                        Bağ / Bahçe
+                    </option>
+
+                    <option
+                        value="Zeytinlik"
+                        {% if urun.imar_durumu == 'Zeytinlik' %}
+                        selected
+                        {% endif %}
+                    >
+                        Zeytinlik
+                    </option>
+
+                    <option
+                        value="Özel Arazi"
+                        {% if urun.imar_durumu == 'Özel Arazi' %}
+                        selected
+                        {% endif %}
+                    >
+                        Özel Arazi
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="ilan_durumu_arsa">
+
+                    <option
+                        value="Satılık"
+                        {% if urun.arsa_ilan_durumu == 'Satılık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Satılık
+                    </option>
+
+                    <option
+                        value="Kiralık"
+                        {% if urun.arsa_ilan_durumu == 'Kiralık' %}
+                        selected
+                        {% endif %}
+                    >
+                        Kiralık
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- ALAN / ADA / PARSEL -->
+
+        <div class="form-satir-uc">
+
+            <input
+                type="number"
+                name="metrekare_arsa"
+                value="{{ urun.arsa_metrekare if urun.arsa_metrekare is not none else '' }}"
+                min="0"
+                step="0.01"
+                placeholder="Toplam Alan (m²)"
+            >
+
+            <input
+                type="text"
+                name="ada_no"
+                value="{{ urun.ada_no or '' }}"
+                placeholder="Ada No"
+            >
+
+            <input
+                type="text"
+                name="parsel_no"
+                value="{{ urun.parsel_no or '' }}"
+                placeholder="Parsel No"
+            >
+
+        </div>
+
+
+        <!-- TAPU / YOL -->
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="arsa_tapu_durumu"
+                    value="{{ urun.arsa_tapu_durumu or '' }}"
+                    placeholder="Tapu Durumu"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="yol_durumu"
+                    value="{{ urun.yol_durumu or '' }}"
+                    placeholder="Yol Durumu"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- MERKEZE UZAKLIK + SULU/KURU -->
+
+        <div class="form-satir">
+
+            <div class="form-sutun">
+
+                <input
+                    type="text"
+                    name="merkeze_uzaklik"
+                    value="{{ urun.merkeze_uzaklik or '' }}"
+                    placeholder="Merkeze Uzaklık"
+                >
+
+            </div>
+
+
+            <div class="form-sutun">
+
+                <select name="su">
+
+                    <option
+                        value="0"
+                        {% if urun.su|int == 0 %}
+                        selected
+                        {% endif %}
+                    >
+                        🌾 Kuru Tarla
+                    </option>
+
+                    <option
+                        value="1"
+                        {% if urun.su|int == 1 %}
+                        selected
+                        {% endif %}
+                    >
+                        💧 Sulu Tarla
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- TARLA CHECKBOXLARI -->
+
+        <div class="ilan-checkbox-grubu">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="takas_arsa"
+                    value="true"
+                    {% if urun.takas_arsa|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Takas
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="elektrik"
+                    value="true"
+                    {% if urun.elektrik|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Elektrik
+
+            </label>
+
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    name="kadastro_yolu"
+                    value="true"
+                    {% if urun.kadastro_yolu|int == 1 %}
+                    checked
+                    {% endif %}
+                >
+
+                Kadastro Yolu
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         AÇIKLAMA
+         ========================================================= -->
+
+    <div
+        style="
+            margin-bottom:14px;
+        "
+    >
+
+        <label
+            style="
+                display:block;
+                margin-bottom:6px;
+                text-align:left;
+                font-size:13px;
+                font-weight:bold;
+                color:#ff9f43;
+            "
+        >
+            📝 İlan Açıklaması
+        </label>
+
+        <textarea
+            name="aciklama"
+            id="aciklama"
+            rows="6"
+            placeholder="İlanınızla ilgili ayrıntılı açıklamaları buraya yazabilirsiniz..."
+            style="
+                width:100%;
+                max-width:100%;
+                min-width:100%;
+                box-sizing:border-box;
+                padding:11px 12px;
+                background:#2f3542;
+                color:white;
+                border:1px solid #57606f;
+                border-radius:8px;
+                font-family:inherit;
+                resize:vertical;
+                font-size:14px;
+                display:block;
+            "
+        >{{ urun.aciklama or '' }}</textarea>
+
+    </div>
+
+
+    <!-- =========================================================
+         MEVCUT FOTOĞRAFLAR
+         ========================================================= -->
+
+    {% set mevcut_foto =
+        urun.resimler_liste|length
+        if urun.resimler_liste
+        else 0
+    %}
+
+    {% set kalan_foto =
+        10 - mevcut_foto
+    %}
+
+
+    <div
+        style="
+            margin-top:10px;
+            padding:13px;
+            background:rgba(0,0,0,.13);
+            border:1px solid rgba(255,255,255,.07);
+            border-radius:10px;
+        "
+    >
+
+        <div
+            style="
+                color:#ff9f43;
+                font-weight:bold;
+                margin-bottom:9px;
+                text-align:center;
+                font-size:13px;
+            "
+        >
+
+            📷 Mevcut Fotoğraflar
+
+            <span
+                style="
+                    color:#aaa;
+                    font-size:11px;
+                    font-weight:normal;
+                "
+            >
+                ({{ mevcut_foto }}/10)
+            </span>
+
+        </div>
+
+
+        {% if urun.resimler_liste %}
+
+        <div
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(auto-fill,minmax(125px,1fr));
+                gap:9px;
+            "
+        >
+
+            {% for resim in urun.resimler_liste %}
+
+            <div
+                style="
+                    position:relative;
+                    background:#1d222c;
+                    padding:5px;
+                    border-radius:8px;
+                    border:1px solid
+                    {% if resim.kapak|int == 1 %}
+                        rgba(255,159,67,.55)
+                    {% else %}
+                        rgba(255,255,255,.08)
+                    {% endif %};
+                "
+            >
+
+                <img
+                    src="{{ resim.url }}"
+                    onerror="
+                        this.onerror=null;
+                        this.src='{{ url_for(
+                            'static',
+                            filename='uploads/varsayilan_araba.jpg'
+                        ) }}';
+                    "
+                    alt="İlan fotoğrafı"
+                    style="
+                        width:100%;
+                        height:90px;
+                        object-fit:cover;
+                        border-radius:6px;
+                        display:block;
+                    "
+                >
+
+
+                {% if resim.kapak|int == 1 %}
+
+                <div
+                    style="
+                        margin-top:5px;
+                        text-align:center;
+                        color:#ff9f43;
+                        font-size:10px;
+                        font-weight:bold;
+                    "
+                >
+                    ⭐ Kapak Fotoğrafı
+                </div>
+
+                {% else %}
+
+                <a
+                    href="{{ url_for(
+                        'resim_kapak_yap',
+                        ilan_id=urun.id,
+                        resim_id=resim.id
+                    ) }}"
+                    style="
+                        display:block;
+                        margin-top:5px;
+                        color:#20bf6b;
+                        font-size:10px;
+                        text-decoration:none;
+                        font-weight:bold;
+                        text-align:center;
+                    "
+                >
+                    ⭐ Kapak Yap
+                </a>
+
+                {% endif %}
+
+
+                <a
+                    href="{{ url_for(
+                        'resim_sil',
+                        ilan_id=urun.id,
+                        resim_id=resim.id
+                    ) }}"
+                    onclick="
+                        return confirm(
+                            'Bu fotoğraf silinsin mi?'
+                        );
+                    "
+                    style="
+                        display:block;
+                        margin-top:5px;
+                        color:#ff6b6b;
+                        font-size:10px;
+                        text-decoration:none;
+                        font-weight:bold;
+                        text-align:center;
+                    "
+                >
+                    🗑 Fotoğrafı Sil
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div
+            style="
+                color:#aaa;
+                font-size:12px;
+                text-align:center;
+                padding:15px 5px;
+            "
+        >
+            Henüz fotoğraf bulunmuyor.
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================================================
+         YENİ FOTOĞRAFLAR
+         ========================================================= -->
+
+    <div
+        style="
+            margin-top:12px;
+            padding:13px;
+            background:rgba(255,159,67,.06);
+            border:1px solid rgba(255,159,67,.22);
+            border-radius:9px;
+        "
+    >
+
+        <div
+            style="
+                color:#ff9f43;
+                font-size:13px;
+                font-weight:bold;
+                margin-bottom:5px;
+            "
+        >
+            📸 Yeni Fotoğraf Ekle
+        </div>
+
+
+        {% if kalan_foto > 0 %}
+
+        <div
+            style="
+                color:#aaa;
+                font-size:11px;
+                margin-bottom:9px;
+                line-height:1.5;
+            "
+        >
+
+            Mevcut:
+
+            <strong style="color:#fff;">
+                {{ mevcut_foto }}
+            </strong>
+
+            / 10
+
+            <br>
+
+            En fazla
+
+            <strong style="color:#ff9f43;">
+                {{ kalan_foto }}
+            </strong>
+
+            yeni fotoğraf ekleyebilirsiniz.
+
+        </div>
+
+
+        <label
+            for="resimler"
+            style="
+                display:block;
+                text-align:center;
+                background:#ff9f43;
+                color:#fff;
+                padding:11px;
+                border-radius:8px;
+                cursor:pointer;
+                font-weight:bold;
+            "
+        >
+            📁 Fotoğrafları Seç
+        </label>
+
+
+        <input
+            type="file"
+            name="resimler"
+            id="resimler"
+            multiple
+            accept=".jpg,.jpeg,.png,.webp,.gif,image/*"
+            style="display:none;"
+        >
+
+
+        <div
+            id="fotoSecimDurumu"
+            style="
+                display:none;
+                margin-top:8px;
+                padding:8px 10px;
+                border-radius:7px;
+                font-size:11px;
+                font-weight:bold;
+                text-align:center;
+            "
+        ></div>
+
+
+        <div
+            id="yeniFotoOnizleme"
+            style="
+                display:grid;
+                grid-template-columns:
+                    repeat(auto-fill,minmax(105px,1fr));
+                gap:8px;
+                margin-top:8px;
+            "
+        ></div>
+
+
+        {% else %}
+
+        <div
+            style="
+                color:#ff7675;
+                font-size:12px;
+                font-weight:bold;
+                text-align:center;
+                padding:8px;
+                line-height:1.5;
+            "
+        >
+
+            ⚠️ 10 fotoğraf sınırına ulaşıldı.
+
+            <br>
+
+            Yeni fotoğraf eklemek için önce mevcut
+            fotoğraflardan birini silin.
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================================================
+         BUTONLAR
+         ========================================================= -->
+
+    <button
+        type="submit"
+        style="
+            margin-top:14px;
+        "
+    >
+        🚀 Güncellemeleri Kaydet
+    </button>
+
+
+    <a
+        href="{{ url_for('urunler') }}"
+        style="
+            background:transparent;
+            border:none;
+            color:#ff6b6b;
+            text-align:center;
+            display:block;
+            margin-top:12px;
+            font-weight:bold;
+            text-decoration:none;
+        "
+    >
+        ❌ Vazgeç / İlanlarıma Dön
+    </a>
+
+</form>
+
 </div>
 
-<script src="/static/js/script.js"></script>
+
+<!-- =========================================================
+     FORM STİLLERİ
+     ========================================================= -->
+
+<style>
+
+.ilan-form-panel {
+    overflow:hidden;
+}
+
+
+.ilan-form-panel .form-satir,
+.ilan-form-panel .form-satir-uc {
+    margin-bottom:8px;
+}
+
+
+.ilan-form-panel input,
+.ilan-form-panel select {
+    margin:6px 0;
+}
+
+
+.kategori-panel {
+    padding:12px;
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:10px;
+}
+
+
+.ilan-bolum-basligi {
+    margin:0 0 10px;
+    padding:8px 11px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:800;
+    text-align:left;
+}
+
+
+.otomobil-baslik {
+    background:rgba(52,152,219,.08);
+    border-left:3px solid #3498db;
+    color:#5dade2;
+}
+
+
+.emlak-baslik {
+    background:rgba(46,204,113,.08);
+    border-left:3px solid #2ecc71;
+    color:#58d68d;
+}
+
+
+.dukkan-baslik {
+    background:rgba(230,126,34,.08);
+    border-left:3px solid #e67e22;
+    color:#f5b041;
+}
+
+
+.arsa-baslik {
+    background:rgba(155,89,182,.08);
+    border-left:3px solid #9b59b6;
+    color:#bb8fce;
+}
+
+
+.tarla-baslik {
+    background:rgba(197, 200, 38, 0.08);
+    border-left:3px solid #27ae60;
+    color:#58d68d;
+}
+
+
+.ilan-checkbox-grubu {
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    gap:8px 14px;
+    flex-wrap:wrap;
+    margin:8px 0 4px;
+    padding:9px 10px;
+    background:rgba(0,0,0,.14);
+    border:1px solid rgba(255,255,255,.05);
+    border-radius:7px;
+}
+
+
+.ilan-checkbox-grubu label {
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin:0;
+    padding:2px 0;
+    color:#ddd;
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+
+.ilan-checkbox-grubu input[type="checkbox"] {
+    width:15px !important;
+    height:15px !important;
+    min-width:15px;
+    margin:0 !important;
+    padding:0 !important;
+    accent-color:#ff9f43;
+    cursor:pointer;
+}
+
+
+@media (max-width:760px) {
+
+    .ilan-temel-grid {
+        grid-template-columns:1fr !important;
+    }
+
+}
+
+
+@media (max-width:600px) {
+
+    .ilan-form-panel {
+        padding:14px !important;
+    }
+
+
+    .ilan-checkbox-grubu {
+        gap:7px 11px;
+    }
+
+
+    .ilan-checkbox-grubu label {
+        font-size:10px;
+    }
+
+}
+
+</style>
+
+
+<!-- =========================================================
+     ANA SCRIPT
+     ========================================================= -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const markaSecimi = document.getElementById("marka");
-        const kategori = "{{ urun.kategori if urun.kategori else 'Otomobil' }}";
-        
-        const fakeSelect = document.getElementById("kategori_secim");
-        if(fakeSelect) {
-            fakeSelect.disabled = false;
-            fakeSelect.value = kategori;
-            if(typeof formAlanlariniGuncelle === "function") {
-                formAlanlariniGuncelle();
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        /* =====================================================
+           ELEMANLAR
+           ===================================================== */
+
+        const kategori =
+            document.getElementById(
+                "kategori_secim"
+            );
+
+        const baslik =
+            document.getElementById(
+                "ilan_baslik"
+            );
+
+        const fiyat =
+            document.getElementById(
+                "ilan_fiyat"
+            );
+
+        const marka =
+            document.getElementById(
+                "marka"
+            );
+
+        const model =
+            document.getElementById(
+                "model"
+            );
+
+        const input =
+            document.getElementById(
+                "resimler"
+            );
+
+        const durum =
+            document.getElementById(
+                "fotoSecimDurumu"
+            );
+
+        const onizleme =
+            document.getElementById(
+                "yeniFotoOnizleme"
+            );
+
+        const form =
+            document.getElementById(
+                "ilanGuncelleForm"
+            );
+
+        const mevcutModel =
+            {{ (urun.model or '')|tojson }};
+
+        const kalan =
+            Number(
+                {{ kalan_foto }}
+            );
+
+        const MAX_YENI_FOTO =
+            Math.max(
+                0,
+                kalan
+            );
+
+
+        /* =====================================================
+           BAŞLIK ÖRNEĞİ
+           ===================================================== */
+
+        function baslikOrneginiGuncelle() {
+
+            if (!kategori || !baslik) {
+                return;
             }
-            fakeSelect.disabled = true;
+
+            const ornekler = {
+
+                Otomobil:
+                    "Örneğin: 2024 Hatasız Otomatik Volkswagen Golf",
+
+                Daire:
+                    "Örneğin: 3+1 Merkezi Konumda Geniş Daire",
+
+                Ev:
+                    "Örneğin: Müstakil Bahçeli Taş Ev",
+
+                Dukkan:
+                    "Örneğin: Merkezi Konumda 120 m² Dükkan",
+
+                Arsa:
+                    "Örneğin: İmarlı Merkezi Konumda Arsa",
+
+                Tarla:
+                    "Örneğin: Verimli Sulu Tarla"
+
+            };
+
+
+            baslik.placeholder =
+                ornekler[
+                    kategori.value
+                ] ||
+                "İlan başlığını yazınız...";
+
         }
 
-        if(kategori === "Otomobil" && markaSecimi && markaSecimi.value) {
-            const mevcutModel = "{{ urun.model }}";
-            if(typeof modelleriYukle === "function") {
-                modelleriYukle();
+
+        /* =====================================================
+           ARSA / TARLA PANELLERİNİ DÜZELT
+           ===================================================== */
+
+        function kategoriPanelleriniDuzelt() {
+
+            if (!kategori) {
+                return;
             }
-            const modelBox = document.getElementById("model");
-            if(modelBox) modelBox.value = mevcutModel;
+
+            const secilen =
+                kategori.value;
+
+            const alanArsa =
+                document.getElementById(
+                    "alan-arsa"
+                );
+
+            const alanTarla =
+                document.getElementById(
+                    "alan-tarla"
+                );
+
+
+            if (secilen === "Arsa") {
+
+                if (alanArsa) {
+                    alanArsa.style.display =
+                        "block";
+                }
+
+                if (alanTarla) {
+                    alanTarla.style.display =
+                        "none";
+                }
+
+            }
+
+            else if (secilen === "Tarla") {
+
+                if (alanArsa) {
+                    alanArsa.style.display =
+                        "none";
+                }
+
+                if (alanTarla) {
+                    alanTarla.style.display =
+                        "block";
+                }
+
+            }
+
+            else {
+
+                if (alanArsa) {
+                    alanArsa.style.display =
+                        "none";
+                }
+
+                if (alanTarla) {
+                    alanTarla.style.display =
+                        "none";
+                }
+
+            }
+
         }
-    });
+
+
+        /* =====================================================
+           FORMU BAŞLAT
+           ===================================================== */
+
+        function formuBaslat() {
+
+            if (
+                typeof formAlanlariniGuncelle ===
+                "function"
+            ) {
+
+                formAlanlariniGuncelle();
+
+            }
+
+            kategoriPanelleriniDuzelt();
+
+            baslikOrneginiGuncelle();
+
+        }
+
+
+        formuBaslat();
+
+
+        /* =====================================================
+           MEVCUT MODEL
+           ===================================================== */
+
+        if (
+            kategori &&
+            kategori.value === "Otomobil" &&
+            marka &&
+            model &&
+            typeof modelleriYukle ===
+                "function"
+        ) {
+
+            modelleriYukle(
+                mevcutModel
+            );
+
+        }
+
+
+        /* =====================================================
+           KATEGORİ DEĞİŞİMİ
+           ===================================================== */
+
+        if (kategori) {
+
+            kategori.addEventListener(
+                "change",
+                function () {
+
+                    if (
+                        typeof formAlanlariniGuncelle ===
+                        "function"
+                    ) {
+
+                        formAlanlariniGuncelle();
+
+                    }
+
+
+                    kategoriPanelleriniDuzelt();
+
+                    baslikOrneginiGuncelle();
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           MARKA DEĞİŞİMİ
+           ===================================================== */
+
+        if (marka) {
+
+            marka.addEventListener(
+                "change",
+                function () {
+
+                    if (
+                        typeof modelleriYukle ===
+                        "function"
+                    ) {
+
+                        modelleriYukle();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FOTOĞRAF ÖNİZLEME
+           ===================================================== */
+
+        if (
+            input &&
+            durum &&
+            onizleme
+        ) {
+
+            input.addEventListener(
+                "change",
+                function () {
+
+                    let files =
+                        Array.from(
+                            input.files || []
+                        );
+
+
+                    if (
+                        files.length >
+                        MAX_YENI_FOTO
+                    ) {
+
+                        files =
+                            files.slice(
+                                0,
+                                MAX_YENI_FOTO
+                            );
+
+
+                        try {
+
+                            const dt =
+                                new DataTransfer();
+
+
+                            files.forEach(
+                                function (file) {
+
+                                    dt.items.add(
+                                        file
+                                    );
+
+                                }
+                            );
+
+
+                            input.files =
+                                dt.files;
+
+                        }
+                        catch (hata) {
+
+                            console.warn(
+                                "Dosya listesi düzenlenemedi:",
+                                hata
+                            );
+
+                        }
+
+                    }
+
+
+                    onizleme.innerHTML =
+                        "";
+
+
+                    if (
+                        files.length === 0
+                    ) {
+
+                        durum.style.display =
+                            "none";
+
+                        return;
+
+                    }
+
+
+                    durum.style.display =
+                        "block";
+
+                    durum.style.background =
+                        "rgba(32,191,107,.12)";
+
+                    durum.style.border =
+                        "1px solid rgba(32,191,107,.35)";
+
+                    durum.style.color =
+                        "#20bf6b";
+
+                    durum.textContent =
+                        "✅ " +
+                        files.length +
+                        " yeni fotoğraf seçildi.";
+
+
+                    files.forEach(
+                        function (
+                            file,
+                            index
+                        ) {
+
+                            const kart =
+                                document.createElement(
+                                    "div"
+                                );
+
+
+                            kart.style.position =
+                                "relative";
+
+                            kart.style.background =
+                                "#1d222c";
+
+                            kart.style.padding =
+                                "4px";
+
+                            kart.style.borderRadius =
+                                "7px";
+
+                            kart.style.border =
+                                "1px solid rgba(255,255,255,.08)";
+
+                            kart.style.overflow =
+                                "hidden";
+
+
+                            const img =
+                                document.createElement(
+                                    "img"
+                                );
+
+
+                            img.alt =
+                                file.name;
+
+                            img.style.width =
+                                "100%";
+
+                            img.style.height =
+                                "78px";
+
+                            img.style.objectFit =
+                                "cover";
+
+                            img.style.display =
+                                "block";
+
+                            img.style.borderRadius =
+                                "5px";
+
+
+                            const bilgi =
+                                document.createElement(
+                                    "div"
+                                );
+
+
+                            bilgi.textContent =
+                                "✓ " +
+                                (
+                                    index + 1
+                                ) +
+                                ". fotoğraf";
+
+
+                            bilgi.style.color =
+                                "#20bf6b";
+
+                            bilgi.style.fontSize =
+                                "10px";
+
+                            bilgi.style.fontWeight =
+                                "bold";
+
+                            bilgi.style.textAlign =
+                                "center";
+
+                            bilgi.style.marginTop =
+                                "3px";
+
+
+                            kart.appendChild(
+                                img
+                            );
+
+                            kart.appendChild(
+                                bilgi
+                            );
+
+                            onizleme.appendChild(
+                                kart
+                            );
+
+
+                            const reader =
+                                new FileReader();
+
+
+                            reader.onload =
+                                function (event) {
+
+                                    img.src =
+                                        event.target.result;
+
+                                };
+
+
+                            reader.onerror =
+                                function () {
+
+                                    img.removeAttribute(
+                                        "src"
+                                    );
+
+                                };
+
+
+                            reader.readAsDataURL(
+                                file
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FORM KONTROLÜ
+           ===================================================== */
+
+        if (form) {
+
+            form.addEventListener(
+                "submit",
+                function (event) {
+
+
+                    /* BAŞLIK */
+
+                    if (
+                        !baslik ||
+                        !baslik.value.trim()
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "Lütfen ilan başlığını giriniz."
+                        );
+
+                        if (baslik) {
+                            baslik.focus();
+                        }
+
+                        return;
+
+                    }
+
+
+                    /* FİYAT */
+
+                    if (
+                        !fiyat ||
+                        fiyat.value === ""
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "Lütfen ilan fiyatını giriniz."
+                        );
+
+                        if (fiyat) {
+                            fiyat.focus();
+                        }
+
+                        return;
+
+                    }
+
+
+                    const fiyatDegeri =
+                        Number(
+                            fiyat.value
+                        );
+
+
+                    if (
+                        !Number.isFinite(
+                            fiyatDegeri
+                        ) ||
+                        fiyatDegeri < 0
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            "Lütfen geçerli bir fiyat giriniz."
+                        );
+
+                        fiyat.focus();
+
+                        return;
+
+                    }
+
+
+                    /* =================================================
+                       OTOMOBİL ZORUNLU ALANLARI
+                       ================================================= */
+
+                    if (
+                        kategori &&
+                        kategori.value ===
+                        "Otomobil"
+                    ) {
+
+                        const yil =
+                            document.getElementById(
+                                "yil_oto"
+                            );
+
+                        const km =
+                            document.getElementById(
+                                "km_oto"
+                            );
+
+
+                        if (
+                            !marka ||
+                            !marka.value
+                        ) {
+
+                            event.preventDefault();
+
+                            alert(
+                                "Lütfen otomobil markasını seçiniz."
+                            );
+
+                            if (marka) {
+                                marka.focus();
+                            }
+
+                            return;
+
+                        }
+
+
+                        if (
+                            !model ||
+                            !model.value
+                        ) {
+
+                            event.preventDefault();
+
+                            alert(
+                                "Lütfen otomobil modelini seçiniz."
+                            );
+
+                            if (model) {
+                                model.focus();
+                            }
+
+                            return;
+
+                        }
+
+
+                        if (
+                            !yil ||
+                            yil.value === ""
+                        ) {
+
+                            event.preventDefault();
+
+                            alert(
+                                "Lütfen model yılını giriniz."
+                            );
+
+                            if (yil) {
+                                yil.focus();
+                            }
+
+                            return;
+
+                        }
+
+
+                        if (
+                            !km ||
+                            km.value === ""
+                        ) {
+
+                            event.preventDefault();
+
+                            alert(
+                                "Lütfen kilometre bilgisini giriniz."
+                            );
+
+                            if (km) {
+                                km.focus();
+                            }
+
+                            return;
+
+                        }
+
+                    }
+
+
+                    /* =================================================
+                       FOTOĞRAF SINIRI
+                       ================================================= */
+
+                    if (input) {
+
+                        const fotoSayisi =
+                            (
+                                input.files ||
+                                []
+                            ).length;
+
+
+                        if (
+                            fotoSayisi >
+                            MAX_YENI_FOTO
+                        ) {
+
+                            event.preventDefault();
+
+                            alert(
+                                "Bu ilana en fazla " +
+                                MAX_YENI_FOTO +
+                                " yeni fotoğraf ekleyebilirsiniz."
+                            );
+
+                            return;
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+);
+
 </script>
+
 {% endblock %}

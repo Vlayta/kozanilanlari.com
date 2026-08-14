@@ -1,63 +1,1781 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block baslik %}{% endblock %}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#03033c"
+    >
+
+    <title>
+        {% block baslik %}
+        Değerini Bulur
+        {% endblock %}
+    </title>
+
+
+    <!-- =====================================================
+         ANA CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+
+    <!-- =====================================================
+         SAYFAYA ÖZEL HEAD ALANI
+         ===================================================== -->
+
+    {% block head_extra %}
+    {% endblock %}
+
+
+    <!-- =====================================================
+         ORTAK SAYFA STİLLERİ
+         ===================================================== -->
+
     <style>
-        .pazar-ust-sabit-menu {
-            width: 100%;
-            max-width: 1140px;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px 20px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        * {
             box-sizing: border-box;
-            margin-bottom: 20px;
         }
-        .pazar-logo-alanı { font-size: 20px; font-weight: 800; color: #ff9f43; text-decoration: none; }
-        .pazar-ust-linkler { display: flex; gap: 12px; align-items: center; }
-        .menu-link {
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 14px;
+
+
+        html {
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 12px;
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           ÜST MENÜ
+           ===================================================== */
+
+        .pazar-ust-sabit-menu {
+
+            width: 95%;
+            max-width: 1250px;
+
+            margin: 0 auto 15px auto;
+
+            padding: 10px 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.48),
+                    rgba(8, 8, 65, 0.55)
+                );
+
+            backdrop-filter:
+                blur(14px);
+
+            -webkit-backdrop-filter:
+                blur(14px);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.10);
+
+            border-radius: 14px;
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap: 15px;
+
+            position: relative;
+
+            z-index: 1000;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.20);
+        }
+
+
+        /* =====================================================
+           LOGO ALANI
+           ===================================================== */
+
+        .pazar-logo-alanı {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            min-width: 0;
+
             color: white;
+
             text-decoration: none;
-            font-weight: bold;
+
+            white-space: nowrap;
+
+            transition:
+                transform .20s ease,
+                opacity .20s ease;
         }
-        .menu-link:hover { background-color: rgb(62, 165, 235); }
-        .menu-link.cikis-btn { background-color: #ee5253; }
-        .uye-bilgi-etiketi { color: #2ecc71; font-size: 14px; font-weight: bold; margin-right: 5px; background: rgba(46, 204, 113, 0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(46,204,113,0.2); }
+
+
+        .pazar-logo-alanı:hover {
+
+            color: white;
+
+            text-decoration: none;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =====================================================
+           LOGO İKON KAPSÜLÜ
+           ===================================================== */
+
+        .deger-logo-ikon {
+
+            width: 52px;
+
+            height: 52px;
+
+            flex:
+                0 0 52px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            position: relative;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff9f43 0%,
+                    #ff8a36 50%,
+                    #ff6b35 100%
+                );
+
+            box-shadow:
+                0 6px 20px
+                rgba(
+                    255,
+                    159,
+                    67,
+                    .34
+                );
+
+            overflow:
+                visible;
+        }
+
+
+        /* =====================================================
+           SVG LOGO
+           ===================================================== */
+
+        .deger-logo-ikon svg {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            display:
+                block;
+
+            overflow:
+                visible;
+        }
+
+
+        /* =====================================================
+           D HARFİ
+           ESKİ YAPI KORUNUYOR
+           ===================================================== */
+
+        .logo-buyuk-d {
+
+            filter:
+                drop-shadow(
+                    0 2px 3px
+                    rgba(
+                        0,
+                        0,
+                        0,
+                        .25
+                    )
+                );
+        }
+
+
+        /* =====================================================
+           D İÇ VURGU
+           ===================================================== */
+
+        .logo-d-vurgu {
+
+            opacity:
+                .90;
+        }
+
+
+        /* =====================================================
+           D IŞ IŞIK
+           ===================================================== */
+
+        .logo-d-isik {
+
+            animation:
+                logoDIsik
+                2.5s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes logoDIsik {
+
+            0%,
+            100% {
+
+                opacity:
+                    .12;
+            }
+
+            50% {
+
+                opacity:
+                    .38;
+            }
+        }
+
+
+        /* =====================================================
+           BÜYÜTEÇ ANA GRUP
+           SAĞDAN D HARFİNE DOĞRU YAKLAŞIR
+           ===================================================== */
+
+        .logo-buyutec {
+
+            transform-box:
+                fill-box;
+
+            transform-origin:
+                center;
+
+            animation:
+                buyutecYaklas
+                3.2s
+                ease-in-out
+                infinite;
+
+            filter:
+                drop-shadow(
+                    0 2px 3px
+                    rgba(
+                        0,
+                        0,
+                        0,
+                        .50
+                    )
+                )
+                drop-shadow(
+                    0 0 7px
+                    rgba(
+                        62,
+                        165,
+                        235,
+                        .90
+                    )
+                );
+
+            transform:
+                translate(
+                    7px,
+                    3px
+                )
+                scale(.82);
+        }
+
+
+        /* =====================================================
+           BÜYÜTEÇ HAREKETİ
+           ===================================================== */
+
+        @keyframes buyutecYaklas {
+
+            0% {
+
+                transform:
+                    translate(
+                        8px,
+                        3px
+                    )
+                    scale(.82);
+
+                opacity:
+                    1;
+            }
+
+
+            20% {
+
+                transform:
+                    translate(
+                        6px,
+                        2px
+                    )
+                    scale(.90);
+
+                opacity:
+                    1;
+            }
+
+
+            40% {
+
+                transform:
+                    translate(
+                        3px,
+                        0
+                    )
+                    scale(1.02);
+
+                opacity:
+                    1;
+            }
+
+
+            55% {
+
+                transform:
+                    translate(
+                        -1px,
+                        -2px
+                    )
+                    scale(1.14);
+
+                opacity:
+                    1;
+            }
+
+
+            70% {
+
+                transform:
+                    translate(
+                        2px,
+                        -1px
+                    )
+                    scale(1.06);
+
+                opacity:
+                    1;
+            }
+
+
+            100% {
+
+                transform:
+                    translate(
+                        8px,
+                        3px
+                    )
+                    scale(.82);
+
+                opacity:
+                    1;
+            }
+        }
+
+
+        /* =====================================================
+           BÜYÜTEÇ CAMI
+           ===================================================== */
+
+        .buyutec-cam {
+
+            fill:
+                rgba(
+                    45,
+                    166,
+                    235,
+                    .48
+                );
+
+            stroke:
+                #ffffff;
+
+            stroke-width:
+                3.5;
+
+            animation:
+                camParlama
+                2.2s
+                ease-in-out
+                infinite;
+
+            filter:
+                drop-shadow(
+                    0 0 5px
+                    rgba(
+                        62,
+                        165,
+                        235,
+                        1
+                    )
+                );
+        }
+
+
+        /* =====================================================
+           CAM PARLAMASI
+           ===================================================== */
+
+        @keyframes camParlama {
+
+            0%,
+            100% {
+
+                opacity:
+                    .88;
+            }
+
+            50% {
+
+                opacity:
+                    1;
+            }
+        }
+
+
+        /* =====================================================
+           BÜYÜTEÇ İÇ PARLAMA
+           ===================================================== */
+
+        .buyutec-parlama {
+
+            animation:
+                camIsik
+                2.2s
+                ease-in-out
+                infinite;
+        }
+
+
+        @keyframes camIsik {
+
+            0%,
+            100% {
+
+                opacity:
+                    .30;
+
+                transform:
+                    translate(
+                        -1px,
+                        1px
+                    );
+            }
+
+            50% {
+
+                opacity:
+                    .95;
+
+                transform:
+                    translate(
+                        2px,
+                        -2px
+                    );
+            }
+        }
+
+
+        /* =====================================================
+           BÜYÜTEÇ KOLU
+           ===================================================== */
+
+        .buyutec-kol {
+
+            stroke:
+                #ffffff;
+
+            stroke-linecap:
+                round;
+
+            stroke-width:
+                5.5;
+
+            filter:
+                drop-shadow(
+                    0 0 4px
+                    rgba(
+                        62,
+                        165,
+                        235,
+                        .95
+                    )
+                );
+        }
+
+
+        /* =====================================================
+           BÜYÜTEÇ KOL UCU
+           ===================================================== */
+
+        .buyutec-kol-ucu {
+
+            fill:
+                #3ea5eb;
+
+            stroke:
+                #ffffff;
+
+            stroke-width:
+                1.5;
+        }
+
+
+        /* =====================================================
+           LOGO YAZILARI
+           ===================================================== */
+
+        .deger-logo-yazi {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                center;
+
+            line-height:
+                1;
+        }
+
+
+        .deger-logo-ana {
+
+            font-size:
+                19px;
+
+            font-weight:
+                900;
+
+            letter-spacing:
+                -.4px;
+
+            color:
+                #ffffff;
+        }
+
+
+        .deger-logo-vurgu {
+
+            color:
+                #ff9f43;
+        }
+
+
+        .deger-logo-alt {
+
+            margin-top:
+                5px;
+
+            font-size:
+                9px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                1.7px;
+
+            color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .55
+                );
+
+            text-transform:
+                uppercase;
+        }
+
+
+        /* =====================================================
+           MENÜ ANA KAPSAYICI
+           ===================================================== */
+
+        .pazar-nav-linkler,
+        .pazar-ust-linkler {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                flex-end;
+
+            gap:
+                7px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        /* =====================================================
+           MENÜ BUTONU
+           ===================================================== */
+
+        .menu-link {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            min-height:
+                34px;
+
+            padding:
+                7px 10px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .08
+                );
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .18
+                );
+
+            border-radius:
+                7px;
+
+            color:
+                white;
+
+            text-decoration:
+                none;
+
+            font-size:
+                12px;
+
+            line-height:
+                1;
+
+            font-weight:
+                700;
+
+            white-space:
+                nowrap;
+
+            transition:
+                background .18s ease,
+                border-color .18s ease,
+                transform .18s ease,
+                color .18s ease;
+        }
+
+
+        .menu-link:hover {
+
+            background:
+                rgba(
+                    62,
+                    165,
+                    235,
+                    .90
+                );
+
+            border-color:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .28
+                );
+
+            color:
+                #fff;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        /* =====================================================
+           ÇIKIŞ
+           ===================================================== */
+
+        .menu-link.cikis-btn {
+
+            background:
+                rgba(
+                    238,
+                    82,
+                    83,
+                    .90
+                );
+
+            border-color:
+                rgba(
+                    238,
+                    82,
+                    83,
+                    .45
+                );
+        }
+
+
+        .menu-link.cikis-btn:hover {
+
+            background:
+                #ff6b6b;
+        }
+
+
+        /* =====================================================
+           ÜYE ETİKETİ
+           ===================================================== */
+
+        .uye-bilgi-etiketi {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            min-height:
+                34px;
+
+            padding:
+                7px 10px;
+
+            color:
+                #2ecc71;
+
+            font-size:
+                11px;
+
+            font-weight:
+                800;
+
+            white-space:
+                nowrap;
+
+            background:
+                rgba(
+                    46,
+                    204,
+                    113,
+                    .08
+                );
+
+            border:
+                1px solid
+                rgba(
+                    46,
+                    204,
+                    113,
+                    .20
+                );
+
+            border-radius:
+                7px;
+        }
+
+
+        /* =====================================================
+           ANA İÇERİK
+           ===================================================== */
+
+        .main {
+
+            position:
+                relative;
+
+            z-index:
+                1;
+
+            width:
+                100%;
+        }
+
+
+        /* =====================================================
+           GENİŞ PANEL
+           ===================================================== */
+
+        .genis-panel {
+
+            width:
+                100%;
+
+            margin-left:
+                auto;
+
+            margin-right:
+                auto;
+
+            box-sizing:
+                border-box;
+        }
+
+
+        /* =====================================================
+           FORM BAŞLIĞI
+           ===================================================== */
+
+        .form-baslik {
+
+            display:
+                block;
+
+            width:
+                100%;
+
+            margin-bottom:
+                12px;
+
+            color:
+                #ff9f43;
+
+            font-size:
+                18px;
+
+            font-weight:
+                900;
+
+            text-align:
+                center;
+        }
+
+
+        /* =====================================================
+           İLAN YÖNETİM
+           ===================================================== */
+
+        .pazar-yonetim-konteyner {
+
+            position:
+                relative;
+
+            z-index:
+                1;
+
+            width:
+                100%;
+        }
+
+
+        /* =====================================================
+           FORM ELEMANLARI
+           ===================================================== */
+
+        input,
+        select,
+        textarea,
+        button {
+
+            max-width:
+                100%;
+
+            box-sizing:
+                border-box;
+        }
+
+
+        textarea {
+
+            width:
+                100%;
+
+            max-width:
+                100%;
+        }
+
+
+        /* =====================================================
+           TABLO
+           ===================================================== */
+
+        table {
+
+            max-width:
+                none;
+        }
+
+
+        /* =====================================================
+           RESİMLER
+           ===================================================== */
+
+        img {
+
+            max-width:
+                100%;
+        }
+
+
+        /* =====================================================
+           LİNKLER
+           ===================================================== */
+
+        a {
+
+            -webkit-tap-highlight-color:
+                transparent;
+        }
+
+
+        /* =====================================================
+           MOBİL
+           ===================================================== */
+
+        @media (max-width: 900px) {
+
+            body {
+
+                padding:
+                    8px;
+            }
+
+
+            .pazar-ust-sabit-menu {
+
+                padding:
+                    10px;
+
+                align-items:
+                    stretch;
+
+                flex-direction:
+                    column;
+            }
+
+
+            .pazar-logo-alanı {
+
+                justify-content:
+                    center;
+
+                text-align:
+                    center;
+
+                width:
+                    100%;
+            }
+
+
+            .pazar-nav-linkler,
+            .pazar-ust-linkler {
+
+                width:
+                    100%;
+
+                justify-content:
+                    center;
+
+                flex-wrap:
+                    wrap;
+            }
+
+
+            .menu-link,
+            .uye-bilgi-etiketi {
+
+                flex:
+                    0 0 auto;
+            }
+        }
+
+
+        /* =====================================================
+           TELEFON
+           ===================================================== */
+
+        @media (max-width: 560px) {
+
+            body {
+
+                padding:
+                    5px;
+            }
+
+
+            .pazar-ust-sabit-menu {
+
+                border-radius:
+                    9px;
+
+                margin-bottom:
+                    10px;
+            }
+
+
+            .pazar-logo-alanı {
+
+                justify-content:
+                    flex-start;
+
+                text-align:
+                    left;
+            }
+
+
+            .deger-logo-ikon {
+
+                width:
+                    48px;
+
+                height:
+                    48px;
+
+                flex-basis:
+                    48px;
+            }
+
+
+            .deger-logo-ana {
+
+                font-size:
+                    17px;
+            }
+
+
+            .deger-logo-alt {
+
+                font-size:
+                    8px;
+
+                letter-spacing:
+                    1.3px;
+            }
+
+
+            .pazar-nav-linkler,
+            .pazar-ust-linkler {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+
+                gap:
+                    6px;
+            }
+
+
+            .menu-link,
+            .uye-bilgi-etiketi {
+
+                width:
+                    100%;
+
+                min-height:
+                    35px;
+
+                padding:
+                    7px 6px;
+
+                font-size:
+                    11px;
+            }
+
+
+            .uye-bilgi-etiketi {
+
+                grid-column:
+                    1 / -1;
+            }
+        }
+
+
+        /* =====================================================
+           ÇOK KÜÇÜK EKRAN
+           ===================================================== */
+
+        @media (max-width: 360px) {
+
+            .deger-logo-alt {
+
+                display:
+                    none;
+            }
+
+
+            .deger-logo-ikon {
+
+                width:
+                    45px;
+
+                height:
+                    45px;
+
+                flex-basis:
+                    45px;
+            }
+
+
+            .pazar-nav-linkler,
+            .pazar-ust-linkler {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .uye-bilgi-etiketi {
+
+                grid-column:
+                    auto;
+            }
+        }
+
+
+        /* =====================================================
+           HAREKET AZALTMA
+           ===================================================== */
+
+        @media (
+            prefers-reduced-motion: reduce
+        ) {
+
+            .logo-d-isik,
+            .logo-buyutec,
+            .buyutec-cam,
+            .buyutec-parlama {
+
+                animation:
+                    none !important;
+            }
+
+
+            .pazar-logo-alanı,
+            .menu-link {
+
+                transition:
+                    none !important;
+            }
+        }
+
     </style>
+
 </head>
+
+
 <body>
+
+
+    <!-- =========================================================
+         ÜST MENÜ
+         ========================================================= -->
+
     <div class="pazar-ust-sabit-menu">
-        <a href="/" class="pazar-logo-alanı">🌐 Kozan İlanları </a>
-        <div class="pazar-nav-linkler pazar-ust-linkler">
-            <a href="/" class="menu-link">🏠 Ana Sayfa</a>
-            <a href="/kurumsal" class="menu-link">ℹ️ Kurumsal</a>
-            
+
+
+        <!-- =====================================================
+             DİJİTAL LOGO
+             ===================================================== -->
+
+        <a
+            href="{{ url_for('hello_world') }}"
+            class="pazar-logo-alanı"
+            title="Değerini Bulur Ana Sayfa"
+            aria-label="Değerini Bulur Ana Sayfa"
+        >
+
+
+            <!-- =================================================
+                 SVG LOGO
+                 ================================================= -->
+
+            <span
+                class="deger-logo-ikon"
+                aria-hidden="true"
+            >
+
+                <svg
+                    viewBox="0 0 64 64"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+
+                    <defs>
+
+
+                        <!-- =====================================
+                             D GRADIENT
+                             ===================================== -->
+
+                        <linearGradient
+                            id="logoDGradient"
+                            x1="0"
+                            y1="0"
+                            x2="1"
+                            y2="1"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#ffffff"
+                            />
+
+                            <stop
+                                offset="55%"
+                                stop-color="#ffffff"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#fff0dd"
+                            />
+
+                        </linearGradient>
+
+
+                        <!-- =====================================
+                             BÜYÜTEÇ GRADIENT
+                             ===================================== -->
+
+                        <linearGradient
+                            id="buyutecGradient"
+                            x1="0"
+                            y1="0"
+                            x2="1"
+                            y2="1"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#ffffff"
+                            />
+
+                            <stop
+                                offset="35%"
+                                stop-color="#74c9ff"
+                            />
+
+                            <stop
+                                offset="70%"
+                                stop-color="#3ea5eb"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#0876bd"
+                            />
+
+                        </linearGradient>
+
+
+                        <!-- =====================================
+                             BÜYÜTEÇ CAMI
+                             ===================================== -->
+
+                        <radialGradient
+                            id="buyutecCamGradient"
+                            cx="32%"
+                            cy="27%"
+                            r="72%"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#ffffff"
+                                stop-opacity=".90"
+                            />
+
+                            <stop
+                                offset="30%"
+                                stop-color="#b9e7ff"
+                                stop-opacity=".72"
+                            />
+
+                            <stop
+                                offset="65%"
+                                stop-color="#3ea5eb"
+                                stop-opacity=".52"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#0876bd"
+                                stop-opacity=".40"
+                            />
+
+                        </radialGradient>
+
+
+                        <!-- =====================================
+                             D IŞ IŞIK
+                             ===================================== -->
+
+                        <radialGradient
+                            id="logoDGlow"
+                            cx="50%"
+                            cy="50%"
+                            r="50%"
+                        >
+
+                            <stop
+                                offset="0%"
+                                stop-color="#ffffff"
+                                stop-opacity=".60"
+                            />
+
+                            <stop
+                                offset="55%"
+                                stop-color="#ffffff"
+                                stop-opacity=".16"
+                            />
+
+                            <stop
+                                offset="100%"
+                                stop-color="#ffffff"
+                                stop-opacity="0"
+                            />
+
+                        </radialGradient>
+
+                    </defs>
+
+
+                    <!-- =========================================
+                         D ARKASINDA IŞIK
+                         ========================================= -->
+
+                    <circle
+                        class="logo-d-isik"
+                        cx="31"
+                        cy="32"
+                        r="27"
+                        fill="url(#logoDGlow)"
+                    />
+
+
+                    <!-- =========================================
+                         BÜYÜK D
+                         ESKİ MANTIK KORUNDU
+                         ========================================= -->
+
+                    <path
+                        class="logo-buyuk-d"
+                        d="
+                            M15 11
+                            V53
+                            H31
+                            C46 53
+                            55 44
+                            55 32
+                            C55 20
+                            46 11
+                            31 11
+                            Z
+                        "
+                        fill="none"
+                        stroke="url(#logoDGradient)"
+                        stroke-width="7"
+                        stroke-linejoin="round"
+                    />
+
+
+                    <!-- =========================================
+                         D İÇ TURUNCU VURGU
+                         ========================================= -->
+
+                    <path
+                        class="logo-d-vurgu"
+                        d="
+                            M26 18
+                            V46
+                        "
+                        stroke="#ff9f43"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                    />
+
+
+                    <!-- =========================================
+                         D MERKEZ NOKTASI
+                         ========================================= -->
+
+                    <circle
+                        cx="27"
+                        cy="32"
+                        r="5"
+                        fill="#ff9f43"
+                    />
+
+
+                    <circle
+                        cx="27"
+                        cy="32"
+                        r="2"
+                        fill="#ffffff"
+                    />
+
+
+                    <!-- =========================================
+                         BÜYÜTEÇ
+                         SAĞDAN D'YE YAKLAŞIYOR
+                         ========================================= -->
+
+                    <g
+                        class="logo-buyutec"
+                    >
+
+
+                        <!-- =====================================
+                             BÜYÜTEÇ CAMI
+                             ===================================== -->
+
+                        <circle
+                            class="buyutec-cam"
+                            cx="43"
+                            cy="21"
+                            r="10.5"
+                            fill="url(#buyutecCamGradient)"
+                            stroke="#ffffff"
+                            stroke-width="3.5"
+                        />
+
+
+                        <!-- =====================================
+                             CAM İÇ PARLAMA
+                             ===================================== -->
+
+                        <ellipse
+                            class="buyutec-parlama"
+                            cx="39.5"
+                            cy="17"
+                            rx="4.2"
+                            ry="2.4"
+                            fill="#ffffff"
+                            opacity=".70"
+                            transform="
+                                rotate(
+                                    -35
+                                    39.5
+                                    17
+                                )
+                            "
+                        />
+
+
+                        <!-- =====================================
+                             CAM İÇ NOKTA
+                             ===================================== -->
+
+                        <circle
+                            cx="47.5"
+                            cy="24"
+                            r="1.6"
+                            fill="#ffffff"
+                            opacity=".95"
+                        />
+
+
+                        <!-- =====================================
+                             BÜYÜTEÇ KOLU
+                             ===================================== -->
+
+                        <path
+                            class="buyutec-kol"
+                            d="
+                                M50
+                                28
+                                L59
+                                37
+                            "
+                            stroke="url(#buyutecGradient)"
+                            stroke-width="5.5"
+                        />
+
+
+                        <!-- =====================================
+                             KOL UCU
+                             ===================================== -->
+
+                        <circle
+                            class="buyutec-kol-ucu"
+                            cx="59"
+                            cy="37"
+                            r="2.8"
+                        />
+
+                    </g>
+
+
+                    <!-- =========================================
+                         ÜST SAĞ PARLAMA
+                         ========================================= -->
+
+                    <circle
+                        cx="54"
+                        cy="8"
+                        r="2.5"
+                        fill="#ffffff"
+                        opacity=".95"
+                    />
+
+
+                    <circle
+                        cx="54"
+                        cy="8"
+                        r="5"
+                        fill="#ffffff"
+                        opacity=".12"
+                    />
+
+                </svg>
+
+            </span>
+
+
+            <!-- =================================================
+                 LOGO YAZILARI
+                 ================================================= -->
+
+            <span
+                class="deger-logo-yazi"
+            >
+
+                <span
+                    class="deger-logo-ana"
+                >
+
+                    Değerini
+
+                    <span
+                        class="deger-logo-vurgu"
+                    >
+                        Bulur
+                    </span>
+
+                </span>
+
+
+                <span
+                    class="deger-logo-alt"
+                >
+                    İLAN • EMLAK • ARAÇ
+                </span>
+
+            </span>
+
+        </a>
+
+
+        <!-- =====================================================
+             MENÜ
+             ===================================================== -->
+
+        <div
+            class="pazar-nav-linkler pazar-ust-linkler"
+        >
+
+
+            <!-- ANA SAYFA -->
+
+            <a
+                href="{{ url_for('hello_world') }}"
+                class="menu-link"
+            >
+                🏠 Ana Sayfa
+            </a>
+
+
+            <!-- KURUMSAL -->
+
+            <a
+                href="{{ url_for('kurumsal_sayfasi') }}"
+                class="menu-link"
+            >
+                ℹ️ Kurumsal
+            </a>
+
+
             {% if session.get('ad') %}
-                <a href="/urun_ekle_sayfa" class="menu-link">➕ İlan Ver</a>
-                <a href="/urunler" class="menu-link">📋 Yönetim</a>
-                <span class="uye-bilgi-etiketi">👤 Üye: {{ session['ad'] }}</span>
-                <a href="/cikis" class="menu-link cikis-btn">🚪 Çıkış</a>
+
+
+                <!-- İLAN VER -->
+
+                <a
+                    href="{{ url_for('urun_ekle_sayfa') }}"
+                    class="menu-link"
+                >
+                    ➕ İlan Ver
+                </a>
+
+
+                <!-- YÖNETİM -->
+
+                <a
+                    href="{{ url_for('urunler') }}"
+                    class="menu-link"
+                >
+                    📋 Yönetim
+                </a>
+
+
+                <!-- ABONELİK -->
+
+                <a
+                    href="{{ url_for('abonelik_sayfasi') }}"
+                    class="menu-link"
+                >
+                    ⭐ Abonelik
+                </a>
+
+
+                <!-- KULLANICI -->
+
+                <span
+                    class="uye-bilgi-etiketi"
+                    title="Aktif kullanıcı"
+                >
+                    👤 {{ session.get('ad') }}
+                </span>
+
+
+                <!-- ÇIKIŞ -->
+
+                <a
+                    href="{{ url_for('cikis') }}"
+                    class="menu-link cikis-btn"
+                >
+                    🚪 Çıkış
+                </a>
+
+
             {% else %}
-                <a href="/login" class="menu-link" style="background-color: rgb(62, 165, 235);">🔑 Giriş Yap</a>
-                <a href="/kaydol" class="menu-link" style="background-color: #10ac84;">📝 Kaydol</a>
+
+
+                <!-- GİRİŞ -->
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="menu-link"
+                    style="
+                        background-color:
+                            rgba(
+                                62,
+                                165,
+                                235,
+                                .90
+                            );
+                    "
+                >
+                    🔑 Giriş Yap
+                </a>
+
+
+                <!-- KAYDOL -->
+
+                <a
+                    href="{{ url_for('kaydol') }}"
+                    class="menu-link"
+                    style="
+                        background-color:
+                            rgba(
+                                16,
+                                172,
+                                132,
+                                .90
+                            );
+                    "
+                >
+                    📝 Kaydol
+                </a>
+
+
             {% endif %}
+
         </div>
+
     </div>
+
+
+    <!-- =========================================================
+         SAYFA İÇERİĞİ
+         ========================================================= -->
 
     {% block icerik %}
     {% endblock %}
 
+
+    <!-- =========================================================
+         SAYFA SONU SCRIPT ALANI
+         ========================================================= -->
+
+    {% block scripts_extra %}
+    {% endblock %}
+
+
 </body>
+
 </html>

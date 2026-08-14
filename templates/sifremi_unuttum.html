@@ -1,0 +1,97 @@
+{% extends "taslak.html" %}
+
+{% block baslik %}
+Şifremi Unuttum
+{% endblock %}
+
+{% block icerik %}
+
+<div class="main">
+
+    <form
+        action="{{ url_for('sifremi_unuttum_gonder') }}"
+        method="POST"
+    >
+
+        <label class="form-baslik">
+            🔐 Şifremi Unuttum
+        </label>
+
+        <p
+            style="
+                color:#ddd;
+                font-size:14px;
+                line-height:1.5;
+                text-align:center;
+                margin:10px 0 20px 0;
+            "
+        >
+            Üyelik sırasında kayıt olduğunuz
+            e-posta adresini girin.
+        </p>
+
+        <input
+            type="email"
+            name="email"
+            placeholder="E-posta adresiniz"
+            required
+            autocomplete="email"
+        >
+
+        <button type="submit">
+            📩 Şifre Yenileme Bağlantısı Gönder
+        </button>
+
+        {% if hata %}
+
+        <label
+            class="hata"
+            style="
+                display:block;
+                margin-top:12px;
+            "
+        >
+            {{ hata }}
+        </label>
+
+        {% endif %}
+
+        {% if basarili %}
+
+        <div
+            style="
+                margin-top:14px;
+                padding:12px;
+                border-radius:8px;
+                background:rgba(46,204,113,0.12);
+                border:1px solid rgba(46,204,113,0.35);
+                color:#2ecc71;
+                text-align:center;
+                font-size:14px;
+                line-height:1.5;
+            "
+        >
+            {{ basarili }}
+        </div>
+
+        {% endif %}
+
+        <a
+            href="{{ url_for('login') }}"
+            style="
+                display:block;
+                margin-top:15px;
+                color:#ff9f43;
+                text-align:center;
+                text-decoration:none;
+                font-weight:bold;
+            "
+        >
+            ← Giriş Sayfasına Dön
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
